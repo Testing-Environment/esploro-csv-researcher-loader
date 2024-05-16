@@ -1,0 +1,25 @@
+{
+   "id": "esploro-csv-researcher-loader",
+   "title": "CSV Researcher Loader",
+   "subtitle": "Cloud app to update researcher data fields in Esploro",
+   "author": "Exlibris",
+   "description": "This cloud app can be used to update researchers in Esploro with data provided by uploading a CSV file. This is a Beta version.",
+   "pages": {
+      "settings": "/#/settings",
+      "help": "https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)/Working_with_the_Esploro_Research_Hub/030_Working_with_Researchers"
+   },
+   "contentSecurity": {
+      "sandbox": {
+         "modals": true,
+         "downloads": true
+      }
+   },
+   "icon": {
+      "type": "url",
+      "value": "/assets/researcherLoader.png"
+   },
+   "fullscreen": {
+      "allow": true,
+      "open": false
+   }
+}

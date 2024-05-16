@@ -1,0 +1,31 @@
+export interface Settings {
+  profiles: Profile[]
+}
+
+export interface Profile {
+  name: string,
+  profileType: ProfileType,
+  fields: Field[];
+}
+
+export enum ProfileType {
+  UPDATE = "UPDATE",
+  //ADD = "ADD",
+  //DELETE = "DELETE",
+  //ENRICH = "ENRICH",
+}
+
+export interface Field {
+  header: string,
+  default: string,
+  fieldName: string
+}
+
+export const validateProfiles = (profiles: Profile[]) => {
+  if (!Array.isArray(profiles)) return false;
+  profiles.forEach(profile => {
+    if (!profile.name || !(profile.profileType in ProfileType)) return false;
+    if (!Array.isArray(profile.fields)) return false;
+  })
+  return true;
+}
