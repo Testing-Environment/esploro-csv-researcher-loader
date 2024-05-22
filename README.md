@@ -8,8 +8,15 @@ You first need to ensure that your institution allows Cloud Apps and that this a
 
 For more information on using Cloud Apps in Esploro, see the online help.
 
-## Notes About CSV Files
+## Important Info
+- The Cloud App requires Esploro version >= July 2024.
+- The Cloud App will only work for Esploro users that have the following role privileges:
+  - USER_MANAGER_VIEW
+  - USER_MANAGER_UPDATE
+- Roles that typically have those privileges in Esploro are USER_ADMINISTRATOR and USER_MANAGER_FULL.
 - The Cloud App will only be able to update fields that are marked as "Managed externally" in Esploro - otherwise updates for concerned fields will be ignored.
+
+## Some Notes About CSV Files
 - Fields that are lists in Esploro can be added multiple times to the profile and provided in the CSV file - make sure to use different headers, e.g. "keyword1,keyword2,keyword3"
   - In case you want to provide multiple values for a list with multiple fields, make sure to repeat all of the fields you want to provide and use different headers in your CSV file, e.g. "curAffiliation_orgaCode1,curAffiliation_position1,curAffiliation_startDate1,curAffiliation_orgaCode2,curAffiliation_position2,curAffiliation_startDate2". In addition the profile must be configured in the same way and use the same headers as in your CSV file.
 - Usually lists behave as swap all, i.e. any values existing in Esploro will be replaced by the values provided in the CSV file.
