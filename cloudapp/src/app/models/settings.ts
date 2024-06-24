@@ -9,8 +9,8 @@ export interface Profile {
 }
 
 export enum ProfileType {
+  ADD = "ADD",
   UPDATE = "UPDATE",
-  //ADD = "ADD",
   //DELETE = "DELETE",
   //ENRICH = "ENRICH",
 }

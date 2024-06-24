@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit {
   form: FormGroup;
   saving = false;
   submitted = false;
-  private _profileTypeDefault = "UPDATE";
+  private _profileTypeDefault = "ADD";
   private _mandatoryFields = [];
   private _selectedProfile: FormGroup;
   get selectedProfile() {
@@ -84,7 +84,7 @@ export class SettingsComponent implements OnInit {
         this.setProfile(index);
       });
       this.profiles.controls.forEach( f => f.get('fields').setValidators(validateFields));
-      this.form.setValidators(validateForm);
+      this.form.setValidators(validateForm(this.translate));
       this.form.updateValueAndValidity();
     });    
   }  

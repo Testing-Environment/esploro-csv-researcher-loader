@@ -110,13 +110,28 @@ export class MainComponent implements OnInit {
   private log = (str: string) => this.resultsLog += `${str}\n`;  
 
   processResearcher(researcher: Researcher, profileType: string, index: number): Observable<Researcher | RestErrorResponse | CustomResponse> {
-    switch (profileType) {
-      case 'UPDATE':
-        if (researcher.primary_id && !isEmptyString(researcher.primary_id)) {
+    if (researcher.primary_id && !isEmptyString(researcher.primary_id)) {
+      switch (profileType) {
+        case 'ADD':
+          return this.researcherService.getUserByPrimaryId(researcher.primary_id).pipe(catchError(e=>{throw(e)}),
+            switchMap(original=>{
+              if (original==null) {
+                return of(this.handleError({message: this.translate.instant("Error.EmptyUserApiGET"), type: CustomResponseType.error}, researcher, index));
+              } else if (original.is_researcher == true) {
+                return of(this.handleError({message: this.translate.instant("Error.ResearcherAlreadyExisting"), type: CustomResponseType.error}, researcher, index));
+              } else {
+                let new_researcher = deepMergeObjects(original, researcher);
+                new_researcher.is_researcher = true;
+                return this.researcherService.updateResearcher(new_researcher);
+              }
+            }),
+            catchError(e=>of(this.handleError(e, researcher, index)))
+          )
+        case 'UPDATE':
           return this.researcherService.getResearcherByPrimaryId(researcher.primary_id).pipe(catchError(e=>{throw(e)}),
             switchMap(original=>{
               if (original==null) {
-                return of(this.handleError({message: this.translate.instant("Error.EmptyGET"), type: CustomResponseType.error}, researcher, index));
+                return of(this.handleError({message: this.translate.instant("Error.EmptyResearcherApiGET"), type: CustomResponseType.error}, researcher, index));
               } else {
                 let new_researcher = deepMergeObjects(original, researcher);
                 return this.researcherService.updateResearcher(new_researcher);
@@ -124,11 +139,9 @@ export class MainComponent implements OnInit {
             }),
             catchError(e=>of(this.handleError(e, researcher, index)))
           )
-        }
-        else {
-          return of(this.handleError({message: this.translate.instant("Error.EmptyPrimaryId"), type: CustomResponseType.error}, researcher, index));
-        }
-      // add more profileTypes like CREATE / ENRICH / DELETE in the future
+      }
+    } else {
+      return of(this.handleError({message: this.translate.instant("Error.EmptyPrimaryId"), type: CustomResponseType.error}, researcher, index));
     }
   }
 

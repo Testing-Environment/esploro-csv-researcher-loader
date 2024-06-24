@@ -40,6 +40,17 @@ export class ResearcherService {
     })
   }
 
+  /** (GET) Fetch user from Alma API */
+  getUserByPrimaryId(primary_id: string): Observable<Researcher> {
+    return this.restService.call( {
+      url: `/users/${primary_id}`,
+      headers: { 
+        "Content-Type": "application/json",
+        Accept: "application/json" 
+      },
+    })
+  }
+
   mapResearcher = (parsedResearcher: any, selectedProfile: Profile) => {
     const arrayIndicator = new RegExp(/\[\d*\]/);
     const mapCsvToProfileFields = (parsedResearcher: any, selectedProfile: Profile) => {

@@ -1,5 +1,8 @@
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup, ValidatorFn } from '@angular/forms';
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
+import { EsploroFields } from './esploro-fields'
+import { isEmptyString } from '../utilities';
 
 
 /** Validate appropriate combination of fields for CSV import profile */
@@ -69,27 +72,57 @@ export const validateFields = (fields: FormArray): string[] | null => {
 }
 
 /** Validate entire form */
-export const validateForm = (form: FormGroup) : string[] | null => {
-  let errorArray = [];
-  let profiles = form.get('profiles') as FormArray;
+export function validateForm(translate: TranslateService): ValidatorFn {
+  return (form: FormGroup) : string[] | null => {
+    let errorArray = [];
+    let profiles = form.get('profiles') as FormArray;
 
-  /* All fields must have a fieldName and either a default or a header */
-  profiles.controls.forEach( p => {
-    let fields = p.get('fields');
-    if ( fields.value.some(f=>!f['fieldName']))
-      errorArray.push({code:_('Settings.Validation.FieldNameRequired'), params:{profile:p.get('name').value}})
-    if ( fields.value.some(f=>!f['header'] && !f['default']))
-      errorArray.push({code:_('Settings.Validation.HeaderRequired'), params:{profile:p.get('name').value}})
-  })
-
-  /* If Update/Delete, must have primary ID field */
-  profiles.controls.forEach( p => {
-    if (['UPDATE'].includes(p.get('profileType').value)) {
-      const fields = p.get('fields');
+    /* General validations */
+    profiles.controls.forEach( p => {
+      let fields = p.get('fields');
+      /* All fields must have a fieldName and either a default or a header */
+      if ( fields.value.some(f=>!f['fieldName']))
+        errorArray.push({code:_('Settings.Validation.FieldNameRequired'), params:{profile:p.get('name').value}})
+      if ( fields.value.some(f=>!f['header'] && !f['default']))
+        errorArray.push({code:_('Settings.Validation.HeaderRequired'), params:{profile:p.get('name').value}})
+      /* There must be a primary ID field */
       if ( !fields.value.some(f=>f['fieldName']=='primary_id'))
         errorArray.push({code:_('Settings.Validation.PrimaryIdRequired'), params:{profile:p.get('name').value}})
-    }
-  })
+    })
 
-  return errorArray.length>0 ? errorArray : null;
+    /* If profile_type = ADD, certain fields are required by researcher api */
+
+    const esploroFields = EsploroFields.getInstance();
+    const reqFieldErrorLabelKey = 'Settings.Validation.FieldRequired';
+    const mandatoryFieldsAdd = ['researcher.auto_capture', 
+                                'researcher.default_publication_language.value', 
+                                'researcher.portal_profile.value', 
+                                'researcher.researcher_last_name', 
+                                'researcher.research_center'];
+    profiles.controls.forEach( p => {
+      const pType = p.get('profileType').value;
+      if (['ADD'].includes(p.get('profileType').value)) {
+        const fields = p.get('fields');
+        
+        mandatoryFieldsAdd.forEach(currentField => {
+          if (!(fields.value.some(f=>f['fieldName'] == currentField))) {
+            let fieldLabelKey = esploroFields.getLabelKeyByFieldKey(currentField);
+            let groupLabelKey = esploroFields.getFieldGroupNameByFieldKey(currentField);
+            translate.get([fieldLabelKey, groupLabelKey]).subscribe(translations => {
+              let fieldLabel = translations[fieldLabelKey];
+              let groupLabel = translations[groupLabelKey];
+
+              if (!isEmptyString(fieldLabel) && !isEmptyString(groupLabel)) {
+                errorArray.push({code: _(reqFieldErrorLabelKey), params:{fieldname: fieldLabel, groupname: groupLabel}});
+              } else {
+                errorArray.push({code: _(reqFieldErrorLabelKey), params:{fieldname: currentField}});
+              }
+            });
+          }
+        })
+      }
+    })
+
+    return errorArray.length>0 ? errorArray : null;
+  };
 }

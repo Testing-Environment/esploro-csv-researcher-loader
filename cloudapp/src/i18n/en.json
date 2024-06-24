@@ -16,15 +16,18 @@
 		"ShowLog": "Show log"
 	},
 	"Error": {
-		"EmptyGET": "Couldn't retrieve researcher from Esploro API (GET)",
+		"EmptyResearcherApiGET": "Couldn't retrieve researcher from Esploro Researcher API (GET) using supplied primary_id",
+		"EmptyUserApiGET": "Couldn't retrieve user from Alma User API (GET) using supplied primary_id",
 		"EmptyPrimaryId": "Primary ID is empty",
 		"CsvHeaderValidationError": "Found {count} {count, plural, =1 {error} other {errors}} during CSV header validation. Please review the logs and adjust your CSV file or selected profile accordingly.",
 		"CsvHeaderCountMismatch": "Provided CSV header defines {csvHeaderCount} {csvHeaderCount, plural, =1 {field} other {fields}} whereas selected profile has {profileHeaderCount} {profileHeaderCount, plural, =1 {field} other {fields}}.",
 		"FieldNotFoundInCsv": "Field name '{field}' is configured in profile but not provided in CSV header.",
-		"FieldNotFoundInProfile": "Field name '{field}' is provided in CSV header but not configured in profile."
+		"FieldNotFoundInProfile": "Field name '{field}' is provided in CSV header but not configured in profile.",
+		"ResearcherAlreadyExisting": "Researcher is already existing in Esploro. Please use Profile Type = Update instead of Add."
 	},
 	"OK": "OK",
 	"Profile": {
+		"Add": "Add",
 		"Default": "Default",
 		"FieldMapping": "Field Mapping",
 		"Header": "Header",
@@ -105,18 +108,19 @@
 		"Title": "Settings",
 		"Validation": {
 			"FieldNameRequired": "Each field in profile \"{profile}\" must have a field name.",
+			"FieldRequired": "{groupname} - {fieldname} required!",
 			"HeaderRequired": "Each field in profile \"{profile}\" must have either a default or a header value.",
+			"EducationsOrgaRequired": "Educations - Organization Code required",
+			"EngagementsTypeRequired": "Engagements - Type required",
+			"HonorsOrgaRequired": "Honors - Organization Code required",
+			"IdentifiersTypeAndValueRequired": "Identifiers - Type and Value required",
+			"NameVariantsLastNameRequired": "Name Variants - Last Name required",
 			"PrimaryIdRequired": "Primary ID required",
-			"EducationsOrgaRequired": "Educations - organization code required",
-			"EngagementsTypeRequired": "Engagements - type required",
-			"HonorsOrgaRequired": "Educations - organization code required",
-			"IdentifiersTypeAndValueRequired": "Identifiers - type and value required",
-			"NameVariantsLastNameRequired": "Name variants - last name required",
-			"WebpagesTypeAndUrlRequired": "Webpages - type and url required",
-			"CurIntAffiliationOrgaRequired": "Current internal affiliation - organization code required",
-			"PrevIntAffiliationOrgaRequired": "Previous internal affiliation - organization code required",
-			"CurExtAffiliationOrgaRequired": "Current external affiliation - organization code required",
-			"PrevExtAffiliationOrgaRequired": "Previous external affiliation - organization code required"
+			"WebpagesTypeAndUrlRequired": "Webpages - Type and URL required",
+			"CurIntAffiliationOrgaRequired": "Current Internal Affiliation - Organization Code required",
+			"PrevIntAffiliationOrgaRequired": "Previous Internal Affiliation - Organization Code required",
+			"CurExtAffiliationOrgaRequired": "Current External Affiliation - Organization Code required",
+			"PrevExtAffiliationOrgaRequired": "Previous External Affiliation - Organization Code required"
 		}
 	}
 }

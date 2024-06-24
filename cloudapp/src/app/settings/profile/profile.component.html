@@ -1,13 +1,11 @@
 <div class="profile-container">
-  <!-- we'll use profileType in the future for create, enrich, delete -->
-  <!--
   <mat-form-field class="full-width">
     <mat-label translate>Profile.ProfileType</mat-label>
     <mat-select [formControl]="profileType">
+      <mat-option value="ADD"><span translate>Profile.Add</span></mat-option>
       <mat-option value="UPDATE"><span translate>Profile.Update</span></mat-option>
     </mat-select>
   </mat-form-field>
-  -->
   
   <h3 translate>Profile.FieldMapping</h3>
   
@@ -38,13 +36,13 @@
       <mat-cell *matCellDef="let field" [formGroup]="field">
         <mat-form-field floatLabel="never" appearance="fill">
           <mat-select formControlName="fieldName" placeholder="Field Name">
-            <mat-optgroup *ngFor="let group of fieldGroups" [disabled]="group.disabled" [label]="group.name | translate">
-              <mat-option *ngFor="let f of group.fields" [value]="f.name">
+            <mat-optgroup *ngFor="let group of fieldGroups" [label]="group.name | translate">
+              <mat-option *ngFor="let f of group.fields" [value]="f.key">
                 {{ f.label | translate }}
               </mat-option>
             </mat-optgroup>
           </mat-select>
-          <mat-label><strong> {{ getFieldGroupName(field.value.fieldName) | translate }} </strong></mat-label>
+          <mat-label><strong> {{ esploroFieldsInstance.getFieldGroupNameByFieldKey(field.value.fieldName) | translate }} </strong></mat-label>
         </mat-form-field>
       </mat-cell>
     </ng-container>
