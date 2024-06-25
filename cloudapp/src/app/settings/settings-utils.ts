@@ -4,6 +4,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { EsploroFields } from './esploro-fields'
 import { isEmptyString } from '../utilities';
 
+export const mandatoryFieldsAdd = [
+  {header: 'primary_id', fieldName: 'primary_id'},
+  {header: 'auto_capture', fieldName: 'researcher.auto_capture'},
+  {header: 'default_publication_language', fieldName: 'researcher.default_publication_language.value'},
+  {header: 'portal_profile', fieldName: 'researcher.portal_profile.value'},
+  {header: 'researcher_last_name', fieldName: 'researcher.researcher_last_name'},
+  {header: 'research_center', fieldName: 'researcher.research_center'}
+];
+export const mandatoryFieldsUpdate = [{header: 'primary_id', fieldName: 'primary_id'}];
 
 /** Validate appropriate combination of fields for CSV import profile */
 export const validateFields = (fields: FormArray): string[] | null => {
@@ -91,23 +100,17 @@ export function validateForm(translate: TranslateService): ValidatorFn {
     })
 
     /* If profile_type = ADD, certain fields are required by researcher api */
-
     const esploroFields = EsploroFields.getInstance();
     const reqFieldErrorLabelKey = 'Settings.Validation.FieldRequired';
-    const mandatoryFieldsAdd = ['researcher.auto_capture', 
-                                'researcher.default_publication_language.value', 
-                                'researcher.portal_profile.value', 
-                                'researcher.researcher_last_name', 
-                                'researcher.research_center'];
+    
     profiles.controls.forEach( p => {
-      const pType = p.get('profileType').value;
       if (['ADD'].includes(p.get('profileType').value)) {
         const fields = p.get('fields');
         
         mandatoryFieldsAdd.forEach(currentField => {
-          if (!(fields.value.some(f=>f['fieldName'] == currentField))) {
-            let fieldLabelKey = esploroFields.getLabelKeyByFieldKey(currentField);
-            let groupLabelKey = esploroFields.getFieldGroupNameByFieldKey(currentField);
+          if (!(fields.value.some(f=>f['fieldName'] == currentField.fieldName))) {
+            let fieldLabelKey = esploroFields.getLabelKeyByFieldKey(currentField.fieldName);
+            let groupLabelKey = esploroFields.getFieldGroupNameByFieldKey(currentField.fieldName);
             translate.get([fieldLabelKey, groupLabelKey]).subscribe(translations => {
               let fieldLabel = translations[fieldLabelKey];
               let groupLabel = translations[groupLabelKey];
@@ -115,7 +118,7 @@ export function validateForm(translate: TranslateService): ValidatorFn {
               if (!isEmptyString(fieldLabel) && !isEmptyString(groupLabel)) {
                 errorArray.push({code: _(reqFieldErrorLabelKey), params:{fieldname: fieldLabel, groupname: groupLabel}});
               } else {
-                errorArray.push({code: _(reqFieldErrorLabelKey), params:{fieldname: currentField}});
+                errorArray.push({code: _(reqFieldErrorLabelKey), params:{fieldname: currentField.fieldName}});
               }
             });
           }

@@ -63,6 +63,9 @@
   <button type="button" (click)="addField()" mat-icon-button aria-label="Add field">
     <mat-icon>add_circle</mat-icon>
   </button>
+  <button type="button" (click)="addMandatoryFields()" mat-icon-button aria-label="Add mandatory fields">
+    <mat-icon>playlist_add_circle</mat-icon>
+  </button>
   
   <div *ngIf="fields.invalid " class="alert alert-danger">
     <ul>

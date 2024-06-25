@@ -20,8 +20,8 @@ export class SettingsComponent implements OnInit {
   form: FormGroup;
   saving = false;
   submitted = false;
-  private _profileTypeDefault = "ADD";
-  private _mandatoryFields = [];
+  private _profileTypeDefault = "UPDATE";
+  private _defaultFields = [this.fb.group({header: 'primary_id', fieldName: 'primary_id', default: ''})];
   private _selectedProfile: FormGroup;
   get selectedProfile() {
     return this._selectedProfile;
@@ -57,16 +57,11 @@ export class SettingsComponent implements OnInit {
     return this.fb.group({
       name: name,
       profileType: this._profileTypeDefault,
-      fields: this.fb.array(this._mandatoryFields, validateFields)  
+      fields: this.fb.array(this._defaultFields, validateFields)
     });
   }
 
-  addMandatoryFieldsToForm() {
-    this._mandatoryFields.push(this.fb.group({header: 'primary_id', fieldName: 'primary_id', default: ''}));
-  }
-
   load() {
-    this.addMandatoryFieldsToForm();
     this.settingsService.getAsFormGroup().subscribe( settings => {
       if (!isEmptyObject(settings.value)) {
         (settings.get('profiles') as FormArray).controls.forEach((profile: FormGroup)=>{

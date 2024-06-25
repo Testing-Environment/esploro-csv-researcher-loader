@@ -29,10 +29,12 @@
 	"Profile": {
 		"Add": "Add",
 		"Default": "Default",
-		"FieldMapping": "Field Mapping",
-		"Header": "Header",
-		"FieldName": "Field Name",
 		"FieldGroup": "Field Group",
+		"FieldMapping": "Field Mapping",
+		"FieldName": "Field Name",
+		"Header": "Header",
+		"MandatoryFieldAdded": "Added mandatory field '{field}' to field mapping.",
+		"MandatoryFieldAlreadyExisting": "Mandatory field '{field}' has already been added to field mapping.",
 		"ProfileType": "Profile Type",
 		"Update": "Update"
 	},
