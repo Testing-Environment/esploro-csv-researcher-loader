@@ -16,6 +16,7 @@ import { mandatoryFieldsAdd, mandatoryFieldsUpdate } from '../settings-utils'
 export class ProfileComponent implements OnInit {
   displayedColumns = ['header', 'default', 'name', 'actions'];
   selectedFieldName: string = '';
+  alertDelay = 8000;
   
   dataSource: MatTableDataSource<any>;
   @ViewChild('table') table: MatTable<any>;
@@ -57,9 +58,9 @@ export class ProfileComponent implements OnInit {
           this.fields.push(this.fb.group({header: currentField.header, fieldName: currentField.fieldName, default: ''}));
           this.fields.markAsDirty();
           this.table.renderRows();
-          this.alert.success(this.translate.instant('Profile.MandatoryFieldAdded', {field: translatedFieldName}));
+          this.alert.success(this.translate.instant('Profile.MandatoryFieldAdded', {field: translatedFieldName}), { delay: this.alertDelay });
         } else {
-          this.alert.info(this.translate.instant('Profile.MandatoryFieldAlreadyExisting', {field: translatedFieldName}));
+          this.alert.info(this.translate.instant('Profile.MandatoryFieldAlreadyExisting', {field: translatedFieldName}), { delay: this.alertDelay });
         }
       });
     });
