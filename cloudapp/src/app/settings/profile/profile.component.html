@@ -35,7 +35,7 @@
       <mat-header-cell *matHeaderCellDef translate>Profile.FieldName</mat-header-cell>
       <mat-cell *matCellDef="let field" [formGroup]="field">
         <mat-form-field floatLabel="never" appearance="fill">
-          <mat-select formControlName="fieldName" placeholder="Field Name">
+          <mat-select formControlName="fieldName" placeholder="Field Name" panelClass="profile-fieldname-select">
             <mat-optgroup *ngFor="let group of fieldGroups" [label]="group.name | translate">
               <mat-option *ngFor="let f of group.fields" [value]="f.key">
                 {{ f.label | translate }}
