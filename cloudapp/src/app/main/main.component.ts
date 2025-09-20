@@ -7,14 +7,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, from, of, throwError } from 'rxjs';
 import { catchError, switchMap, map, mergeMap, tap } from 'rxjs/operators';
 import { DialogService } from 'eca-components';
-import { ResearcherService } from '../services/researcher.service';
+import { AssetService } from '../services/asset.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { Researcher } from '../models/researcher';
+import { Asset } from '../models/asset';
 import { deepMergeObjects, isEmptyString, CustomResponse, CustomResponseType } from '../utilities';
 
 const MAX_PARALLEL_CALLS = 5;
-const MAX_RESEARCHERS_IN_CSV = 500;
+const MAX_ASSETS_IN_CSV = 500;
 
 @Component({
   selector: 'app-main',
@@ -35,7 +35,7 @@ export class MainComponent implements OnInit {
 
   constructor ( 
     private settingsService: CloudAppSettingsService, 
-    private researcherService: ResearcherService,
+    private assetService: AssetService,
     private papa: Papa,
     private translate: TranslateService,
     private dialogs: DialogService,
@@ -81,10 +81,10 @@ export class MainComponent implements OnInit {
     return o1 && o2 ? o1.name === o2.name : o1 === o2;
   }  
 
-  loadResearchers() {
+  loadAssets() {
     this.papa.parse(this.files[0], {
       header: true,
-      complete: this.parsedResearchers,
+      complete: this.parsedAssets,
       skipEmptyLines: 'greedy'
     });
   }
@@ -109,46 +109,36 @@ export class MainComponent implements OnInit {
 
   private log = (str: string) => this.resultsLog += `${str}\n`;  
 
-  processResearcher(researcher: Researcher, profileType: string, index: number): Observable<Researcher | RestErrorResponse | CustomResponse> {
-    if (researcher.primary_id && !isEmptyString(researcher.primary_id)) {
+  processAsset(asset: Asset, profileType: string, index: number): Observable<Asset | RestErrorResponse | CustomResponse> {
+    if (asset.id && !isEmptyString(asset.id)) {
       switch (profileType) {
         case 'ADD':
-          return this.researcherService.getUserByPrimaryId(researcher.primary_id).pipe(catchError(e=>{throw(e)}),
-            switchMap(original=>{
-              if (original==null) {
-                return of(this.handleError({message: this.translate.instant("Error.EmptyUserApiGET"), type: CustomResponseType.error}, researcher, index));
-              } else if (original.is_researcher == true) {
-                return of(this.handleError({message: this.translate.instant("Error.ResearcherAlreadyExisting"), type: CustomResponseType.error}, researcher, index));
-              } else {
-                let new_researcher = deepMergeObjects(original, researcher);
-                new_researcher.is_researcher = true;
-                return this.researcherService.updateResearcher(new_researcher);
-              }
-            }),
-            catchError(e=>of(this.handleError(e, researcher, index)))
+          // For assets, ADD means creating a new asset
+          return this.assetService.createAsset(asset).pipe(
+            catchError(e=>of(this.handleError(e, asset, index)))
           )
         case 'UPDATE':
-          return this.researcherService.getResearcherByPrimaryId(researcher.primary_id).pipe(catchError(e=>{throw(e)}),
+          return this.assetService.getAssetById(asset.id).pipe(catchError(e=>{throw(e)}),
             switchMap(original=>{
               if (original==null) {
-                return of(this.handleError({message: this.translate.instant("Error.EmptyResearcherApiGET"), type: CustomResponseType.error}, researcher, index));
+                return of(this.handleError({message: this.translate.instant("Error.EmptyAssetApiGET"), type: CustomResponseType.error}, asset, index));
               } else {
-                let new_researcher = deepMergeObjects(original, researcher);
-                return this.researcherService.updateResearcher(new_researcher);
+                let new_asset = deepMergeObjects(original, asset);
+                return this.assetService.updateAsset(new_asset);
               }
             }),
-            catchError(e=>of(this.handleError(e, researcher, index)))
+            catchError(e=>of(this.handleError(e, asset, index)))
           )
       }
     } else {
-      return of(this.handleError({message: this.translate.instant("Error.EmptyPrimaryId"), type: CustomResponseType.error}, researcher, index));
+      return of(this.handleError({message: this.translate.instant("Error.EmptyAssetId"), type: CustomResponseType.error}, asset, index));
     }
   }
 
-  private handleError(e: RestErrorResponse | CustomResponse, researcher: any, index: number) {
-    if (researcher) {
-      const props = ['primary_id']
-        .map(p => researcher[p])
+  private handleError(e: RestErrorResponse | CustomResponse, asset: any, index: number) {
+    if (asset) {
+      const props = ['id', 'title']
+        .map(p => asset[p])
         .filter(value => !isEmptyString(value));
       
       if (props.length > 0) {
@@ -160,8 +150,8 @@ export class MainComponent implements OnInit {
     return e;
   }
 
-  processResearcherWithLogging(researcher: Researcher, index: number): Observable<any> {
-    return this.processResearcher(researcher, this.selectedProfile.profileType, index)
+  processAssetWithLogging(asset: Asset, index: number): Observable<any> {
+    return this.processAsset(asset, this.selectedProfile.profileType, index)
       .pipe(
         tap(() => this.processed++),
         catchError(error => {
@@ -181,7 +171,7 @@ export class MainComponent implements OnInit {
         this.log(`${this.translate.instant("Main.Info")}: ${res.message}`);
       } else {
         successCount++;
-        this.log(`${this.translate.instant("Main.Processed")}: ${res.primary_id}`);
+        this.log(`${this.translate.instant("Main.Processed")}: ${res.id || res.title}`);
       }
     });
     this.resultsSummary = this.translate.instant('Main.ResultsSummary', { successCount, errorCount })
@@ -214,7 +204,7 @@ export class MainComponent implements OnInit {
     return errorArray;
   }
 
-  private parsedResearchers = async (result: ParseResult) => {
+  private parsedAssets = async (result: ParseResult) => {
     if (result.errors.length>0) 
       console.warn('Errors:', result.errors);
     
@@ -225,30 +215,30 @@ export class MainComponent implements OnInit {
         this.log(error);
       });
     } else {
-      let researchers: Researcher[] = result.data.map(row => this.researcherService.mapResearcher(row, this.selectedProfile));
+      let assets: Asset[] = result.data.map(row => this.assetService.mapAsset(row, this.selectedProfile));
       let resultsArray: any[] = [];
-      if (researchers.length > MAX_RESEARCHERS_IN_CSV) {
-        researchers = researchers.slice(0, MAX_RESEARCHERS_IN_CSV);
-        let csvMaxRowsInfo = { message: this.translate.instant('Main.CsvMaxRowsInfo', { max_count: MAX_RESEARCHERS_IN_CSV }), type: CustomResponseType.info };
+      if (assets.length > MAX_ASSETS_IN_CSV) {
+        assets = assets.slice(0, MAX_ASSETS_IN_CSV);
+        let csvMaxRowsInfo = { message: this.translate.instant('Main.CsvMaxRowsInfo', { max_count: MAX_ASSETS_IN_CSV }), type: CustomResponseType.info };
         console.log(csvMaxRowsInfo.message);
         resultsArray.push(csvMaxRowsInfo);
       } 
-      /* Generation of primary ID is not thread safe; only parallelize if primary ID is supplied */
-      const maxParallelCalls = researchers.every(res=>res.primary_id) ? MAX_PARALLEL_CALLS : 1;
-      this.dialogs.confirm({ text: ['Main.ConfirmUpdateResearchers', { count: researchers.length, type: this.selectedProfile.profileType }]})
+      /* Generation of asset ID is not thread safe; only parallelize if asset ID is supplied */
+      const maxParallelCalls = assets.every(res=>res.id) ? MAX_PARALLEL_CALLS : 1;
+      this.dialogs.confirm({ text: ['Main.ConfirmUpdateAssets', { count: assets.length, type: this.selectedProfile.profileType }]})
       .subscribe( async result => {
         if (!result) {
           this.resultsLog = '';
           return;
         }
-        this.recordsToProcess = researchers.length;
+        this.recordsToProcess = assets.length;
         this.running = true;
 
         try {
-          let researcherProcessingObservables = from(researchers.map((researcher, index) => this.processResearcherWithLogging(researcher, index)));
+          let assetProcessingObservables = from(assets.map((asset, index) => this.processAssetWithLogging(asset, index)));
 
-          researcherProcessingObservables.pipe(
-            mergeMap(researcherProcessingObservable => researcherProcessingObservable, maxParallelCalls),
+          assetProcessingObservables.pipe(
+            mergeMap(assetProcessingObservable => assetProcessingObservable, maxParallelCalls),
             tap(result => resultsArray.push(result)),
             catchError(error => {
               this.log(`${this.translate.instant("Main.Failed")}: ${error.message}`);
@@ -265,7 +255,7 @@ export class MainComponent implements OnInit {
           });
         }
         catch(error) {
-          console.error('Error initializing all researchers: ', error);
+          console.error('Error initializing all assets: ', error);
         }
       });
     }    

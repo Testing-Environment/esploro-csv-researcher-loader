@@ -3,7 +3,7 @@
 </div>
 <div class="cloudapp-actions">
   <button mat-flat-button type="button" color="secondary" (click)="reset()">{{ 'Reset' | translate }}</button>
-  <button mat-flat-button type="button" color="primary" (click)="loadResearchers()" [disabled]="files.length==0 || !!resultsLog || !selectedProfile">{{ 'Main.LoadResearchers' | translate }}</button>
+  <button mat-flat-button type="button" color="primary" (click)="loadAssets()" [disabled]="files.length==0 || !!resultsLog || !selectedProfile">{{ 'Main.LoadAssets' | translate }}</button>
 </div>
 <div *ngIf="!resultsLog">
 <mat-form-field>

@@ -5,77 +5,43 @@ import { EsploroFields } from './esploro-fields'
 import { isEmptyString } from '../utilities';
 
 export const mandatoryFieldsAdd = [
-  {header: 'primary_id', fieldName: 'primary_id'},
-  {header: 'auto_capture', fieldName: 'researcher.auto_capture'},
-  {header: 'default_publication_language', fieldName: 'researcher.default_publication_language.value'},
-  {header: 'portal_profile', fieldName: 'researcher.portal_profile.value'},
-  {header: 'researcher_last_name', fieldName: 'researcher.researcher_last_name'},
-  {header: 'research_center', fieldName: 'researcher.research_center'}
+  {header: 'title', fieldName: 'title'},
+  {header: 'asset_type', fieldName: 'asset_type.value'},
+  {header: 'organization', fieldName: 'organization.value'}
 ];
-export const mandatoryFieldsUpdate = [{header: 'primary_id', fieldName: 'primary_id'}];
+export const mandatoryFieldsUpdate = [{header: 'id', fieldName: 'id'}];
 
 /** Validate appropriate combination of fields for CSV import profile */
 export const validateFields = (fields: FormArray): string[] | null => {
   let errorArray = [];
 
   /** Mandatory fields (always required) */
-  /* primary_id required */
-  if (!fields.value.some(f=>f['fieldName']=='primary_id')) {
-    errorArray.push({code:_('Settings.Validation.PrimaryIdRequired')});
-  }
-
+  /* For ADD operations: title, asset_type, and organization required */
+  /* For UPDATE operations: id required */
+  
   /** Mandatory fields for groups */
-  /* Current internal affiliation - organization code required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_organization_affiliation'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_organization_affiliation[].organization_code'))
-    errorArray.push({code:_('Settings.Validation.CurIntAffiliationOrgaRequired')});
-
-  /* Previous internal affiliation - organization code required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_previous_organization_affiliation'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_previous_organization_affiliation[].organization_code'))
-    errorArray.push({code:_('Settings.Validation.PrevIntAffiliationOrgaRequired')});
-  
-  /* Current external affiliation - organization code required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_external_organization_affiliation'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_external_organization_affiliation[].organization_code'))
-    errorArray.push({code:_('Settings.Validation.CurExtAffiliationOrgaRequired')});
-
-  /* Previous external affiliation - organization code required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_previous_external_organization_affiliation'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_previous_external_organization_affiliation[].organization_code'))
-    errorArray.push({code:_('Settings.Validation.PrevExtAffiliationOrgaRequired')});
-  
-  /* Engagements - type required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_engagement_type'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_engagement_type[].researcher_engagement.value'))
-    errorArray.push({code:_('Settings.Validation.EngagementsTypeRequired')});
-
-  /* Educations - organization code required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_education'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_education[].organization_code'))
-    errorArray.push({code:_('Settings.Validation.EducationsOrgaRequired')});
-  
-  /* Honors - organization code required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_honor'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_honor[].organization_code'))
-    errorArray.push({code:_('Settings.Validation.HonorsOrgaRequired')});
-
   /* Identifiers - type and value required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.user_identifier'))
-    && (!fields.value.some(f=>f['fieldName']=='researcher.user_identifier[].value')
-      || !fields.value.some(f=>f['fieldName']=='researcher.user_identifier[].id_type.value')))
+  if (fields.value.some(f=>f['fieldName'].startsWith('identifiers.identifier'))
+    && (!fields.value.some(f=>f['fieldName']=='identifiers.identifier[].value')
+      || !fields.value.some(f=>f['fieldName']=='identifiers.identifier[].identifier_type.value')))
     errorArray.push({code:_('Settings.Validation.IdentifiersTypeAndValueRequired')});
   
-  /* Name variants - last name required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_name_variant'))
-    && !fields.value.some(f=>f['fieldName']=='researcher.researcher_name_variant[].last_name')) 
-    errorArray.push({code:_('Settings.Validation.NameVariantsLastNameRequired')});
+  /* Authors - either researcher ID or first/last name required */
+  if (fields.value.some(f=>f['fieldName'].startsWith('authors.author'))
+    && !fields.value.some(f=>f['fieldName']=='authors.author[].researcher.primary_id')
+    && (!fields.value.some(f=>f['fieldName']=='authors.author[].first_name')
+      || !fields.value.some(f=>f['fieldName']=='authors.author[].last_name')))
+    errorArray.push({code:_('Settings.Validation.AuthorsRequired')});
 
-  /* Webpages - type and url required */
-  if (fields.value.some(f=>f['fieldName'].startsWith('researcher.researcher_webpage'))
-    && (!fields.value.some(f=>f['fieldName']=='researcher.researcher_webpage[].type')
-      || !fields.value.some(f=>f['fieldName']=='researcher.researcher_webpage[].url')))
-    errorArray.push({code:_('Settings.Validation.WebpagesTypeAndUrlRequired')});
+  /* URLs - link required if URL fields are used */
+  if (fields.value.some(f=>f['fieldName'].startsWith('urls.url'))
+    && !fields.value.some(f=>f['fieldName']=='urls.url[].link'))
+    errorArray.push({code:_('Settings.Validation.URLLinkRequired')});
+
+  /* Funding - agency required if funding fields are used */
+  if (fields.value.some(f=>f['fieldName'].startsWith('funding.grant'))
+    && !fields.value.some(f=>f['fieldName']=='funding.grant[].agency'))
+    errorArray.push({code:_('Settings.Validation.FundingAgencyRequired')});
 
   return errorArray.length>0 ? errorArray : null;
 }
@@ -94,9 +60,9 @@ export function validateForm(translate: TranslateService): ValidatorFn {
         errorArray.push({code:_('Settings.Validation.FieldNameRequired'), params:{profile:p.get('name').value}})
       if ( fields.value.some(f=>!f['header'] && !f['default']))
         errorArray.push({code:_('Settings.Validation.HeaderRequired'), params:{profile:p.get('name').value}})
-      /* There must be a primary ID field */
-      if ( !fields.value.some(f=>f['fieldName']=='primary_id'))
-        errorArray.push({code:_('Settings.Validation.PrimaryIdRequired'), params:{profile:p.get('name').value}})
+      /* For UPDATE profile type, asset ID is required */
+      if (p.get('profileType').value === 'UPDATE' && !fields.value.some(f=>f['fieldName']=='id'))
+        errorArray.push({code:_('Settings.Validation.AssetIdRequired'), params:{profile:p.get('name').value}})
     })
 
     /* If profile_type = ADD, certain fields are required by researcher api */
