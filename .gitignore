@@ -49,3 +49,7 @@ build
 cloudapp/src/assets/manifest*.json
 config.json
 cloudapp/jsconfig.json
+
+# Ignore environment files with sensitive keys
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
