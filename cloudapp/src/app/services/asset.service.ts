@@ -14,17 +14,18 @@ export class AssetService {
     private restService: CloudAppRestService
    ) { }
 
-  /** (PUT) Update asset via Esploro API */
-  updateAsset(asset: Asset): Observable<Asset> {
-    return this.restService.call( {
-      url: `/esploro/v1/assets/${asset.id}`,
-      headers: { 
+
+  /** (PATCH) Partial update asset via Esploro API */
+  patchAsset(assetId: string, patchPayload: any): Observable<any> {
+    return this.restService.call({
+      url: `/esploro/v1/assets/${assetId}`,
+      headers: {
         "Content-Type": "application/json",
-        Accept: "application/json" 
+        Accept: "application/json"
       },
-      requestBody: asset,
-      method: HttpMethod.PUT
-    })
+      requestBody: patchPayload,
+      method: HttpMethod.PATCH
+    });
   }
 
   /** (POST) Create asset via Esploro API */

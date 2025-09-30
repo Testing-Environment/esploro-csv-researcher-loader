@@ -118,17 +118,16 @@ export class MainComponent implements OnInit {
             catchError(e=>of(this.handleError(e, asset, index)))
           )
         case 'UPDATE':
-          return this.assetService.getAssetById(asset.id).pipe(catchError(e=>{throw(e)}),
-            switchMap(original=>{
-              if (original==null) {
-                return of(this.handleError({message: this.translate.instant("Error.EmptyAssetApiGET"), type: CustomResponseType.error}, asset, index));
-              } else {
-                let new_asset = deepMergeObjects(original, asset);
-                return this.assetService.updateAsset(new_asset);
-              }
-            }),
+          // PATCH: Only partial update supported
+          // Construct PATCH payload in op=patch & action=add format
+          const patchPayload = {
+            op: "patch",
+            action: "add",
+            data: asset
+          };
+          return this.assetService.patchAsset(asset.id, patchPayload).pipe(
             catchError(e=>of(this.handleError(e, asset, index)))
-          )
+          );
       }
     } else {
       return of(this.handleError({message: this.translate.instant("Error.EmptyAssetId"), type: CustomResponseType.error}, asset, index));
