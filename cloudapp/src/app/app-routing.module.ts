@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MainComponent, MainGuard } from './main/main.component';
-import { SettingsComponent, SettingsGuard } from './settings/settings.component';
+import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
-  { path: '', component: MainComponent, canActivate: [MainGuard] },
-  { path: 'settings', component: SettingsComponent, canDeactivate: [SettingsGuard] },
+  { path: '', component: MainComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
