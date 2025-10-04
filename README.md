@@ -44,4 +44,31 @@ This Cloud App streamlines the process of attaching external files to existing E
 
 For broader Esploro documentation, visit the [Esploro Online Help](https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)).
 
+## Documentation
+
+This project includes comprehensive documentation for developers, administrators, and end users:
+
+### For Developers
+- **[Developer Quick Reference](DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
+- **[Architecture Diagrams](ARCHITECTURE_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
+- **[Detailed Code Explanation](explaination.md)** - Deep-dive analysis of the codebase
+
+### For Product Owners & Project Managers
+- **[Complete Summary](COMPLETE_SUMMARY.md)** - Overview of all work, documentation index, and project status
+- **[Transformation Summary](TRANSFORMATION_SUMMARY.md)** - History of the transformation from researcher to asset loader
+- **[Job Submission Enhancement](JOB_SUBMISSION_ENHANCEMENT.md)** - Future automation features roadmap
+
+### For System Administrators
+- **[Cleanup Summary](CLEANUP_SUMMARY.md)** - Log of recent code cleanup and improvements
+- **[API Usage Report](Esploro_Asset_API_Usage_Report.md)** - Detailed API integration analysis
+- **[Database Schema](documentation/Expanded_Esploro_Schema.md)** - Complete Esploro database schema reference
+
+### Quick Links
+- **[API Documentation](esploroAssets.md)** - Esploro Assets API reference
+- **[File Addition API](documentation/API%20to%20Add%20new%20file%20to%20Asset.md)** - Specific endpoint documentation
+- **[Cloud Apps Framework](exlCloudApps.md)** - Ex Libris Cloud Apps development guide
+
+## License
+
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICENSE) file for details.
 
