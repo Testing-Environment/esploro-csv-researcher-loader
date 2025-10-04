@@ -1,8 +1,17 @@
 # Esploro Asset API Usage Analysis Report
 
-## Executive Summary
+> **⚠️ HISTORICAL DOCUMENT**: This report analyzes API usage for a CSV-based asset loader that is NO LONGER the current application. The **current application** is a simple file uploader (not CSV-based). For current information, see:
+> - **[explaination.md](explaination.md)** - Current application documentation
+> - **[documentation/CLEANUP_SUMMARY.md](documentation/CLEANUP_SUMMARY.md)** - What changed and why
+> - **[README.md](README.md)** - Current user documentation
 
-This report provides a comprehensive analysis of how the **Esploro CSV Asset Loader** Angular application interacts with the Esploro Asset REST API (`/esploro/v1/assets`). The application implements a complete CRUD (Create, Read, Update, Delete) workflow for managing research assets through CSV bulk operations within the Ex Libris Cloud App framework.
+---
+
+## Executive Summary (Historical)
+
+This report provides a historical analysis of how the **Esploro CSV Asset Loader** Angular application interacted with the Esploro Asset REST API (`/esploro/v1/assets`). This version implemented CRUD workflows for managing research assets through CSV bulk operations.
+
+**Note**: The current application uses a much simpler API integration focused on file attachment.
 
 ## Phase 1: API Configuration and Authentication
 
