@@ -4,7 +4,9 @@ This Cloud App streamlines the process of attaching external files to existing E
 
 ## Features
 
-- Guided form for adding one or many files to a single asset
+- **Single Asset File Upload**: Guided form for adding one or many files to a single asset
+- **Bulk URL Update**: Update multiple assets at once with a single URL by providing a list of asset IDs
+- **URL Validation**: Validate that remote file URLs are accessible before adding them to assets
 - File metadata captured in line with the Esploro API requirements (`link.title`, `link.url`, `link.description`, `link.type`, `link.supplemental`)
 - File type selector sourced from the Esploro code tables, with a built-in fallback list
 - Inline validation and success/error feedback through the Cloud App alert system
@@ -17,30 +19,72 @@ This Cloud App streamlines the process of attaching external files to existing E
 
 ## Using the App
 
+The app provides three main functions accessible via tabs:
+
+### Single Asset File Upload
+
 1. Open the Cloud Apps panel in Esploro and launch **Esploro Asset File Loader**.
-2. Enter the **Asset ID** of the record you want to enrich.
-3. For each file you want to add, supply:
+2. Navigate to the **Single Asset** tab.
+3. Enter the **Asset ID** of the record you want to enrich.
+4. For each file you want to add, supply:
    - File name (display title)
    - Download URL (HTTP(S) accessible file location)
    - Optional description
    - File type (choose from the configured code table values)
    - Whether the file is supplemental
-4. Click **Add another file** to queue additional files for the same asset.
-5. Submit the form. The app issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` with the `temporary.linksToExtract` payload required by the Esploro Asset API.
-6. Create an itemized asset with the records just updated.
-7. Run the "Load files" job in Esploro for the created set to complete the ingestion of the queued files.
+5. Click **Add another file** to queue additional files for the same asset.
+6. Submit the form. The app issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` with the `temporary.linksToExtract` payload required by the Esploro Asset API.
+7. Create an itemized asset with the records just updated.
+8. Run the "Load files" job in Esploro for the created set to complete the ingestion of the queued files.
+
+### Bulk Update
+
+1. Navigate to the **Bulk Update** tab.
+2. Enter a list of **Asset IDs** (one per line) that you want to update.
+3. Provide the file details that will be added to all assets:
+   - File name
+   - File URL
+   - Optional description
+   - File type
+   - Whether the file is supplemental
+4. Click **Bulk Update Assets**.
+5. The app will process each asset and display results showing which assets were successfully updated and which failed.
+6. Create an itemized set with the successfully updated assets.
+7. Run the "Load files" job in Esploro for the created set.
+
+### URL Validation
+
+1. Navigate to the **URL Validation** tab.
+2. Enter one or more URLs (one per line) that you want to validate.
+3. Click **Validate URLs**.
+4. The app will check each URL for accessibility using HEAD requests.
+5. Results are displayed showing which URLs are accessible and which are not, along with HTTP status codes.
+6. Use this feature before bulk updates to ensure all URLs are valid and accessible.
 
 ## API Reference
+
+This app uses the following Esploro API endpoints:
 
 - **POST** `/esploro/v1/assets/{assetId}?op=patch&action=add`
   - Body schema documented in *API to Add new file to Asset*
   - Only JSON payloads are supported for this workflow
+- **HEAD** requests to validate external URLs (URL validation feature)
+
+For more information, see:
+- [Ex Libris Developer Network](https://developers.exlibrisgroup.com/)
+- [Esploro Assets API Documentation](https://developers.exlibrisgroup.com/esploro/apis/)
+- [Cloud Apps Framework Documentation](https://developers.exlibrisgroup.com/cloudapps/)
 
 ## Troubleshooting
 
 - If the list of file types fails to load, the app falls back to a default set (`accepted`, `submitted`, `supplementary`, `administrative`). Confirm the code table name configured in `AssetService.FILE_TYPE_CODE_TABLE` if you maintain a custom list.
 - You can configure the types of files and/or links that can be associated with research assets on the Asset File and Link Types List page (Configuration Menu > Repository > Asset Details > File and Link Types). For example, you can enable or disable labeling an upload or a link as a ReadMe file.
 - Error responses surfaced by the Esploro API are displayed via the Cloud App alert banner. Review the message for details such as missing permissions or malformed payload fields.
+- **URL Validation**: If URL validation shows URLs as inaccessible, verify that:
+  - The URLs are publicly accessible or accessible from the Esploro server
+  - The URLs support HEAD requests (some servers may block HEAD requests)
+  - There are no authentication requirements blocking access
+- **Bulk Update**: When using bulk update, the app processes assets sequentially. Large batches may take some time to complete.
 
 For broader Esploro documentation, visit the [Esploro Online Help](https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)).
 
