@@ -1,7 +1,17 @@
 # Esploro CSV Asset Loader - Transformation Summary
 
-## Overview
-Successfully transformed the **Esploro CSV Researcher Loader** application into an **Esploro CSV Asset Loader** that handles research assets instead of researchers.
+> **⚠️ HISTORICAL DOCUMENT**: This document describes a transformation from a CSV researcher loader to a CSV asset loader that occurred in a previous version of this application. The **current application** is a simple file uploader for assets (NOT a CSV processor). For current documentation, see:
+> - **[explaination.md](explaination.md)** - Current codebase analysis
+> - **[README.md](README.md)** - Current user documentation
+> - **[documentation/CLEANUP_SUMMARY.md](documentation/CLEANUP_SUMMARY.md)** - Legacy code removal
+> - **[documentation/LEGACY_CSV_LOADER_EXPLANATION.md](documentation/LEGACY_CSV_LOADER_EXPLANATION.md)** - Old CSV loader documentation
+
+---
+
+## Overview (Historical)
+This document describes a transformation that occurred in an earlier version: the **Esploro CSV Researcher Loader** application was transformed into an **Esploro CSV Asset Loader** that handled research assets instead of researchers via CSV uploads.
+
+**Note**: The current application no longer performs CSV-based bulk loading. It is a simple form-based file attachment tool.
 
 ## Major Changes Completed
 

@@ -1,49 +1,112 @@
-# esploro-csv-asset-loader
- This app can be used to create and update research assets via a CSV file. Supports flexible configuration and multiple profiles.
+# Esploro Asset File Loader
 
-## Getting Started
-Welcome to the Esploro CSV Asset Loader. This application gives you the ability to create and update research assets in your Esploro instance using a CSV file. It's implemented as a Cloud App, which means you can install it and use it directly in your Esploro instance.
+This Cloud App streamlines the process of attaching external files to existing Esploro research assets. Provide an asset ID, describe each file, and the app will call the Esploro API to queue the files for ingestion via the "Load files" job.
 
-You first need to ensure that your institution allows Cloud Apps and that this app is enabled. Then you can open the Cloud Apps pane and search for CSV in the search box. Click the install button to install the app, then click the Open button.
+## Features
 
-For more information on using Cloud Apps in Esploro, see the online help.
+- Guided form for adding one or many files to a single asset
+- File metadata captured in line with the Esploro API requirements (`link.title`, `link.url`, `link.description`, `link.type`, `link.supplemental`)
+- File type selector sourced from the Esploro code tables, with a built-in fallback list
+- Inline validation and success/error feedback through the Cloud App alert system
 
-## Important Info
-- The Cloud App requires Esploro version >= July 2024.
-- The Cloud App will only work for Esploro users that have the appropriate role privileges to manage research assets.
-- For ADD operations: Users need permissions to create new research assets in Esploro.
-- For UPDATE operations: Users need permissions to modify existing research assets.
-- The Cloud App will only be able to update fields that are marked as "Managed externally" in Esploro - otherwise updates for concerned fields will be ignored.
-- Asset ID is required for UPDATE operations, while Title, Asset Type, and Organization are required for ADD operations.
+## Prerequisites
 
-## Some Notes About CSV Files
-- Fields that are lists in Esploro can be added multiple times to the profile and provided in the CSV file - make sure to use different headers, e.g. "keyword1,keyword2,keyword3"
-  - For authors: "author_firstName1,author_lastName1,author_order1,author_firstName2,author_lastName2,author_order2"
-  - For identifiers: "identifier_type1,identifier_value1,identifier_type2,identifier_value2" (e.g. "DOI,10.1000/123,ISBN,978-3-16-148410-0")
-  - For URLs: "url_link1,url_type1,url_description1,url_link2,url_type2,url_description2"
-- Usually lists behave as swap all, i.e. any values existing in Esploro will be replaced by the values provided in the CSV file.
-- For some fields you'll need to provide codes instead of string values (e.g. for Asset Types, Organization Codes, Languages).
-- Common Asset Types include: ARTICLE, BOOK, CHAPTER, CONFERENCE_PAPER, DATASET, PATENT, THESIS, etc.
-- Dates need to be provided in the following format: YYYY-MM-DD (e.g. 2023-12-31) or YYYY-MM or YYYY for publication dates.
-- Boolean fields (peer_reviewed, open_access) should use "true" or "false" values.
+- Esploro July 2024 release (or later)
+- Cloud Apps framework enabled for your institution
+- User roles that permit viewing the target asset and running the "Load files" job
 
-## Sample CSV Headers
-For ADD operations (creating new assets):
-```
-title,asset_type,organization,publication_date,author_firstName1,author_lastName1,keyword1,keyword2
-```
+## Using the App
 
-For UPDATE operations (updating existing assets):
-```
-id,title,publication_date,keyword1,keyword2,abstract_text
-```
-
-## Documentation
-For more details please visit the Esploro product documentation:
-https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)/Working_with_the_Esploro_Research_Hub/040_Working_with_Assets
+1. Open the Cloud Apps panel in Esploro and launch **Esploro Asset File Loader**.
+2. Enter the **Asset ID** of the record you want to enrich.
+3. For each file you want to add, supply:
+   - File name (display title)
+   - Download URL (HTTP(S) accessible file location)
+   - Optional description
+   - File type (choose from the configured code table values)
+   - Whether the file is supplemental
+4. Click **Add another file** to queue additional files for the same asset.
+5. Submit the form. The app issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` with the `temporary.linksToExtract` payload required by the Esploro Asset API.
+6. Create an itemized asset with the records just updated.
+7. Run the "Load files" job in Esploro for the created set to complete the ingestion of the queued files.
 
 ## API Reference
-This application uses the Esploro Assets REST API. For technical details, see:
-- POST /esploro/v1/assets (for creating new assets)
-- PUT /esploro/v1/assets/{assetId} (for updating existing assets)
-- GET /esploro/v1/assets/{assetId} (for retrieving asset data)
+
+- **POST** `/esploro/v1/assets/{assetId}?op=patch&action=add`
+  - Body schema documented in *API to Add new file to Asset*
+  - Only JSON payloads are supported for this workflow
+
+## Troubleshooting
+
+- If the list of file types fails to load, the app falls back to a default set (`accepted`, `submitted`, `supplementary`, `administrative`). Confirm the code table name configured in `AssetService.FILE_TYPE_CODE_TABLE` if you maintain a custom list.
+- You can configure the types of files and/or links that can be associated with research assets on the Asset File and Link Types List page (Configuration Menu > Repository > Asset Details > File and Link Types). For example, you can enable or disable labeling an upload or a link as a ReadMe file.
+- Error responses surfaced by the Esploro API are displayed via the Cloud App alert banner. Review the message for details such as missing permissions or malformed payload fields.
+
+For broader Esploro documentation, visit the [Esploro Online Help](https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)).
+
+## Development
+
+### Getting Started
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
+
+The app will be available at `http://localhost:4200` and can be loaded into Esploro via Cloud Apps developer mode.
+
+### Documentation for Developers
+- **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Setup, API reference, common tasks
+- **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Architecture diagrams and data flow
+- **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future enhancement proposals
+- **[Cleanup Summary](documentation/CLEANUP_SUMMARY.md)** - History of code cleanup and legacy features
+
+### Project Structure
+```
+cloudapp/src/app/
+├── main/              # File upload component
+├── models/            # TypeScript interfaces
+├── services/          # AssetService (API integration)
+└── settings/          # Settings component (currently minimal)
+```
+
+### Key Technologies
+- **Angular 11** - Frontend framework
+- **Angular Material** - UI components
+- **RxJS** - Reactive programming
+- **Ex Libris Cloud Apps SDK** - Esploro integration
+
+## Contributing
+
+This is a specialized tool for Esploro environments. For contributions or issues, please refer to the documentation or contact the maintainers.
+
+## Documentation
+
+This project includes comprehensive documentation for developers, administrators, and end users:
+
+### For Developers
+- **[Developer Quick Reference](DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
+- **[Architecture Diagrams](ARCHITECTURE_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
+- **[Detailed Code Explanation](explaination.md)** - Deep-dive analysis of the codebase
+
+### For Product Owners & Project Managers
+- **[Complete Summary](COMPLETE_SUMMARY.md)** - Overview of all work, documentation index, and project status
+- **[Transformation Summary](TRANSFORMATION_SUMMARY.md)** - History of the transformation from researcher to asset loader
+- **[Job Submission Enhancement](JOB_SUBMISSION_ENHANCEMENT.md)** - Future automation features roadmap
+
+### For System Administrators
+- **[Cleanup Summary](CLEANUP_SUMMARY.md)** - Log of recent code cleanup and improvements
+- **[API Usage Report](Esploro_Asset_API_Usage_Report.md)** - Detailed API integration analysis
+- **[Database Schema](documentation/Expanded_Esploro_Schema.md)** - Complete Esploro database schema reference
+
+### Quick Links
+- **[API Documentation](esploroAssets.md)** - Esploro Assets API reference
+- **[File Addition API](documentation/API%20to%20Add%20new%20file%20to%20Asset.md)** - Specific endpoint documentation
+- **[Cloud Apps Framework](exlCloudApps.md)** - Ex Libris Cloud Apps development guide
+
+## License
+
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICENSE) file for details.
+

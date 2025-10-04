@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:records total_record_count="1" xmlns:ns2="http://esploro_record" xmlns:ns3="http://rest_esploro">
+    <record>
+        <identifier.doi>10.1080/00472778.2024.2326581</identifier.doi>
+        <identifier.other>(UNIBZ)71617762</identifier.other>
+        <identifier.scopus>2-s2.0-85189762960</identifier.scopus>
+        <identifier.additional02>71617762</identifier.additional02>
+        <identifier.additional05>(UNIBZ)71617762</identifier.additional05>
+        <creators>
+            <creator>
+                <familyname>Test</familyname>
+                <givenname>Test Kh</givenname>
+                <middlename></middlename>
+                <suffix></suffix>
+                <order>3</order>
+                <user.primaryId>kfar.kafa@clarivate.com</user.primaryId>
+                <additionalIdentifiers>
+                    <entry>
+                        <key>FACEBOOK</key>
+                        <value>42345345</value>
+                    </entry>
+                    <entry>
+                        <key>GoogleScholarID</key>
+                        <value>testtes325sh</value>
+                    </entry>
+                    <entry>
+                        <key>Other</key>
+                        <value>othertest</value>
+                    </entry>
+                </additionalIdentifiers>
+                <isDisplayInPublicProfile>true</isDisplayInPublicProfile>
+                <creatorname>Test Kh Test</creatorname>
+            </creator>
+            <creator>
+                <familyname>Jaufenthaler</familyname>
+                <givenname>P</givenname>
+                <middlename></middlename>
+                <suffix></suffix>
+                <order>0</order>
+                <additionalIdentifiers/>
+                <affiliation>41___MANAGEMENT_CENTER_INNSBRUCK_(INNSBRUCK)</affiliation>
+                <affiliation>41___UNIVERSITÄT_INNSBRUCK_(INNSBRUCK)</affiliation>
+                <affiliationName>Management Center Innsbruck (Austria, Innsbruck) - MCI</affiliationName>
+                <affiliationName>Universität Innsbruck (Austria, Innsbruck)</affiliationName>
+                <isDisplayInPublicProfile>false</isDisplayInPublicProfile>
+                <affiliationWithDesc/>
+                <affiliationWithDesc/>
+                <creatorname>P Jaufenthaler</creatorname>
+            </creator>
+            <creator>
+                <familyname>Kallmuenzer</familyname>
+                <givenname>A</givenname>
+                <middlename></middlename>
+                <suffix></suffix>
+                <order>1</order>
+                <additionalIdentifiers/>
+                <isDisplayInPublicProfile>false</isDisplayInPublicProfile>
+                <creatorname>A Kallmuenzer</creatorname>
+            </creator>
+            <creator>
+                <familyname>Shamsolnizam</familyname>
+                <givenname>Amir</givenname>
+                <middlename></middlename>
+                <suffix></suffix>
+                <order>2</order>
+                <user.primaryId>amirshomzy</user.primaryId>
+                <additionalIdentifiers>
+                    <entry>
+                        <key>GoogleScholarID</key>
+                        <value>0</value>
+                    </entry>
+                    <entry>
+                        <key>UNIV_ID</key>
+                        <value>14119901</value>
+                    </entry>
+                </additionalIdentifiers>
+                <isDisplayInPublicProfile>true</isDisplayInPublicProfile>
+                <creatorname>Amir Shamsolnizam</creatorname>
+            </creator>
+        </creators>
+        <contributors/>
+        <links/>
+        <nationalAssessmentsProfiles/>
+        <title>The localness effect of family firm branding on consumer perceptions and purchase intention: An experimental approach - Test 2</title>
+        <publisher>Wiley</publisher>
+        <date.published>2024</date.published>
+        <date.accepted>20200125</date.accepted>
+        <open_access_indicator>No</open_access_indicator>
+        <resourcetype.esploro>publication.journalArticle</resourcetype.esploro>
+        <relationships>
+            <relationship>
+                <relationtype>ispartof</relationtype>
+                <relationtitle>Journal of Small Business Management</relationtitle>
+                <identifier.eissn>1540-627X</identifier.eissn>
+                <identifier.issn>0047-2778</identifier.issn>
+                <relation.category>INTERNAL</relation.category>
+            </relationship>
+        </relationships>
+        <openaccess>unknown</openaccess>
+        <peerreview>yes</peerreview>
+        <description.abstract></description.abstract>
+        <language>eng</language>
+        <fundingreferenceList/>
+        <patent/>
+        <originalRepository>
+            <assetId>991278154700561</assetId>
+        </originalRepository>
+        <local.fields>
+            <local.note1>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://webservice.cineca.it/pubblicazioni"&gt;&lt;SOAP-ENV:Body&gt;&lt;ns1:salvaResponse&gt;&lt;ns1:esito&gt;&lt;ns1:codice&gt;20200&lt;/ns1:codice&gt;&lt;ns1:messaggio&gt;Tipologia assegnata: 262. Articolo in rivista&lt;/ns1:messaggio&gt;&lt;ns1:stato&gt;SUCCESSO&lt;/ns1:stato&gt;&lt;ns1:updateCount&gt;2&lt;/ns1:updateCount&gt;&lt;ns1:dettagli&gt;&amp;lt;wddxPacket version='1.0'&amp;gt;&amp;lt;header/&amp;gt;&amp;lt;data&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='importedData'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='anno_pubbl'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='anno'&amp;gt;&amp;lt;string&amp;gt;2024&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='in_press'&amp;gt;&amp;lt;boolean value='false'/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='autore'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='1'&amp;gt;&amp;lt;array length='2'&amp;gt;&amp;lt;string&amp;gt;Jaufenthaler P&amp;lt;/string&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/array&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='2'&amp;gt;&amp;lt;array length='2'&amp;gt;&amp;lt;string&amp;gt;Kallmuenzer A&amp;lt;/string&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/array&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='3'&amp;gt;&amp;lt;array length='2'&amp;gt;&amp;lt;string&amp;gt;Kraus S&amp;lt;/string&amp;gt;&amp;lt;string&amp;gt;1036163&amp;lt;/string&amp;gt;&amp;lt;/array&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='4'&amp;gt;&amp;lt;array length='2'&amp;gt;&amp;lt;string&amp;gt;De Massis A&amp;lt;/string&amp;gt;&amp;lt;string&amp;gt;615216&amp;lt;/string&amp;gt;&amp;lt;/array&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='doi'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='codici_esterni'&amp;gt;&amp;lt;array length='3'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='sistema_esterno_id'&amp;gt;&amp;lt;number&amp;gt;5&amp;lt;/number&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='codice'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='sistema_esterno_id'&amp;gt;&amp;lt;number&amp;gt;1&amp;lt;/number&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='codice'&amp;gt;&amp;lt;string&amp;gt;2-s2.0-85189762960&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='sistema_esterno_id'&amp;gt;&amp;lt;number&amp;gt;2&amp;lt;/number&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='codice'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/array&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='url'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='tipo_referee_id'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='note'&amp;gt;&amp;lt;string&amp;gt;[B@62cdd8cb&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='formato'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='issue'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='volume'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='pagine'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='start_page'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='end_page'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='total_pages'&amp;gt;&amp;lt;string&amp;gt;&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='lingua'&amp;gt;&amp;lt;array length='1'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='lingua'&amp;gt;&amp;lt;string&amp;gt;ENG&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/array&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='titolo'&amp;gt;&amp;lt;string&amp;gt;The localness effect of family firm branding on consumer perceptions and purchase intention: An experimental approach.&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='rivista'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='rivista_id'&amp;gt;&amp;lt;string&amp;gt;E093755&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='article_number'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='keywords'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='anno_accet'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='in_press'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='abstract'&amp;gt;&amp;lt;null/&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='id'&amp;gt;&amp;lt;string&amp;gt;17472445&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='classificazioneAssegnata'&amp;gt;&amp;lt;struct&amp;gt;&amp;lt;var name='id'&amp;gt;&amp;lt;string&amp;gt;262&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;var name='descrizione'&amp;gt;&amp;lt;string&amp;gt;Articolo in rivista&amp;lt;/string&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/var&amp;gt;&amp;lt;/struct&amp;gt;&amp;lt;/data&amp;gt;&amp;lt;/wddxPacket&amp;gt;&lt;/ns1:dettagli&gt;&lt;/ns1:esito&gt;&lt;/ns1:salvaResponse&gt;&lt;/SOAP-ENV:Body&gt;&lt;/SOAP-ENV:Envelope&gt;</local.note1>
+            <local.note3>3</local.note3>
+            <local.note4>Ja</local.note4>
+            <local.note8>Jaufenthaler P, Kallmuenzer A, Shamsolnizam A, Test TK</local.note8>
+            <local.note9>Free University of Bozen-Bolzano (unibz)</local.note9>
+            <local.note10>JournalArticle;Article</local.note10>
+        </local.fields>
+        <asset.deposit.status>draft</asset.deposit.status>
+        <portal_visibility>false</portal_visibility>
+        <profile_visibility>false</profile_visibility>
+    </record>
+</ns3:records>
