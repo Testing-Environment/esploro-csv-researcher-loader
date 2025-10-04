@@ -44,6 +44,44 @@ This Cloud App streamlines the process of attaching external files to existing E
 
 For broader Esploro documentation, visit the [Esploro Online Help](https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)).
 
+## Development
+
+### Getting Started
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
+
+The app will be available at `http://localhost:4200` and can be loaded into Esploro via Cloud Apps developer mode.
+
+### Documentation for Developers
+- **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Setup, API reference, common tasks
+- **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Architecture diagrams and data flow
+- **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future enhancement proposals
+- **[Cleanup Summary](documentation/CLEANUP_SUMMARY.md)** - History of code cleanup and legacy features
+
+### Project Structure
+```
+cloudapp/src/app/
+├── main/              # File upload component
+├── models/            # TypeScript interfaces
+├── services/          # AssetService (API integration)
+└── settings/          # Settings component (currently minimal)
+```
+
+### Key Technologies
+- **Angular 11** - Frontend framework
+- **Angular Material** - UI components
+- **RxJS** - Reactive programming
+- **Ex Libris Cloud Apps SDK** - Esploro integration
+
+## Contributing
+
+This is a specialized tool for Esploro environments. For contributions or issues, please refer to the documentation or contact the maintainers.
+
 ## Documentation
 
 This project includes comprehensive documentation for developers, administrators, and end users:
