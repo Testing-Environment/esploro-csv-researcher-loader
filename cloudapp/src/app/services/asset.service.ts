@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetFileLink } from '../models/asset';
 
@@ -12,6 +12,19 @@ export interface AddFilesToAssetResponse {
 export interface CodeTableEntry {
   value: string;
   description?: string;
+}
+
+export interface UrlValidationResult {
+  url: string;
+  accessible: boolean;
+  status?: number;
+  error?: string;
+}
+
+export interface BulkUpdateResult {
+  assetId: string;
+  success: boolean;
+  error?: string;
 }
 
 const FILE_TYPE_CODE_TABLE = 'AssetFileType';
@@ -75,5 +88,75 @@ export class AssetService {
           .filter(entry => !!entry.value);
       })
     );
+  }
+
+  /**
+   * Validate URL accessibility by making a HEAD request
+   * @param url The URL to validate
+   * @returns Observable with validation result
+   */
+  validateUrl(url: string): Observable<UrlValidationResult> {
+    return this.restService.call({
+      url: url,
+      method: HttpMethod.HEAD
+    }).pipe(
+      map((response: any) => ({
+        url,
+        accessible: true,
+        status: response?.status || 200
+      })),
+      catchError((error: any) => {
+        return of({
+          url,
+          accessible: false,
+          status: error?.status,
+          error: error?.message || 'URL is not accessible'
+        });
+      })
+    );
+  }
+
+  /**
+   * Validate multiple URLs concurrently
+   * @param urls Array of URLs to validate
+   * @returns Observable with array of validation results
+   */
+  validateUrls(urls: string[]): Observable<UrlValidationResult[]> {
+    if (!urls || urls.length === 0) {
+      return of([]);
+    }
+    
+    const validationRequests = urls.map(url => this.validateUrl(url));
+    return forkJoin(validationRequests);
+  }
+
+  /**
+   * Bulk update multiple assets with the same file URL
+   * @param assetIds Array of asset IDs to update
+   * @param file File information to add to all assets
+   * @returns Observable with array of update results
+   */
+  bulkUpdateAssets(assetIds: string[], file: AssetFileLink): Observable<BulkUpdateResult[]> {
+    if (!assetIds || assetIds.length === 0) {
+      return of([]);
+    }
+
+    const updateRequests = assetIds.map(assetId => 
+      this.addFilesToAsset(assetId, [file]).pipe(
+        map(() => ({
+          assetId,
+          success: true
+        })),
+        catchError((error: any) => {
+          return of({
+            assetId,
+            success: false,
+            error: error?.message || 'Failed to update asset'
+          });
+        })
+      )
+    );
+
+    return forkJoin(updateRequests);
   }
 }

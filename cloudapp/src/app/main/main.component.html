@@ -1,82 +1,218 @@
-<form class="file-form" [formGroup]="form" (ngSubmit)="submit()">
-  <h1>Add files to an Esploro asset</h1>
+<div class="app-container">
+  <!-- Navigation tabs -->
+  <mat-tab-group>
+    <!-- Single Asset File Upload Tab -->
+    <mat-tab label="Single Asset">
+      <form class="file-form" [formGroup]="form" (ngSubmit)="submit()">
+        <h1>Add files to an Esploro asset</h1>
 
-  <section class="form-section">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Asset ID</mat-label>
-      <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
-      <mat-error *ngIf="form.get('assetId')?.hasError('required')">Asset ID is required.</mat-error>
-    </mat-form-field>
-  </section>
+        <section class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Asset ID</mat-label>
+            <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
+            <mat-error *ngIf="form.get('assetId')?.hasError('required')">Asset ID is required.</mat-error>
+          </mat-form-field>
+        </section>
 
-  <section class="file-type-hint" *ngIf="fileTypes.length">
-    <h2>Available file types</h2>
-    <p class="hint-text">Select one of the configured file types when uploading each file.</p>
-    <div class="file-type-list">
-      <div class="file-type-item" *ngFor="let type of fileTypes">
-        <span class="code">{{ type.value }}</span>
-        <span class="description" *ngIf="type.description && type.description !== type.value">{{ type.description }}</span>
-      </div>
-    </div>
-  </section>
+        <section class="file-type-hint" *ngIf="fileTypes.length">
+          <h2>Available file types</h2>
+          <p class="hint-text">Select one of the configured file types when uploading each file.</p>
+          <div class="file-type-list">
+            <div class="file-type-item" *ngFor="let type of fileTypes">
+              <span class="code">{{ type.value }}</span>
+              <span class="description" *ngIf="type.description && type.description !== type.value">{{ type.description }}</span>
+            </div>
+          </div>
+        </section>
 
-  <section formArrayName="files" class="files-section">
-    <mat-card class="file-card" *ngFor="let fileGroup of files.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
-      <div class="file-card__header">
-        <h2>File {{ i + 1 }}</h2>
-        <button mat-icon-button type="button" color="warn" (click)="removeFile(i)" *ngIf="files.length > 1">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+        <section formArrayName="files" class="files-section">
+          <mat-card class="file-card" *ngFor="let fileGroup of files.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
+            <div class="file-card__header">
+              <h2>File {{ i + 1 }}</h2>
+              <button mat-icon-button type="button" color="warn" (click)="removeFile(i)" *ngIf="files.length > 1">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>File name</mat-label>
-        <input matInput formControlName="title" placeholder="Display name shown in Esploro" />
-        <mat-error *ngIf="fileGroup.get('title')?.hasError('required')">File name is required.</mat-error>
-      </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>File name</mat-label>
+              <input matInput formControlName="title" placeholder="Display name shown in Esploro" />
+              <mat-error *ngIf="fileGroup.get('title')?.hasError('required')">File name is required.</mat-error>
+            </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>File URL</mat-label>
-        <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
-        <mat-hint>Provide the fully qualified URL from which Esploro can download the file.</mat-hint>
-        <mat-error *ngIf="fileGroup.get('url')?.hasError('required')">File URL is required.</mat-error>
-        <mat-error *ngIf="fileGroup.get('url')?.hasError('pattern')">Enter a valid http(s) URL.</mat-error>
-      </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>File URL</mat-label>
+              <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
+              <mat-hint>Provide the fully qualified URL from which Esploro can download the file.</mat-hint>
+              <mat-error *ngIf="fileGroup.get('url')?.hasError('required')">File URL is required.</mat-error>
+              <mat-error *ngIf="fileGroup.get('url')?.hasError('pattern')">Enter a valid http(s) URL.</mat-error>
+            </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description" rows="2" placeholder="Optional description shown to researchers"></textarea>
-      </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="2" placeholder="Optional description shown to researchers"></textarea>
+            </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>File type</mat-label>
-        <mat-select formControlName="type" [disabled]="loadingFileTypes && !fileTypes.length">
-          <mat-option *ngFor="let type of fileTypes" [value]="type.value">
-            {{ type.value }}<span *ngIf="type.description && type.description !== type.value"> — {{ type.description }}</span>
-          </mat-option>
-        </mat-select>
-        <mat-hint *ngIf="loadingFileTypes">Loading file types…</mat-hint>
-        <mat-error *ngIf="fileGroup.get('type')?.hasError('required')">Select a file type.</mat-error>
-      </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>File type</mat-label>
+              <mat-select formControlName="type" [disabled]="loadingFileTypes && !fileTypes.length">
+                <mat-option *ngFor="let type of fileTypes" [value]="type.value">
+                  {{ type.value }}<span *ngIf="type.description && type.description !== type.value"> — {{ type.description }}</span>
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="loadingFileTypes">Loading file types…</mat-hint>
+              <mat-error *ngIf="fileGroup.get('type')?.hasError('required')">Select a file type.</mat-error>
+            </mat-form-field>
 
-      <mat-checkbox formControlName="supplemental">Supplemental file</mat-checkbox>
-    </mat-card>
-  </section>
+            <mat-checkbox formControlName="supplemental">Supplemental file</mat-checkbox>
+          </mat-card>
+        </section>
 
-  <div class="add-file-row">
-    <button mat-stroked-button color="primary" type="button" (click)="addFile()">
-      <mat-icon>add</mat-icon>
-      <span>Add another file</span>
-    </button>
-  </div>
+        <div class="add-file-row">
+          <button mat-stroked-button color="primary" type="button" (click)="addFile()">
+            <mat-icon>add</mat-icon>
+            <span>Add another file</span>
+          </button>
+        </div>
 
-  <div class="form-actions">
-    <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Submit files</button>
-  </div>
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Submit files</button>
+        </div>
 
-  <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar>
+        <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar>
 
-  <div class="submission-result" *ngIf="submissionResult" [ngClass]="submissionResult.type">
-    {{ submissionResult.message }}
-  </div>
-</form>
+        <div class="submission-result" *ngIf="submissionResult" [ngClass]="submissionResult.type">
+          {{ submissionResult.message }}
+        </div>
+      </form>
+    </mat-tab>
+
+    <!-- Bulk Update Tab -->
+    <mat-tab label="Bulk Update">
+      <form class="file-form" [formGroup]="bulkForm" (ngSubmit)="submitBulkUpdate()">
+        <h1>Bulk update multiple assets with a single URL</h1>
+        <p class="hint-text">Update multiple assets at once by providing a list of asset IDs and a single file URL that will be added to all of them.</p>
+
+        <section class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Asset IDs (one per line)</mat-label>
+            <textarea matInput formControlName="assetIds" rows="6" 
+                      placeholder="12345678900001234&#10;98765432100004321&#10;..."></textarea>
+            <mat-hint>Enter one asset ID per line</mat-hint>
+            <mat-error *ngIf="bulkForm.get('assetIds')?.hasError('required')">At least one asset ID is required.</mat-error>
+          </mat-form-field>
+        </section>
+
+        <section class="form-section">
+          <h2>File to add to all assets</h2>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>File name</mat-label>
+            <input matInput formControlName="title" placeholder="Display name shown in Esploro" />
+            <mat-error *ngIf="bulkForm.get('title')?.hasError('required')">File name is required.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>File URL</mat-label>
+            <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
+            <mat-hint>This URL will be added to all assets in the list above.</mat-hint>
+            <mat-error *ngIf="bulkForm.get('url')?.hasError('required')">File URL is required.</mat-error>
+            <mat-error *ngIf="bulkForm.get('url')?.hasError('pattern')">Enter a valid http(s) URL.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="2" placeholder="Optional description shown to researchers"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>File type</mat-label>
+            <mat-select formControlName="type" [disabled]="loadingFileTypes && !fileTypes.length">
+              <mat-option *ngFor="let type of fileTypes" [value]="type.value">
+                {{ type.value }}<span *ngIf="type.description && type.description !== type.value"> — {{ type.description }}</span>
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="loadingFileTypes">Loading file types…</mat-hint>
+            <mat-error *ngIf="bulkForm.get('type')?.hasError('required')">Select a file type.</mat-error>
+          </mat-form-field>
+
+          <mat-checkbox formControlName="supplemental">Supplemental file</mat-checkbox>
+        </section>
+
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="bulkSubmitting">
+            {{ bulkSubmitting ? 'Updating...' : 'Bulk Update Assets' }}
+          </button>
+          <button mat-stroked-button type="button" (click)="resetBulkForm()" [disabled]="bulkSubmitting">
+            Reset
+          </button>
+        </div>
+
+        <mat-progress-bar *ngIf="bulkSubmitting" mode="indeterminate"></mat-progress-bar>
+
+        <!-- Bulk update results -->
+        <section class="results-section" *ngIf="bulkUpdateResult.length > 0">
+          <h2>Bulk Update Results</h2>
+          <mat-list>
+            <mat-list-item *ngFor="let result of bulkUpdateResult" [ngClass]="result.success ? 'success-item' : 'error-item'">
+              <mat-icon mat-list-icon [color]="result.success ? 'primary' : 'warn'">
+                {{ result.success ? 'check_circle' : 'error' }}
+              </mat-icon>
+              <div mat-line>Asset ID: {{ result.assetId }}</div>
+              <div mat-line *ngIf="!result.success" class="error-message">{{ result.error }}</div>
+            </mat-list-item>
+          </mat-list>
+        </section>
+      </form>
+    </mat-tab>
+
+    <!-- URL Validation Tab -->
+    <mat-tab label="URL Validation">
+      <form class="file-form" [formGroup]="urlValidationForm" (ngSubmit)="validateUrls()">
+        <h1>Validate remote file URLs</h1>
+        <p class="hint-text">Check if URLs are accessible before adding them to assets. Enter one or more URLs to validate.</p>
+
+        <section class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>URLs to validate (one per line)</mat-label>
+            <textarea matInput formControlName="urls" rows="8" 
+                      placeholder="https://example.com/file1.pdf&#10;https://example.com/file2.pdf&#10;..."></textarea>
+            <mat-hint>Enter one URL per line</mat-hint>
+            <mat-error *ngIf="urlValidationForm.get('urls')?.hasError('required')">At least one URL is required.</mat-error>
+          </mat-form-field>
+        </section>
+
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="validatingUrls">
+            {{ validatingUrls ? 'Validating...' : 'Validate URLs' }}
+          </button>
+          <button mat-stroked-button type="button" (click)="resetUrlValidation()" [disabled]="validatingUrls">
+            Reset
+          </button>
+        </div>
+
+        <mat-progress-bar *ngIf="validatingUrls" mode="indeterminate"></mat-progress-bar>
+
+        <!-- URL validation results -->
+        <section class="results-section" *ngIf="urlValidationResults.length > 0">
+          <h2>URL Validation Results</h2>
+          <mat-list>
+            <mat-list-item *ngFor="let result of urlValidationResults" [ngClass]="result.accessible ? 'success-item' : 'error-item'">
+              <mat-icon mat-list-icon [color]="result.accessible ? 'primary' : 'warn'">
+                {{ result.accessible ? 'check_circle' : 'error' }}
+              </mat-icon>
+              <div mat-line class="url-text">{{ result.url }}</div>
+              <div mat-line *ngIf="result.accessible" class="success-message">
+                Accessible (Status: {{ result.status || 200 }})
+              </div>
+              <div mat-line *ngIf="!result.accessible" class="error-message">
+                {{ result.error || 'URL is not accessible' }} 
+                <span *ngIf="result.status">(Status: {{ result.status }})</span>
+              </div>
+            </mat-list-item>
+          </mat-list>
+        </section>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+</div>
