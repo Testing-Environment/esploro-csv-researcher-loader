@@ -10,7 +10,8 @@ In Cloud Apps, the API key is not required if you are authenticated. It will use
 
 Please refer to the documentation for more details: https://developers.exlibrisgroup.com/cloud-apps/docs/guides/rest-api/
 
-The data of interest in the response would be the "resourceTypeEsploroWithDesc" of each asset, for example: 
+The data of interest in the response would be the:
+1: "resourceTypeEsploroWithDesc" of each asset, for example: 
 {
         "value": "publication.journalArticle",
         "desc": "Journal article"
@@ -18,7 +19,52 @@ The data of interest in the response would be the "resourceTypeEsploroWithDesc" 
 
 This will inform the file types that can be applied to the asset.
 
-Response:
+2: "files" of each asset, for example:
+
+"files": [
+        {
+          "fileTypeWithDesc": null,
+          "fileLicenseCodeWithDesc": null,
+          "fileDownloadUrl": "https://tr-integration-researchmanagement.esploro.exlibrisgroup.com/view/delivery/TR_INTEGRATION_INST/12442803160000561/13442803130000561",
+          "file.name": "DOI.html",
+          "file.creationDate": "2025-06-27 14:29:38",
+          "file.mimeType": "text/html",
+          "file.type": null,
+          "file.description": null,
+          "file.rights": "Open",
+          "file.license.code": null,
+          "file.size": "296",
+          "file.extension": "html",
+          "file.persistent.url": "https://tr-integration-researchmanagement.esploro.exlibrisgroup.com/esploro/outputs/journalArticle/07947818-COVID-19-in-2021--Edited/991283105600561#file-0",
+          "file.order": "0",
+          "file.supplemental": "no",
+          "file.embargo_expiry_date": "",
+          "file.displayName": "DOI File with Open Access"
+        },
+        {
+          "fileTypeWithDesc": null,
+          "fileLicenseCodeWithDesc": null,
+          "fileDownloadUrl": "https://tr-integration-researchmanagement.esploro.exlibrisgroup.com/view/delivery/TR_INTEGRATION_INST/12442803160000561/13442803120000561",
+          "file.name": "DOI2.html",
+          "file.creationDate": "2025-06-27 14:29:38",
+          "file.mimeType": "text/html",
+          "file.type": null,
+          "file.description": null,
+          "file.rights": "Local",
+          "file.license.code": null,
+          "file.size": "296",
+          "file.extension": "html",
+          "file.persistent.url": "https://tr-integration-researchmanagement.esploro.exlibrisgroup.com/esploro/outputs/journalArticle/07947818-COVID-19-in-2021--Edited/991283105600561#file-1",
+          "file.order": "1",
+          "file.supplemental": "no",
+          "file.embargo_expiry_date": "",
+          "file.displayName": "DOI File with Custom Access"
+        }
+      ]
+
+This will inform the current files that exists for the asset.
+
+Example Response:
 ```json
 {
   "totalRecordCount": 3,

@@ -105,7 +105,7 @@ Example Response:
                 "desc": "Number of assets failed"
             },
             "value": "1"
-        },
+        },Pl
         {
             "type": {
                 "value": "import_research_assets_files.file_uploaded",
