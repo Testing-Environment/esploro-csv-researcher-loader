@@ -113,7 +113,7 @@ export class MainComponent implements OnInit {
     }
 
     const entries: FileEntry[] = this.manualEntries.controls.map(control => control.value);
-    const uniqueAssetIds = [...new Set(entries.map(e => e.assetId))];
+    const uniqueAssetIds = Array.from(new Set(entries.map(e => e.assetId)));
 
     this.validating = true;
     this.workflowService.validateAssets(uniqueAssetIds)
@@ -153,7 +153,7 @@ export class MainComponent implements OnInit {
    * Load file types for validated assets
    */
   private loadFileTypesForAssets(results: AssetValidationResult[]): any {
-    const uniqueTypes = [...new Set(results.map(r => r.type).filter(Boolean))];
+    const uniqueTypes = Array.from(new Set(results.map(r => r.type).filter(Boolean)));
     
     const observables = uniqueTypes.map(type =>
       this.assetService.getValidFileTypesForAssetType(type!).pipe(

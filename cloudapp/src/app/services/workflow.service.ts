@@ -60,7 +60,7 @@ export class WorkflowService {
    * Step 1: Validate assets and fetch their details
    */
   validateAssets(assetIds: string[]): Observable<AssetValidationResult[]> {
-    const uniqueAssetIds = [...new Set(assetIds)];
+    const uniqueAssetIds = Array.from(new Set(assetIds));
     
     const validations = uniqueAssetIds.map(assetId =>
       this.assetService.getAsset(assetId).pipe(
@@ -85,7 +85,7 @@ export class WorkflowService {
    * Execute the complete automated workflow
    */
   executeWorkflow(entries: FileEntry[]): Observable<WorkflowResult> {
-    const uniqueAssetIds = [...new Set(entries.map(e => e.assetId))];
+    const uniqueAssetIds = Array.from(new Set(entries.map(e => e.assetId)));
     const totalFiles = entries.length;
     const totalAssets = uniqueAssetIds.length;
 
@@ -103,7 +103,32 @@ export class WorkflowService {
           throw new Error(`Failed to validate assets: ${failedAssets.map(a => a.assetId).join(', ')}`);
         }
       }),
-      // Step 2: Create set
+      // Step 2: Add files to each asset via API
+      mergeMap(() => {
+        // Group entries by asset ID
+        const entriesByAsset = new Map<string, FileEntry[]>();
+        entries.forEach(entry => {
+          const existing = entriesByAsset.get(entry.assetId) || [];
+          existing.push(entry);
+          entriesByAsset.set(entry.assetId, existing);
+        });
+
+        // Create API calls for each asset
+        const addFileCalls = Array.from(entriesByAsset.entries()).map(([assetId, assetEntries]) => {
+          const files = assetEntries.map(entry => ({
+            title: entry.title,
+            url: entry.url,
+            description: entry.description,
+            type: entry.type!,
+            supplemental: entry.supplemental
+          }));
+          return this.assetService.addFilesToAsset(assetId, files);
+        });
+
+        // Execute all API calls in parallel
+        return forkJoin(addFileCalls);
+      }),
+      // Step 3: Create set
       mergeMap(() => {
         const validAssetIds = validatedAssets.filter(r => r.exists).map(r => r.assetId);
         return this.setService.createItemizedSet(validAssetIds);
@@ -111,7 +136,7 @@ export class WorkflowService {
       tap(set => {
         setId = set.id!;
       }),
-      // Step 3: Verify set members (the create call should have added them)
+      // Step 4: Verify set members (the create call should have added them)
       mergeMap(() => this.setService.getSet(setId)),
       tap(set => {
         const memberIds = set.members?.member?.map(m => m.id) || [];
@@ -122,23 +147,23 @@ export class WorkflowService {
           console.warn('Some assets were not added to the set:', missingAssets);
         }
       }),
-      // Step 4: Find import job ID
+      // Step 5: Find import job ID
       mergeMap(() => this.jobService.findImportJobId()),
       tap(id => {
         jobId = id;
       }),
-      // Step 5: Run the job
+      // Step 6: Run the job
       mergeMap(() => this.jobService.runJob(jobId, setId)),
       tap(instance => {
         instanceId = instance.id!;
       }),
-      // Step 6: Monitor job progress
+      // Step 7: Monitor job progress
       mergeMap(() => this.pollJobStatus(jobId, instanceId)),
-      // Step 7: Process and verify results
+      // Step 8: Process and verify results
       mergeMap(jobInstance => {
         return this.verifyResults(jobInstance, validatedAssets, totalFiles, totalAssets);
       }),
-      // Step 8: Return comprehensive result
+      // Step 9: Return comprehensive result
       map(verification => ({
         success: verification.success,
         setId,
@@ -174,19 +199,14 @@ export class WorkflowService {
         // Continue polling if still running and haven't exceeded max polls
         return isRunning && pollCount < this.JOB_MAX_POLLS;
       }, true), // Include the final value
-      // Take the last emitted value (the completed job)
-      map((instance, index, arr) => {
+      // Validate the final status
+      tap((instance: JobInstance) => {
         const status = instance.status?.value || '';
-        if (['COMPLETED_SUCCESS', 'COMPLETED_FAILED', 'FAILED', 'ABORTED'].includes(status)) {
-          return instance;
+        if (!['COMPLETED_SUCCESS', 'COMPLETED_FAILED', 'FAILED', 'ABORTED'].includes(status)) {
+          if (pollCount >= this.JOB_MAX_POLLS) {
+            throw new Error('Job monitoring timed out');
+          }
         }
-        
-        // If we've exceeded max polls
-        if (pollCount >= this.JOB_MAX_POLLS) {
-          throw new Error('Job monitoring timed out');
-        }
-        
-        return instance;
       })
     );
   }
