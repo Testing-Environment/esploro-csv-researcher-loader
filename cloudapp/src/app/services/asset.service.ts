@@ -14,7 +14,23 @@ export interface CodeTableEntry {
   description?: string;
 }
 
+export interface Asset {
+  id: string;
+  type?: { value: string; desc?: string };
+  files?: AssetFile[];
+  [key: string]: any;
+}
+
+export interface AssetFile {
+  id?: string;
+  name?: string;
+  url?: string;
+  type?: string;
+  [key: string]: any;
+}
+
 const FILE_TYPE_CODE_TABLE = 'AssetFileType';
+const ASSET_FILE_AND_LINK_TYPES_TABLE = 'AssetFileAndLinkTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +69,21 @@ export class AssetService {
     });
   }
 
+  /**
+   * Get an asset by its ID
+   * @param assetId The asset ID
+   * @returns Observable of the asset details
+   */
+  getAsset(assetId: string): Observable<Asset> {
+    return this.restService.call({
+      url: `/esploro/v1/assets/${assetId}`,
+      method: HttpMethod.GET
+    });
+  }
+
+  /**
+   * Get file types from the AssetFileType code table
+   */
   getFileTypes(): Observable<CodeTableEntry[]> {
     return this.restService.call({
       url: `/conf/code-tables/${FILE_TYPE_CODE_TABLE}?view=brief`,
@@ -73,6 +104,48 @@ export class AssetService {
             description: code?.description ?? code?.desc ?? code?.value ?? ''
           }))
           .filter(entry => !!entry.value);
+      })
+    );
+  }
+
+  /**
+   * Get the AssetFileAndLinkTypes mapping table
+   * This maps asset types to valid file/link types
+   */
+  getAssetFileAndLinkTypes(): Observable<any[]> {
+    return this.restService.call({
+      url: `/conf/mapping-tables/${ASSET_FILE_AND_LINK_TYPES_TABLE}`,
+      method: HttpMethod.GET
+    }).pipe(
+      map((response: any) => {
+        const rows = response?.row ?? [];
+        return Array.isArray(rows) ? rows : [rows];
+      })
+    );
+  }
+
+  /**
+   * Get valid file types for a specific asset type
+   * @param assetType The type of the asset
+   */
+  getValidFileTypesForAssetType(assetType: string): Observable<CodeTableEntry[]> {
+    return this.getAssetFileAndLinkTypes().pipe(
+      map((mappings: any[]) => {
+        // Filter mappings for this asset type
+        const validMappings = mappings.filter(
+          (mapping: any) => mapping?.asset_type?.value === assetType || mapping?.asset_type === assetType
+        );
+
+        // Extract file types from the mappings
+        const fileTypes = validMappings
+          .map((mapping: any) => {
+            const typeValue = mapping?.file_type?.value ?? mapping?.file_type;
+            const typeDesc = mapping?.file_type?.desc ?? mapping?.file_type_desc ?? typeValue;
+            return typeValue ? { value: typeValue, description: typeDesc } : null;
+          })
+          .filter(Boolean);
+
+        return fileTypes as CodeTableEntry[];
       })
     );
   }

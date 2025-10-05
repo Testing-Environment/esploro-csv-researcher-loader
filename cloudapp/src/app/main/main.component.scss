@@ -1,3 +1,216 @@
+.tab-content {
+  padding: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.instructions {
+  margin: 16px 0 24px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+}
+
+// Stage 1 styles
+.entries-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.entry-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.entry-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+
+.entry-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  .field {
+    width: 100%;
+  }
+}
+
+// Stage 2 styles
+.file-type-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.file-type-card {
+  padding: 20px;
+}
+
+.file-info {
+  margin-bottom: 16px;
+
+  h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+  }
+
+  .asset-info {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+  }
+}
+
+// Workflow result styles
+.workflow-result {
+  padding: 24px;
+  border-radius: 8px;
+  margin-top: 24px;
+
+  &.success {
+    background: #e8f5e9;
+    border: 1px solid #4caf50;
+
+    h2 {
+      color: #1b5e20;
+    }
+  }
+
+  &.error {
+    background: #ffebee;
+    border: 1px solid #f44336;
+
+    h2 {
+      color: #b71c1c;
+    }
+  }
+
+  h2 {
+    margin: 0 0 16px 0;
+  }
+
+  h3 {
+    margin: 24px 0 12px 0;
+  }
+}
+
+.result-summary {
+  margin-bottom: 16px;
+
+  p {
+    margin: 4px 0;
+  }
+}
+
+.asset-verifications {
+  margin-top: 16px;
+}
+
+.verification-card {
+  margin-bottom: 12px;
+  padding: 16px;
+
+  p {
+    margin: 4px 0;
+  }
+
+  .status {
+    font-weight: 600;
+    margin-top: 8px;
+
+    &.success {
+      color: #1b5e20;
+    }
+
+    &.error {
+      color: #b71c1c;
+    }
+  }
+}
+
+.errors {
+  margin-top: 16px;
+
+  ul {
+    margin: 8px 0;
+    padding-left: 20px;
+    color: #b71c1c;
+  }
+}
+
+// CSV Tab styles
+.csv-actions {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .file-name {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+  }
+}
+
+.csv-processing {
+  margin: 24px 0;
+
+  p {
+    margin-top: 12px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.csv-result {
+  margin: 24px 0;
+  padding: 16px;
+  background: rgba(33, 150, 243, 0.05);
+  border: 1px solid rgba(33, 150, 243, 0.2);
+  border-radius: 6px;
+}
+
+// Common styles
+.add-entry-row {
+  display: flex;
+  justify-content: flex-start;
+  margin: 16px 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+// Legacy styles (kept for compatibility)
 .file-form {
   display: flex;
   flex-direction: column;
@@ -66,11 +279,6 @@
   justify-content: flex-start;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .submission-result {
   padding: 12px 16px;
   border-radius: 6px;
@@ -83,8 +291,4 @@
     background: #ffebee;
     color: #b71c1c;
   }
-}
-
-.full-width {
-  width: 100%;
 }
