@@ -1,0 +1,6 @@
+MMS ID,Remote URL,File Title,File Description,File Type
+99100000000001234,https://repository.example.edu/files/research-paper-2024.pdf,Main Research Publication,Peer-reviewed article published in Nature 2024,PDF
+99100000000001235,https://repository.example.edu/files/dataset-supplement.xlsx,Supplementary Dataset,Raw data and statistical analysis,XLSX
+99100000000001236,https://repository.example.edu/files/presentation-slides.pptx,Conference Presentation,Slides from International Symposium 2024,PPTX
+99100000000001237,https://repository.example.edu/files/methodology-doc.docx,Detailed Methodology,Comprehensive research methodology documentation,DOCX
+99100000000001238,https://repository.example.edu/files/appendix-tables.pdf,Statistical Appendix,Additional tables and figures,PDF

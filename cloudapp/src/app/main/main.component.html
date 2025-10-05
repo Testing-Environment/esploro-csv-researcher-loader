@@ -1,13 +1,22 @@
-<form class="file-form" [formGroup]="form" (ngSubmit)="submit()">
-  <h1>Add files to an Esploro asset</h1>
+<div class="main-content">
+  <div class="page-header">
+    <h1>{{ 'Main.Title' | translate }}</h1>
+    <p>{{ 'Main.Description' | translate }}</p>
+  </div>
 
-  <section class="form-section">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Asset ID</mat-label>
-      <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
-      <mat-error *ngIf="form.get('assetId')?.hasError('required')">Asset ID is required.</mat-error>
-    </mat-form-field>
-  </section>
+  <!-- Tab Navigation following Ex Libris patterns -->
+  <mat-tab-group class="processing-tabs" animationDuration="300ms">
+    <!-- Manual Entry Tab - Existing Implementation -->
+    <mat-tab [label]="'Tabs.ManualEntry' | translate">
+      <div class="tab-content">
+        <form class="file-form" [formGroup]="form" (ngSubmit)="submit()">
+          <section class="form-section">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Asset ID</mat-label>
+              <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
+              <mat-error *ngIf="form.get('assetId')?.hasError('required')">Asset ID is required.</mat-error>
+            </mat-form-field>
+          </section>
 
   <section class="file-type-hint" *ngIf="fileTypes.length">
     <h2>Available file types</h2>
@@ -50,12 +59,21 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>File type</mat-label>
-        <mat-select formControlName="type" [disabled]="loadingFileTypes && !fileTypes.length">
-          <mat-option *ngFor="let type of fileTypes" [value]="type.value">
-            {{ type.value }}<span *ngIf="type.description && type.description !== type.value"> — {{ type.description }}</span>
+        <mat-select formControlName="type" [disabled]="loadingFileTypes || loadingAssetMetadata || filteredFileTypes.length === 0">
+          <mat-option *ngFor="let type of filteredFileTypes" [value]="type.id">
+            {{ type.targetCode }}<span *ngIf="type.id"> (ID: {{ type.id }})</span>
           </mat-option>
         </mat-select>
-        <mat-hint *ngIf="loadingFileTypes">Loading file types…</mat-hint>
+        <mat-hint *ngIf="loadingFileTypes || loadingAssetMetadata">Loading file type categories…</mat-hint>
+        <mat-hint *ngIf="!loadingFileTypes && !loadingAssetMetadata && filteredFileTypes.length > 0 && currentAssetType">
+          Showing categories compatible with {{ currentAssetType }} assets. The ID value will be used in the API call.
+        </mat-hint>
+        <mat-hint *ngIf="!loadingFileTypes && !loadingAssetMetadata && filteredFileTypes.length > 0 && !currentAssetType">
+          Select a file type category. The ID value will be used in the API call.
+        </mat-hint>
+        <mat-hint *ngIf="!loadingFileTypes && !loadingAssetMetadata && filteredFileTypes.length === 0">
+          No compatible file types found for this asset type.
+        </mat-hint>
         <mat-error *ngIf="fileGroup.get('type')?.hasError('required')">Select a file type.</mat-error>
       </mat-form-field>
 
@@ -79,4 +97,29 @@
   <div class="submission-result" *ngIf="submissionResult" [ngClass]="submissionResult.type">
     {{ submissionResult.message }}
   </div>
-</form>
+        </form>
+      </div>
+    </mat-tab>
+
+    <!-- CSV Upload Tab - New Implementation -->
+    <mat-tab [label]="'Tabs.CSVUpload' | translate">
+      <div class="tab-content">
+        <app-csv-processor
+          [fileTypes]="fileTypes"
+          [assetFileAndLinkTypes]="assetFileAndLinkTypes"
+          (batchProcessed)="onBatchProcessed($event)"
+          (downloadReady)="onDownloadReady($event)">
+        </app-csv-processor>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Results Section -->
+  <div *ngIf="showResults" class="results-section">
+    <app-processing-results
+      [processedData]="processedAssets"
+      [downloadUrl]="mmsIdDownloadUrl"
+      [showInstructions]="showWorkflowInstructions">
+    </app-processing-results>
+  </div>
+</div>

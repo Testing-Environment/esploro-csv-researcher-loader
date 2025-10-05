@@ -1,0 +1,270 @@
+{
+    "code": "AssetFileAndLinkTypes",
+    "name": "Asset File And Link Types",
+    "description": "Asset File And Link Types",
+    "sub_system": {
+      "value": "RESEARCH",
+      "desc": "Research"
+    },
+    "customized": true,
+    "scope": {
+      "institution_id": {
+        "value": "TR_INTEGRATION_INST",
+        "desc": "TR Integration"
+      },
+      "library_id": {
+        "value": "",
+        "desc": ""
+      }
+    },
+    "header": [
+      {
+        "number": "0",
+        "name": "code",
+        "type": {
+          "value": "TextField"
+        }
+      },
+      {
+        "number": "1",
+        "type": {
+          "value": "code-tables",
+          "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/code-tables/AssetFileAndLinkTypesApplicability"
+        }
+      },
+      {
+        "number": "2",
+        "type": {
+          "value": "TextField"
+        }
+      }
+    ],
+    "row": [
+      {
+        "column0": "07940839-AssetLink",
+        "column1": "link",
+        "column2": "all",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-03-14Z"
+      },
+      {
+        "column0": "07940839-AssetFile",
+        "column1": "file",
+        "column2": "all",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-03-14Z"
+      },
+      {
+        "column0": "pdf",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "presentation",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "spreadsheet",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "text",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "video",
+        "column1": "both",
+        "column2": "etd,teaching",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "webpage",
+        "column1": "both",
+        "column2": "etd,teaching",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "data",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "other",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "illustrations",
+        "column1": "both",
+        "column2": "patent",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "accepted",
+        "column1": "both",
+        "column2": "publication,postedContent,patent",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "published",
+        "column1": "both",
+        "column2": "publication,postedContent,patent",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "preprint",
+        "column1": "both",
+        "column2": "publication,postedContent",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "submitted",
+        "column1": "both",
+        "column2": "publication,postedContent,patent",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "correction",
+        "column1": "both",
+        "column2": "publication,postedContent,patent",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "readme",
+        "column1": "both",
+        "column2": "dataset,software",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "eventwebsite",
+        "column1": "link",
+        "column2": "conference,creativeWork",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "hand_outs",
+        "column1": "both",
+        "column2": "conference,creativeWork,teaching",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "slides",
+        "column1": "both",
+        "column2": "conference,creativeWork,teaching",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "audio",
+        "column1": "both",
+        "column2": "etd,teaching",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "code",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "image",
+        "column1": "both",
+        "column2": "etd",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "Test123 ",
+        "column1": "both",
+        "column2": "dataset,etd,publication,teaching",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-02-20Z"
+      },
+      {
+        "column0": "07940839-AssetBoth",
+        "column1": "both",
+        "column2": "all",
+        "enabled": true,
+        "managed_in_network": false,
+        "updated_by": "esploro_impl",
+        "update_date": "2025-03-14Z"
+      }
+    ],
+    "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/AssetFileAndLinkTypes"
+  }

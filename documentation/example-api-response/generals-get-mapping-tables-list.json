@@ -1,0 +1,927 @@
+{
+    "mapping_table": [
+      {
+        "code": "AdditionalFieldsForNetworkZoneSearchResults",
+        "name": "Additional Fields For Network Zone Search Results",
+        "description": "Select additional fields to be displayed in Network Zone search results",
+        "sub_system": {
+          "value": "REPOSITORY",
+          "desc": "Repository"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/AdditionalFieldsForNetworkZoneSearchResults"
+      },
+      {
+        "code": "AllowedContributionAuthorizedInstitutions",
+        "name": "Allowed Contribution Authorized Institutions",
+        "description": "AllowedContribution",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/AllowedContributionAuthorizedInstitutions"
+      },
+      {
+        "code": "ArticleFormMandatoryFields",
+        "name": "Article form Mandatory Fields",
+        "description": "Article form Mandatory Fields (Will affect the Reading list citations fields)",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ArticleFormMandatoryFields"
+      },
+      {
+        "code": "ActivateAuthorNumberLists",
+        "name": "Author Number Lists",
+        "description": "Author number lists for the 'Generate Author Number' action",
+        "sub_system": {
+          "value": "METADATA_EDITOR",
+          "desc": "Metadata Editor"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ActivateAuthorNumberLists"
+      },
+      {
+        "code": "legantoBibliographicStyles",
+        "name": "Bibliographic styles for export to word in Leganto",
+        "description": "Bibliographic Styles",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/legantoBibliographicStyles"
+      },
+      {
+        "code": "BookFormMandatoryFields",
+        "name": "Book form Mandatory Fields",
+        "description": "Book form Mandatory Fields (Will affect the Reading list citations fields)",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/BookFormMandatoryFields"
+      },
+      {
+        "code": "CallNumberParsing",
+        "name": "Call Number Parsing Type",
+        "description": "Call Number Parsing Type",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CallNumberParsing"
+      },
+      {
+        "code": "CatalogerLeveltoVocabularyCode",
+        "name": "Cataloger Level to Vocabulary Code",
+        "description": "Table to map the Alma cataloger levels to the cataloger levels defined in the external system",
+        "sub_system": {
+          "value": "REPOSITORY",
+          "desc": "Repository"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CatalogerLeveltoVocabularyCode"
+      },
+      {
+        "code": "CitationAttributesToCitationAttributesTypes",
+        "name": "Citation Attributes To Citation Attributes Types",
+        "description": "Citation attributes to citation attributes types",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CitationAttributesToCitationAttributesTypes"
+      },
+      {
+        "code": "CitationsCopyRightDefaultStatus",
+        "name": "Citations CopyRight Default Status",
+        "description": "Citations CopyRight Default Status",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CitationsCopyRightDefaultStatus"
+      },
+      {
+        "code": "CiteItFilterUrls",
+        "name": "Cite It Url Domains",
+        "description": "Cite It Url Domains",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CiteItFilterUrls"
+      },
+      {
+        "code": "Cnmarc6XXCategory",
+        "name": "CNMARC 6XX Category",
+        "description": "List of CNMARC Fields for 6XX Category",
+        "sub_system": {
+          "value": "METADATA_EDITOR",
+          "desc": "Metadata Editor"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/Cnmarc6XXCategory"
+      },
+      {
+        "code": "collectionTitleSorting",
+        "name": "Collection Title Sorting Routine",
+        "description": "Collection Title Sorting Routine",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/collectionTitleSorting"
+      },
+      {
+        "code": "ContactInformationPopup",
+        "name": "ContactInformationPopup",
+        "description": "Contact Information Pop-Up configuration",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ContactInformationPopup"
+      },
+      {
+        "code": "CopyrightManagement",
+        "name": "Copyright Management",
+        "description": "Copyright Management",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CopyrightManagement"
+      },
+      {
+        "code": "CRMSiContacts",
+        "name": "CRM Si Contacts",
+        "description": "CRM Contacts",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CRMSiContacts"
+      },
+      {
+        "code": "CurrencySubset",
+        "name": "Currency Subset",
+        "description": "Currency Subset",
+        "sub_system": {
+          "value": "COMMON",
+          "desc": "Common"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CurrencySubset"
+      },
+      {
+        "code": "CustomLinkingForCIDatabases",
+        "name": "Custom linking for Central Index databases",
+        "description": "Custom linking for Central Index databases",
+        "sub_system": {
+          "value": "PRIMA",
+          "desc": "Discovery"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CustomLinkingForCIDatabases"
+      },
+      {
+        "code": "CustomerParameters",
+        "name": "Customer Parameters",
+        "description": "Customer Parameters",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/CustomerParameters"
+      },
+      {
+        "code": "DCMIMaterialType",
+        "name": "DCMI Material Type Mapping",
+        "description": "DC Material Type",
+        "sub_system": {
+          "value": "DATA_MODEL",
+          "desc": "Data Model"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/DCMIMaterialType"
+      },
+      {
+        "code": "DemeritsPoints",
+        "name": "Demerits Points Definitions",
+        "description": "Demerits Points Definitions- if there isn't a match for user group and material type, find first by user group and if not found then by material type",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/DemeritsPoints"
+      },
+      {
+        "code": "PrimaDigitizationOptionalParameters",
+        "name": "Digitization Optional Parameters",
+        "description": "Digitization Optional Parameters",
+        "sub_system": {
+          "value": "PRIMA",
+          "desc": "Discovery"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimaDigitizationOptionalParameters"
+      },
+      {
+        "code": "DisplayUserName",
+        "name": "Display User Name",
+        "description": "Display User Name",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/DisplayUserName"
+      },
+      {
+        "code": "dcTypeToDiscoveryTypeMapping",
+        "name": "Dublin Core type to Discovery Type mapping",
+        "description": "Dublin Core type to Discovery Type mapping",
+        "sub_system": {
+          "value": "PRIMA",
+          "desc": "Discovery"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/dcTypeToDiscoveryTypeMapping"
+      },
+      {
+        "code": "EDIVendorNoteFields",
+        "name": "EDI Vendor Note Fields",
+        "description": "Holding EDI Notes prefix fields",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/EDIVendorNoteFields"
+      },
+      {
+        "code": "EmailIncludeList",
+        "name": "Email Include List",
+        "description": "Email Include List",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/EmailIncludeList"
+      },
+      {
+        "code": "embeddedFileTypes",
+        "name": "Embedded File Type",
+        "description": "Embedded File Type Supported",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/embeddedFileTypes"
+      },
+      {
+        "code": "ExcludeProcessTypePublishing",
+        "name": "Exclude Process Types from Publishing",
+        "description": "Process Types to Exclude from Publishing",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ExcludeProcessTypePublishing"
+      },
+      {
+        "code": "FineFeeTypeDefinition",
+        "name": "Fine Fee Type Definition",
+        "description": "FineFeeTypeDefinition's Description",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/FineFeeTypeDefinition"
+      },
+      {
+        "code": "FtpIncludeList",
+        "name": "Ftp Include List",
+        "description": "Ftp Include List",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/FtpIncludeList"
+      },
+      {
+        "code": "FulfillmentMembers",
+        "name": "Fulfillment Members",
+        "description": "Fulfillment Members",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/FulfillmentMembers"
+      },
+      {
+        "code": "FundLedgerFiscalPeriodTable",
+        "name": "Fund And Ledger Fiscal Period table",
+        "description": "Fiscal Period",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/FundLedgerFiscalPeriodTable"
+      },
+      {
+        "code": "IFrameEmbeddingOptions",
+        "name": "iFrame Embedding Options",
+        "description": "iFrame Embedding Options",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/IFrameEmbeddingOptions"
+      },
+      {
+        "code": "INSTITUTION_EXTERNAL_SYMBOL_LA",
+        "name": "Institution external symbol Libraries Australia",
+        "description": "Institution, library and location codes for publishing to Libraries Australia external systems",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/INSTITUTION_EXTERNAL_SYMBOL_LA"
+      },
+      {
+        "code": "InstitutionLanguages",
+        "name": "Institution Languages",
+        "description": "Institution Languages",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/InstitutionLanguages"
+      },
+      {
+        "code": "InstitutionNotification",
+        "name": "Institution Notifications",
+        "description": "Institution Notifications",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/InstitutionNotification"
+      },
+      {
+        "code": "INSTITUTION_EXTERNAL_SYMBOL",
+        "name": "Institution OCLC symbol",
+        "description": "Institution and library codes for publishing to OCLC",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/INSTITUTION_EXTERNAL_SYMBOL"
+      },
+      {
+        "code": "ItemPolicyExceptionsForResourceSharing",
+        "name": "Item Policy Exceptions for Resource Sharing",
+        "description": "Item Policy Exceptions for Resource Sharing",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ItemPolicyExceptionsForResourceSharing"
+      },
+      {
+        "code": "legantoCitationMenu",
+        "name": "Leganto Citation Menu",
+        "description": "Leganto Citation Menu",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/legantoCitationMenu"
+      },
+      {
+        "code": "legantoListMenu",
+        "name": "Leganto List Menu",
+        "description": "Leganto List Menu",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/legantoListMenu"
+      },
+      {
+        "code": "legantoSectionMenu",
+        "name": "Leganto Section Menu",
+        "description": "Leganto Section Menu",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/legantoSectionMenu"
+      },
+      {
+        "code": "LibraryMapping",
+        "name": "Library Mapping",
+        "description": "Library Mapping",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/LibraryMapping"
+      },
+      {
+        "code": "LibraryNoticesOptIn",
+        "name": "Library Notices Opt In",
+        "description": "List of library notices to opt in",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/LibraryNoticesOptIn"
+      },
+      {
+        "code": "LicenseSectionsOrder",
+        "name": "License Sections Order",
+        "description": "License Sections Order",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/LicenseSectionsOrder"
+      },
+      {
+        "code": "ACQControlledVocabulary",
+        "name": "License term controlled vocabulary",
+        "description": "License term controlled vocabulary",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ACQControlledVocabulary"
+      },
+      {
+        "code": "LinkedAccountSharedFields",
+        "name": "Linked Account Shared Fields",
+        "description": "Linked Account Shared Fields (source's institution configuration)",
+        "sub_system": {
+          "value": "USERS"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/LinkedAccountSharedFields"
+      },
+      {
+        "code": "RequestConfiguration",
+        "name": "Loan Recalls Configuration",
+        "description": "Loan Recalls",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/RequestConfiguration"
+      },
+      {
+        "code": "LTIinstructorsRoles",
+        "name": "LTI - Course Management System Roles Mapping",
+        "description": "LTI Instructors Roles",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/LTIinstructorsRoles"
+      },
+      {
+        "code": "holdingsInBib",
+        "name": "Map holdings fields into Bib record",
+        "description": "Map holdings fields into Bib record - for publishing to OCLC",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/holdingsInBib"
+      },
+      {
+        "code": "holdingsInBibLa",
+        "name": "Map holdings fields into Bib record",
+        "description": "Map holdings fields into Bib record - for publishing to Libraries Australia external systems",
+        "sub_system": {
+          "value": "INVENTORY",
+          "desc": "Inventory"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/holdingsInBibLa"
+      },
+      {
+        "code": "MashupBookingRequestForm",
+        "name": "Mashup Booking Request Form",
+        "description": "Define what fields to display/hide in Getit booking request form",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/MashupBookingRequestForm"
+      },
+      {
+        "code": "MashupDigitizationRequestForm",
+        "name": "Mashup Digitization Request Form",
+        "description": "Define what fields to display/hide in Getit digitization request form. Note: When requesting serial items that aren't cataloged, a free-text manual description field or structured description fields must be filled-in. If 'Display to Public' is set to 'No' for all the fields in this screen, this page can be saved but a request cannot be made.",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/MashupDigitizationRequestForm"
+      },
+      {
+        "code": "MashupHoldRequestForm",
+        "name": "Mashup Hold Request Form",
+        "description": "Define what fields to display/hide in Getit hold request form. Note: When requesting serial items that aren't cataloged, a free-text manual description field or structured description fields must be filled-in. If 'Display to Public' is set to 'No' for all the fields in this screen, this page can be saved but a request cannot be made.",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/MashupHoldRequestForm"
+      },
+      {
+        "code": "MultiStepMatchConfiguration",
+        "name": "Multi Step Match Configuration",
+        "description": "Define the match methods for the multi step match routine",
+        "sub_system": {
+          "value": "REPOSITORY",
+          "desc": "Repository"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/MultiStepMatchConfiguration"
+      },
+      {
+        "code": "notificationsInstructors",
+        "name": "Notifications Instructors",
+        "description": "filter notifications for instructors",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/notificationsInstructors"
+      },
+      {
+        "code": "notificationsStudents",
+        "name": "Notifications Students",
+        "description": "filter notifications for students",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/notificationsStudents"
+      },
+      {
+        "code": "ObjectTypeSearchIndexCode",
+        "name": "Object Type Search Index Codes",
+        "description": "Object Type Search Index Codes",
+        "sub_system": {
+          "value": "DATA_MODEL",
+          "desc": "Data Model"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ObjectTypeSearchIndexCode"
+      },
+      {
+        "code": "ObjectTypeSearchIndexCodeEsploroMM",
+        "name": "Object Type Search Index Codes Esploro MM",
+        "description": "Object Type Search Index Codes Esploro MM",
+        "sub_system": {
+          "value": "RESEARCH",
+          "desc": "Research"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ObjectTypeSearchIndexCodeEsploroMM"
+      },
+      {
+        "code": "PatronDepositTemplates",
+        "name": "Patron Deposit Templates",
+        "description": "Patron Deposit Templates.",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PatronDepositTemplates"
+      },
+      {
+        "code": "PatronLimits",
+        "name": "Patron Limits Definitions",
+        "description": "Patron Limits Definitions",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PatronLimits"
+      },
+      {
+        "code": "PatronQueryTemplates",
+        "name": "Patron Query Templates",
+        "description": "Patron Query Templates. %reqId% and %reqName% is substituted with the request external identifier and patron name",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PatronQueryTemplates"
+      },
+      {
+        "code": "POLineType",
+        "name": "PO Line Type",
+        "description": "This table holds the PO line types which will be available when creating a PO line. In case a specific PO line type is disabled, there is an option to select a 'Default PO Line Type'. The default type will be used in 2 cases - Case 1: PO lines created via API and the PO line type value defined in the API is disabled 2. PO lines created via purchase request and the PO line type, based on the user selection within the Purchase Request form (Print - OneTime, Print - Continuous, E-Book OneTime, E-Journal Continuous), is disabled. To add a default value customize the desired PO line type and select a Default Type.",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/POLineType"
+      },
+      {
+        "code": "PrimoCustomizedHolding",
+        "name": "Primo Customized Holding",
+        "description": "This table allows to configure which fields from the Holding will be displayed in Primo",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimoCustomizedHolding"
+      },
+      {
+        "code": "PrimoPurchaseRequestForm",
+        "name": "Primo Purchase Request Form",
+        "description": "Define what field to display/hide in Get It purchase request form",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimoPurchaseRequestForm"
+      },
+      {
+        "code": "PrimoViewToLibraries",
+        "name": "Primo view mapped into Alma libraries",
+        "description": "Primo view mapped into Alma libraries for uresolver getit filtering",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimoViewToLibraries"
+      },
+      {
+        "code": "PrimaPurchaseRequestOptionalParameters",
+        "name": "Purchase Request Optional Parameters",
+        "description": "Purchase Request Optional Parameters",
+        "sub_system": {
+          "value": "PRIMA",
+          "desc": "Discovery"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimaPurchaseRequestOptionalParameters"
+      },
+      {
+        "code": "readingListAdvisorAgendaItems",
+        "name": "Reading List Advisor Agenda Items",
+        "description": "Reading List Advisor Agenda Items",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/readingListAdvisorAgendaItems"
+      },
+      {
+        "code": "ReceivingDepartmentValidations",
+        "name": "Receiving Department Validations",
+        "description": "Validate item when leaving receiving department",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ReceivingDepartmentValidations"
+      },
+      {
+        "code": "RedirectWhitelist",
+        "name": "Redirect Allowed List",
+        "description": "Redirect Allowed List",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/RedirectWhitelist"
+      },
+      {
+        "code": "PrimaRequestOptionalParameters",
+        "name": "Request (Hold and Booking) Optional Parameters",
+        "description": "Request (Hold and Booking) Optional Parameters",
+        "sub_system": {
+          "value": "PRIMA",
+          "desc": "Discovery"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimaRequestOptionalParameters"
+      },
+      {
+        "code": "RequestFormTypeByGenre",
+        "name": "Request Form Type by Genre",
+        "description": "Resource Sharing Request Form Type by Genre",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/RequestFormTypeByGenre"
+      },
+      {
+        "code": "RequestTypesPriorities",
+        "name": "Request Types Priorities",
+        "description": "Request Types Priorities",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/RequestTypesPriorities"
+      },
+      {
+        "code": "ScanInMessagesConfiguration",
+        "name": "Scan In Messages Configuration",
+        "description": "Define if and how messages will appear when scanning in an item.",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/ScanInMessagesConfiguration"
+      },
+      {
+        "code": "StatisticalCategoriesTypes",
+        "name": "Statistical Categories/Types",
+        "description": "The table maps the relevant statistical categories to the user category types",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/StatisticalCategoriesTypes"
+      },
+      {
+        "code": "SurveyQuestionMultipleChoice1",
+        "name": "Survey Question Multiple Choice",
+        "description": "Survey Question Multiple Choice",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/SurveyQuestionMultipleChoice1"
+      },
+      {
+        "code": "TagsToTagsLevelAndVisibility",
+        "name": "TagsToTagsLevelAndVisibility",
+        "description": "The table maps the relevant tag to the tag level and visibility",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/TagsToTagsLevelAndVisibility"
+      },
+      {
+        "code": "unimarcMultipleAuthorityId",
+        "name": "UNIMARC Multiple Authority ID configuration",
+        "description": "List of UNIMARC fields controlled by multiple authority records",
+        "sub_system": {
+          "value": "METADATA_EDITOR",
+          "desc": "Metadata Editor"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/unimarcMultipleAuthorityId"
+      },
+      {
+        "code": "urlConfiguration",
+        "name": "URL Configuration",
+        "sub_system": {
+          "value": "INFRA",
+          "desc": "Infra"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/urlConfiguration"
+      },
+      {
+        "code": "UserBlockDefinitions",
+        "name": "User Block Definitions",
+        "description": "Block To Blocked Actions",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/UserBlockDefinitions"
+      },
+      {
+        "code": "PrimaRestrictedAccessGroups",
+        "name": "User Groups With Restricted Access",
+        "description": "Lists the user groupsthat cannot access Central Index or Ebsco",
+        "sub_system": {
+          "value": "PRIMA",
+          "desc": "Discovery"
+        },
+        "customized": false,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/PrimaRestrictedAccessGroups"
+      },
+      {
+        "code": "UserRecordTypeJobTitle",
+        "name": "UserRecordTypeJobTitle",
+        "description": "These table rows map relevant job categories to user record types",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/UserRecordTypeJobTitle"
+      },
+      {
+        "code": "UserRecordTypeUserGroup",
+        "name": "UserRecordTypeUserGroup",
+        "description": "The tables maps the relevant user groups to the user record types",
+        "sub_system": {
+          "value": "USER_MANAGEMENT",
+          "desc": "User Management"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/UserRecordTypeUserGroup"
+      },
+      {
+        "code": "VATCodes_MT",
+        "name": "VAT Codes",
+        "description": "VAT percentage codes",
+        "sub_system": {
+          "value": "ACQUISITION",
+          "desc": "Acquisition"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/VATCodes_MT"
+      },
+      {
+        "code": "WorkOrderTypeStatuses",
+        "name": "Work Order Type Statuses",
+        "description": "Work Order Type Statuses",
+        "sub_system": {
+          "value": "FULFILLMENT",
+          "desc": "Fulfillment"
+        },
+        "customized": true,
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/mapping-tables/WorkOrderTypeStatuses"
+      }
+    ],
+    "total_record_count": 84
+  }

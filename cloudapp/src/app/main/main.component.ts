@@ -4,6 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetService, CodeTableEntry } from '../services/asset.service';
 import { AssetFileLink } from '../models/asset';
+import { ProcessedAsset, FileType, AssetFileAndLinkType } from '../models/types';
 import { FALLBACK_FILE_TYPES } from '../constants/file-types';
 
 @Component({
@@ -13,10 +14,20 @@ import { FALLBACK_FILE_TYPES } from '../constants/file-types';
 })
 export class MainComponent implements OnInit {
   form: FormGroup;
-  fileTypes: CodeTableEntry[] = [];
+  fileTypes: FileType[] = [];
+  assetFileAndLinkTypes: AssetFileAndLinkType[] = [];  // All file type categories
+  filteredFileTypes: AssetFileAndLinkType[] = [];  // Filtered by asset type
   loadingFileTypes = false;
+  loadingAssetMetadata = false;
+  currentAssetType: string = '';  // Cached asset type for filtering
   submitting = false;
   submissionResult: { type: 'success' | 'error'; message: string } | null = null;
+
+  // CSV Processing state
+  processedAssets: ProcessedAsset[] = [];
+  mmsIdDownloadUrl: string = '';
+  showResults = false;
+  showWorkflowInstructions = false;
 
   private readonly fallbackFileTypes: CodeTableEntry[] = FALLBACK_FILE_TYPES;
 
@@ -29,10 +40,21 @@ export class MainComponent implements OnInit {
       assetId: ['', Validators.required],
       files: this.fb.array([this.createFileGroup()])
     });
+
+    // Watch for asset ID changes to fetch asset type
+    this.form.get('assetId')?.valueChanges.subscribe(assetId => {
+      if (assetId && assetId.trim()) {
+        this.loadAssetTypeAndFilterFileTypes(assetId.trim());
+      } else {
+        this.currentAssetType = '';
+        this.filteredFileTypes = this.assetFileAndLinkTypes;
+      }
+    });
   }
 
   ngOnInit(): void {
     this.loadFileTypes();
+    this.loadAssetFilesAndLinkTypes();
   }
 
   get files(): FormArray {
@@ -122,12 +144,81 @@ export class MainComponent implements OnInit {
       .subscribe({
         next: (entries) => {
           const normalized = (entries ?? []).filter(entry => !!entry.value);
-          this.fileTypes = normalized.length > 0 ? normalized : this.fallbackFileTypes;
+          const codeTableEntries = normalized.length > 0 ? normalized : this.fallbackFileTypes;
+          
+          // Convert to FileType format for new components
+          this.fileTypes = codeTableEntries.map(entry => ({
+            code: entry.value,
+            description: entry.description || entry.value
+          }));
         },
         error: () => {
-          this.fileTypes = this.fallbackFileTypes;
+          this.fileTypes = this.fallbackFileTypes.map(entry => ({
+            code: entry.value,
+            description: entry.description || entry.value
+          }));
         }
       });
+  }
+
+  /**
+   * Load AssetFileAndLinkTypes mapping table for file type categories
+   * This provides the valid ID values that must be used in API calls
+   */
+  private loadAssetFilesAndLinkTypes(): void {
+    this.assetService.getAssetFilesAndLinkTypes()
+      .subscribe({
+        next: (types) => {
+          this.assetFileAndLinkTypes = types;
+          this.filteredFileTypes = types;  // Initially show all
+        },
+        error: (error) => {
+          console.error('Failed to load AssetFileAndLinkTypes mapping table:', error);
+          this.alert.error('Failed to load file type categories. Some features may be limited.');
+        }
+      });
+  }
+
+  /**
+   * Load asset type and filter available file types based on compatibility
+   */
+  private loadAssetTypeAndFilterFileTypes(assetId: string): void {
+    this.loadingAssetMetadata = true;
+    
+    this.assetService.getAssetMetadata(assetId)
+      .pipe(finalize(() => this.loadingAssetMetadata = false))
+      .subscribe({
+        next: (metadata) => {
+          this.currentAssetType = metadata.assetType || '';
+          
+          if (this.currentAssetType) {
+            this.filteredFileTypes = this.assetService.filterFileTypesByAssetType(
+              this.assetFileAndLinkTypes,
+              this.currentAssetType,
+              'both'  // Can be 'file', 'link', or 'both'
+            );
+          } else {
+            // If asset type not found, show all file types
+            this.filteredFileTypes = this.assetFileAndLinkTypes;
+          }
+        },
+        error: (error) => {
+          console.warn(`Could not load asset type for ${assetId}:`, error);
+          // On error, show all file types
+          this.currentAssetType = '';
+          this.filteredFileTypes = this.assetFileAndLinkTypes;
+        }
+      });
+  }
+
+  onBatchProcessed(assets: ProcessedAsset[]) {
+    this.processedAssets = assets;
+    this.showResults = true;
+  }
+
+  onDownloadReady(downloadUrl: string) {
+    this.mmsIdDownloadUrl = downloadUrl;
+    this.showWorkflowInstructions = true;
   }
 
   private resetFiles(): void {

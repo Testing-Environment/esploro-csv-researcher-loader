@@ -1,0 +1,259 @@
+<div class="processing-results">
+  <!-- Results Summary -->
+  <mat-card class="results-summary" *ngIf="processedData.length > 0">
+    <mat-card-header>
+      <mat-card-title>{{ 'Results.Title' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="summary-stats">
+        <div class="stat-item success">
+          <mat-icon>check_circle</mat-icon>
+          <span class="count">{{ getSuccessCount() }}</span>
+          <span class="label">{{ 'Results.Successful' | translate }}</span>
+        </div>
+        <div class="stat-item error" *ngIf="getErrorCount() > 0">
+          <mat-icon>error</mat-icon>
+          <span class="count">{{ getErrorCount() }}</span>
+          <span class="label">{{ 'Results.Failed' | translate }}</span>
+        </div>
+        <div class="stat-item warning" *ngIf="getUnchangedCount() > 0">
+          <mat-icon>info</mat-icon>
+          <span class="count">{{ getUnchangedCount() }}</span>
+          <span class="label">{{ 'Results.Unchanged' | translate }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Workflow Instructions -->
+  <mat-card *ngIf="showInstructions" class="instructions-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'Instructions.Title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'Instructions.Subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-stepper linear="false">
+
+        <!-- Step 1: Download MMS ID File -->
+        <mat-step>
+          <ng-template matStepLabel>{{ 'Instructions.Step1.Title' | translate }}</ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step1.Description' | translate }}</p>
+            <div class="download-section">
+              <a [href]="downloadUrl"
+                 download="esploro_asset_mms_ids.csv"
+                 mat-raised-button
+                 color="primary"
+                 [class.disabled]="!downloadUrl">
+                <mat-icon>download</mat-icon>
+                {{ 'Instructions.Step1.DownloadButton' | translate }}
+              </a>
+              <p class="download-info">
+                {{ 'Instructions.Step1.FileInfo' | translate : {count: getSuccessCount()} }}
+              </p>
+            </div>
+          </div>
+        </mat-step>
+
+        <!-- Step 2: Create Asset Set -->
+        <mat-step>
+          <ng-template matStepLabel>{{ 'Instructions.Step2.Title' | translate }}</ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step2.Description' | translate }}</p>
+            <ol class="instruction-list">
+              <li>{{ 'Instructions.Step2.Item1' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item2' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item3' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item4' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item5' | translate }}</li>
+            </ol>
+            <div class="helpful-links">
+              <button mat-stroked-button (click)="openEsploroAdvancedSearch()">
+                <mat-icon>open_in_new</mat-icon>
+                {{ 'Instructions.Step2.OpenAdvancedSearch' | translate }}
+              </button>
+            </div>
+          </div>
+        </mat-step>
+
+        <!-- Step 3: Run Import Job -->
+        <mat-step>
+          <ng-template matStepLabel>{{ 'Instructions.Step3.Title' | translate }}</ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step3.Description' | translate }}</p>
+            <ol class="instruction-list">
+              <li>{{ 'Instructions.Step3.Item1' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item2' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item3' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item4' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item5' | translate }}</li>
+            </ol>
+            <div class="helpful-links">
+              <button mat-stroked-button (click)="openRepositoryJobs()">
+                <mat-icon>open_in_new</mat-icon>
+                {{ 'Instructions.Step3.OpenJobs' | translate }}
+              </button>
+            </div>
+          </div>
+        </mat-step>
+
+        <!-- Step 4: Access Files -->
+        <mat-step>
+          <ng-template matStepLabel>{{ 'Instructions.Step4.Title' | translate }}</ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step4.Description' | translate }}</p>
+
+            <div class="file-urls" *ngIf="getSuccessfulAssets().length > 0">
+              <h4>{{ 'Instructions.Step4.ViewerUrls' | translate }}</h4>
+              <div class="url-list">
+                <div *ngFor="let asset of getSuccessfulAssets(); trackBy: trackByMmsId; let i = index"
+                     class="url-item">
+                  <div class="asset-info">
+                    <strong>{{ asset.mmsId }}</strong>
+                    <span class="file-title" *ngIf="asset.fileTitle">
+                      - {{ asset.fileTitle }}
+                    </span>
+                  </div>
+                  <div class="url-link">
+                    <a [href]="getEsploroViewerUrl(asset.mmsId)"
+                       target="_blank"
+                       class="viewer-link"
+                       mat-button>
+                      <mat-icon>open_in_new</mat-icon>
+                      {{ 'Instructions.Step4.ViewFiles' | translate }}
+                    </a>
+                    <button mat-icon-button
+                            [cdkCopyToClipboard]="getEsploroViewerUrl(asset.mmsId)"
+                            [matTooltip]="'Instructions.Step4.CopyUrl' | translate">
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-step>
+      </mat-stepper>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Potential Unchanged Assets Section -->
+  <mat-card *ngIf="getUnchangedCount() > 0" class="unchanged-assets-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="title-icon">info</mat-icon>
+        {{ 'Results.UnchangedAssets.Title' | translate }}
+      </mat-card-title>
+      <mat-card-subtitle>{{ 'Results.UnchangedAssets.Subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="unchanged-explanation">
+        {{ 'Results.UnchangedAssets.Explanation' | translate : {count: getUnchangedCount()} }}
+      </p>
+
+      <table mat-table [dataSource]="getUnchangedAssets()" class="unchanged-table">
+        
+        <!-- Asset ID Column -->
+        <ng-container matColumnDef="mmsId">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.UnchangedAssets.Table.AssetId' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <a [href]="getEsploroViewerUrl(element.mmsId)"
+               target="_blank"
+               class="asset-link">
+              {{ element.mmsId }}
+              <mat-icon class="external-link">open_in_new</mat-icon>
+            </a>
+          </td>
+        </ng-container>
+
+        <!-- File Title Column -->
+        <ng-container matColumnDef="fileTitle">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.UnchangedAssets.Table.FileTitle' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.fileTitle || '—' }}</td>
+        </ng-container>
+
+        <!-- Remote URL Column -->
+        <ng-container matColumnDef="remoteUrl">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.UnchangedAssets.Table.RemoteUrl' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="url-cell">
+            <a [href]="element.remoteUrl" target="_blank" *ngIf="element.remoteUrl" class="remote-url">
+              {{ element.remoteUrl }}
+              <mat-icon class="external-link">open_in_new</mat-icon>
+            </a>
+            <span *ngIf="!element.remoteUrl">—</span>
+          </td>
+        </ng-container>
+
+        <!-- Reason Column -->
+        <ng-container matColumnDef="reason">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.UnchangedAssets.Table.Reason' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="reason-badge">
+              {{ 'Results.UnchangedAssets.Reasons.NoChange' | translate }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['mmsId', 'fileTitle', 'remoteUrl', 'reason']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['mmsId', 'fileTitle', 'remoteUrl', 'reason'];"></tr>
+      </table>
+
+      <div class="unchanged-actions">
+        <p class="action-note">
+          <mat-icon>lightbulb</mat-icon>
+          {{ 'Results.UnchangedAssets.ActionNote' | translate }}
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Detailed Results Table -->
+  <mat-card *ngIf="processedData.length > 0" class="detailed-results">
+    <mat-card-header>
+      <mat-card-title>{{ 'Results.Detailed.Title' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="processedData" class="results-table">
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.Table.Status' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon [class]="'status-' + element.status">
+              {{ element.status === 'success' ? 'check_circle' : 'error' }}
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <!-- MMS ID Column -->
+        <ng-container matColumnDef="mmsId">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.Table.MmsId' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <code class="mms-id">{{ element.mmsId }}</code>
+          </td>
+        </ng-container>
+
+        <!-- File Title Column -->
+        <ng-container matColumnDef="fileTitle">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.Table.FileTitle' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.fileTitle || '-' }}
+          </td>
+        </ng-container>
+
+        <!-- Error Message Column -->
+        <ng-container matColumnDef="errorMessage">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Results.Table.Error' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="error-message" *ngIf="element.errorMessage">
+              {{ element.errorMessage }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="resultColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: resultColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

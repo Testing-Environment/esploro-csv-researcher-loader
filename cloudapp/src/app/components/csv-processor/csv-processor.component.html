@@ -1,0 +1,270 @@
+<div class="csv-processor">
+  <!-- File Upload Section -->
+  <mat-card class="upload-card" *ngIf="!csvData">
+    <mat-card-header>
+      <mat-card-title>{{ 'CSV.Upload.Title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'CSV.Upload.Subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="upload-area"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onFileDrop($event)"
+           [class.drag-active]="isDragActive">
+
+        <input type="file"
+               accept=".csv"
+               (change)="onFileSelected($event)"
+               #fileInput
+               style="display: none">
+
+        <div class="upload-content">
+          <mat-icon class="upload-icon">cloud_upload</mat-icon>
+          <p class="upload-text">{{ 'CSV.Upload.DragDrop' | translate }}</p>
+          <p class="upload-subtext">{{ 'CSV.Upload.OrClick' | translate }}</p>
+          <button mat-raised-button
+                  color="primary"
+                  (click)="fileInput.click()">
+            <mat-icon>upload_file</mat-icon>
+            {{ 'CSV.Upload.SelectFile' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- File Requirements -->
+      <div class="file-requirements">
+        <h4>{{ 'CSV.Requirements.Title' | translate }}</h4>
+        <ul>
+          <li>{{ 'CSV.Requirements.Format' | translate }}</li>
+          <li>{{ 'CSV.Requirements.Headers' | translate }}</li>
+          <li>{{ 'CSV.Requirements.Encoding' | translate }}</li>
+        </ul>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Column Mapping Section -->
+  <mat-card *ngIf="csvData && showColumnMapping" class="mapping-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'CSV.Mapping.Title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'CSV.Mapping.Subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Preview of uploaded data -->
+      <div class="data-preview">
+        <h4>{{ 'CSV.Preview.Title' | translate }}</h4>
+        <p>{{ 'CSV.Preview.Records' | translate : {count: csvData.data.length} }}</p>
+      </div>
+
+      <!-- Column mapping table -->
+      <div class="mapping-container">
+        <table mat-table [dataSource]="columnMappingData" class="mapping-table">
+
+          <!-- CSV Header Column -->
+          <ng-container matColumnDef="csvHeader">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.Mapping.CSVHeader' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <code class="csv-header">{{element.csvHeader}}</code>
+            </td>
+          </ng-container>
+
+          <!-- Sample Value Column -->
+          <ng-container matColumnDef="sampleValue">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.Mapping.SampleValue' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <span class="sample-value" [title]="element.sampleValue">
+                {{element.sampleValue | slice:0:40}}
+                <span *ngIf="element.sampleValue?.length > 40">...</span>
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Field Mapping Column -->
+          <ng-container matColumnDef="mappedField">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.Mapping.MapToField' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <mat-select [(value)]="element.mappedField"
+                          [placeholder]="'CSV.Mapping.SelectField' | translate">
+                <mat-option value="mmsId">
+                  <strong>MMS ID</strong> - {{ 'Fields.MmsId.Description' | translate }}
+                </mat-option>
+                <mat-option value="remoteUrl">
+                  <strong>Remote URL</strong> - {{ 'Fields.RemoteUrl.Description' | translate }}
+                </mat-option>
+                <mat-option value="fileTitle">
+                  <strong>File Title</strong> - {{ 'Fields.FileTitle.Description' | translate }}
+                </mat-option>
+                <mat-option value="fileDescription">
+                  <strong>File Description</strong> - {{ 'Fields.FileDescription.Description' | translate }}
+                </mat-option>
+                <mat-option value="fileType">
+                  <strong>File Type</strong> - {{ 'Fields.FileType.Description' | translate }}
+                </mat-option>
+                <mat-option value="ignore" class="ignore-option">
+                  {{ 'CSV.Mapping.IgnoreColumn' | translate }}
+                </mat-option>
+              </mat-select>
+
+              <!-- Confidence indicator -->
+              <div class="confidence-indicator" *ngIf="element.confidence > 0.7">
+                <mat-icon class="confidence-high" [title]="'CSV.Mapping.HighConfidence' | translate">
+                  check_circle
+                </mat-icon>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <!-- Validation Messages -->
+      <div class="validation-messages" *ngIf="validationErrors.length > 0">
+        <mat-error *ngFor="let error of validationErrors">
+          <mat-icon>error</mat-icon>
+          {{ error }}
+        </mat-error>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mapping-actions">
+        <button mat-raised-button
+                color="primary"
+                [disabled]="!isValidMapping()"
+                (click)="processMappedData()">
+          <mat-icon>play_arrow</mat-icon>
+          {{ 'CSV.Actions.ProcessData' | translate }}
+        </button>
+        <button mat-button (click)="resetUpload()">
+          <mat-icon>refresh</mat-icon>
+          {{ 'CSV.Actions.UploadDifferent' | translate }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- File Type Conversion Section -->
+  <mat-card *ngIf="showFileTypeConversion" class="conversion-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'CSV.FileTypeConversion.Title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'CSV.FileTypeConversion.Subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Information banner -->
+      <div class="conversion-info">
+        <mat-icon class="info-icon">info</mat-icon>
+        <div class="info-text">
+          <p>{{ 'CSV.FileTypeConversion.Explanation' | translate }}</p>
+          <p><strong>{{ 'CSV.FileTypeConversion.Note' | translate }}</strong></p>
+        </div>
+      </div>
+
+      <!-- Conversion table -->
+      <div class="conversion-container">
+        <table mat-table [dataSource]="fileTypeConversions" class="conversion-table">
+
+          <!-- CSV Value Column -->
+          <ng-container matColumnDef="csvValue">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.FileTypeConversion.SubmittedValue' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <code class="csv-value">{{element.csvValue}}</code>
+            </td>
+          </ng-container>
+
+          <!-- Matched Target Code Column -->
+          <ng-container matColumnDef="matchedTargetCode">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.FileTypeConversion.MatchedLabel' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <span *ngIf="element.matchedTargetCode" class="matched-label">
+                {{element.matchedTargetCode}}
+                <mat-icon class="confidence-icon" 
+                          [class.high-confidence]="element.confidence >= 0.9"
+                          [class.medium-confidence]="element.confidence >= 0.7 && element.confidence < 0.9"
+                          [class.low-confidence]="element.confidence < 0.7"
+                          [matTooltip]="'CSV.FileTypeConversion.Confidence' | translate : {value: (element.confidence * 100 | number:'1.0-0')}">
+                  {{ element.confidence >= 0.9 ? 'check_circle' : (element.confidence >= 0.7 ? 'help' : 'warning') }}
+                </mat-icon>
+              </span>
+              <span *ngIf="!element.matchedTargetCode" class="no-match">
+                {{ 'CSV.FileTypeConversion.NoMatch' | translate }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Matched ID Column -->
+          <ng-container matColumnDef="matchedId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.FileTypeConversion.MappedID' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <code *ngIf="element.matchedId" class="matched-id">{{element.matchedId}}</code>
+              <span *ngIf="!element.matchedId" class="no-id">-</span>
+            </td>
+          </ng-container>
+
+          <!-- Manual Mapping Column -->
+          <ng-container matColumnDef="manualMapping">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CSV.FileTypeConversion.ManualMapping' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-select *ngIf="element.requiresManualMapping || element.confidence < 0.9"
+                          [(value)]="element.matchedId"
+                          (selectionChange)="updateManualFileTypeMapping(element, $event.value)"
+                          [placeholder]="'CSV.FileTypeConversion.SelectType' | translate"
+                          class="manual-select">
+                <mat-option *ngFor="let type of assetFileAndLinkTypes" [value]="type.id">
+                  {{ type.targetCode }} ({{ type.id }})
+                </mat-option>
+              </mat-select>
+              <span *ngIf="!element.requiresManualMapping && element.confidence >= 0.9" class="auto-mapped">
+                {{ 'CSV.FileTypeConversion.AutoMapped' | translate }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="conversionDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: conversionDisplayedColumns;" 
+              [class.requires-attention]="row.requiresManualMapping"></tr>
+        </table>
+      </div>
+
+      <!-- Summary -->
+      <div class="conversion-summary">
+        <p>
+          <strong>{{ 'CSV.FileTypeConversion.Summary' | translate }}</strong>
+          {{ 'CSV.FileTypeConversion.SummaryDetails' | translate : {
+            total: fileTypeConversions.length,
+            auto: autoMappedCount,
+            manual: manualMappingRequiredCount
+          } }}
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="conversion-actions">
+        <button mat-raised-button
+                color="primary"
+                [disabled]="hasPendingManualMappings"
+                (click)="applyFileTypeConversions()">
+          <mat-icon>check</mat-icon>
+          {{ 'CSV.FileTypeConversion.ApplyConversions' | translate }}
+        </button>
+        <button mat-button (click)="cancelFileTypeConversion()">
+          <mat-icon>close</mat-icon>
+          {{ 'CSV.FileTypeConversion.Cancel' | translate }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Processing Progress -->
+  <mat-card *ngIf="isProcessing" class="processing-card">
+    <mat-card-content>
+      <div class="processing-status">
+        <mat-progress-bar mode="determinate" [value]="processingProgress"></mat-progress-bar>
+        <p>{{ 'CSV.Processing.Status' | translate : {current: processedCount, total: totalCount} }}</p>
+        <div class="processing-details" *ngIf="currentProcessingItem">
+          <small>{{ 'CSV.Processing.Current' | translate }}: {{ currentProcessingItem }}</small>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

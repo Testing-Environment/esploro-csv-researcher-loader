@@ -1,83 +1,299 @@
-# Esploro Asset File Loader - Comprehensive Codebase Analysis
+# Esploro CSV Asset Loader – Comprehensive Codebase Analysis (2025)
 
-## Executive Summary
+This document maps the structure, components, data flow, dependencies, and design of the Esploro CSV Asset Loader Cloud App so a new developer can get productive quickly and a reviewer can understand how the pieces fit together.
 
-The **Esploro Asset File Loader** is a streamlined Angular-based cloud application designed to attach external files to research assets in Ex Libris Esploro. It provides a focused, form-based interface for queueing file downloads that integrates seamlessly with Esploro's native "Load files" job.
-
-### Primary Use Case
-A researcher or administrator needs to attach multiple external files (PDFs, datasets, supplementary materials) to an existing research asset in Esploro. Instead of manually entering each file through Esploro's UI, they can use this Cloud App to batch-queue multiple files at once, which Esploro will then download and attach via its background job system.
-
-### Key Capabilities
-- ✅ Attach external files to existing Esploro research assets
-- ✅ Queue multiple files for a single asset in one operation
-- ✅ Dynamic file type selection from Esploro code tables
-- ✅ Form validation with immediate feedback
-- ✅ Integration with Esploro's "Load files" background job
-
-### What This App Is NOT
-- ❌ Not a CSV bulk processor (that was a previous version, now removed)
-- ❌ Not a researcher data loader
-- ❌ Not a file uploader (files must be at HTTP/HTTPS URLs)
-- ❌ Not a direct file transfer tool (Esploro downloads files asynchronously)
-
-### Historical Context
-**Important**: Legacy documentation may reference CSV loading, researcher management, or bulk operations. Those features were part of a previous version that has been completely replaced. See `documentation/CLEANUP_SUMMARY.md` and `documentation/LEGACY_CSV_LOADER_EXPLANATION.md` for historical details.
+At a glance: An Angular 11 Cloud App for Esploro that lets users attach files/links to research assets either manually or in bulk via CSV, validates and normalizes file type categories using Esploro configuration mapping tables, and guides users to complete ingestion using Esploro’s “Import Research Assets Files” job.
 
 ---
 
-## Table of Contents
+## Project purpose and typical usage
 
-1. [Project Structure](#project-structure)
-2. [Technology Stack](#technology-stack)
-3. [Core Architecture](#core-architecture)
-4. [Component Analysis](#component-analysis)
-5. [Service Layer](#service-layer)
-6. [Data Models](#data-models)
-7. [Data Flow](#data-flow)
-8. [API Integration](#api-integration)
-9. [Form Management](#form-management)
-10. [Validation Strategy](#validation-strategy)
-11. [Error Handling](#error-handling)
-12. [User Experience](#user-experience)
-13. [Configuration](#configuration)
-14. [Deployment](#deployment)
-15. [Testing Approach](#testing-approach)
-16. [Future Enhancements](#future-enhancements)
-17. [Developer Onboarding](#developer-onboarding)
+- Purpose: Enrich existing Esploro research assets by adding files/links with proper metadata.
+- Manual path: Enter one asset ID and one or more file records; app posts a “queue files” payload to the asset.
+- CSV path: Upload a CSV with MMS IDs and file metadata, auto-map columns, validate/convert file type values to required IDs, process each row, and produce a “successful MMS IDs” CSV to help create a set and run the import job in Esploro.
+- Typical workflow:
+  1) Open app inside Esploro, 2) choose Manual Entry or CSV Upload, 3) submit, 4) create a set from the MMS IDs, 5) run the “Import Research Assets Files” job.
 
 ---
 
-## Project Structure
+## Structure map (files, folders, entry points)
 
+Top-level
+- `manifest.json` – Cloud App manifest: pages, permissions, icon, title/description, and entity scope.
+- `package.json` – Node dependencies and scripts; dev served via `eca start`.
+- `settings.json` – App settings template (if used with Cloud Apps settings service).
+- `README.md` – End-user and developer overview.
+- `documentation/` – Rich docs suite, examples, diagrams, API references.
+
+Angular app (Cloud App)
+- `cloudapp/src/app/app.module.ts` – Root Angular module; declares components and imports Cloud Apps libs and i18n.
+- `cloudapp/src/app/app-routing.module.ts` – Routes; root route renders `MainComponent`.
+- `cloudapp/src/app/app.component.ts` – Root shell with alert outlet + router outlet.
+- `cloudapp/src/app/main/` – Manual entry form UI and CSV tab container.
+  - `main.component.ts|html|scss` – Orchestrates manual form and hosts CSV components and results.
+- `cloudapp/src/app/components/`
+  - `csv-processor/…` – CSV upload, mapping, validation, conversion, batch processing.
+  - `processing-results/…` – Summary table, MMS ID download, deep links back to Esploro.
+- `cloudapp/src/app/services/asset.service.ts` – Esploro REST calls and mapping-table helpers.
+- `cloudapp/src/app/models/` – Shared interfaces: `asset.ts`, `types.ts`.
+- `cloudapp/src/app/constants/file-types.ts` – Fallback file types for resilience.
+- `cloudapp/src/app/utilities.ts` – Misc. helpers.
+- `cloudapp/src/i18n/en.json` – All user-facing strings with ICU message format.
+- `cloudapp/src/assets/researcherLoader.png` – App icon.
+
+Languages and frameworks
+- Language: TypeScript (Angular 11)
+- UI: Angular Material 11
+- Esploro integration: Ex Libris Cloud Apps SDK (`@exlibris/exl-cloudapp-angular-lib`)
+
+Main entry points
+- Cloud App loads `/#/` which routes to `MainComponent` (`app-routing.module.ts`).
+- `MainComponent` renders tabs for Manual Entry and CSV Upload and wires results view.
+
+---
+
+## Core components and relationships
+
+- AppComponent (root shell)
+  - Displays `<cloudapp-alert>` and `<router-outlet>`; no logic beyond app initialization.
+- MainComponent (feature container)
+  - Holds reactive form for single-asset manual submissions.
+  - Loads file type code table and the AssetFileAndLinkTypes mapping table.
+  - Detects asset type by MMS ID to filter compatible file/link categories.
+  - Hosts CSVProcessorComponent and ProcessingResultsComponent.
+- CSVProcessorComponent (bulk CSV engine)
+  - CSV upload, parsing (RFC 4180 style), column auto-mapping, mapping validation.
+  - File type value validation against mapping table; fuzzy match to convert names to required IDs.
+  - Caches “before” asset file state, calls APIs per row, fetches “after” state, flags unchanged assets.
+  - Emits processed rows and generates a “successful MMS IDs” CSV for downstream Esploro steps.
+- ProcessingResultsComponent (outcome UI)
+  - Renders success/error/unchanged counts and per-row status.
+  - Provides deep links to Esploro Viewer, Advanced Search, Jobs.
+- AssetService (integration/service layer)
+  - Adds files via “queue links to extract” payload to `/esploro/v1/assets/{id}?op=patch&action=add`.
+  - Retrieves file type code table and mapping table (AssetFileAndLinkTypes) from `/conf` APIs.
+  - Retrieves asset metadata to resolve asset type and compare files before/after.
+- AppService (bootstrap helper)
+  - Placeholder for Cloud App InitService usage.
+
+Relationship diagram
+
+```mermaid
+flowchart TD
+  App[AppComponent]
+  App --> Main[MainComponent]
+  Main -->|manual submit| AssetService
+  Main --> CSV[CSVProcessorComponent]
+  CSV -->|REST calls| AssetService
+  CSV --> Results[ProcessingResultsComponent]
+  Main --> Results
+  AssetService -->|/conf/code-tables| Esploro[Esploro Config APIs]
+  AssetService -->|/conf/mapping-tables| Esploro
+  AssetService -->|/esploro/v1/assets| Esploro
 ```
-esploro-csv-researcher-loader/           # Repository (legacy name)
-├── cloudapp/                             # Angular application root
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── main/                    # Main file upload component ⭐
-│   │   │   │   ├── main.component.ts
-│   │   │   │   ├── main.component.html
-│   │   │   │   └── main.component.scss
-│   │   │   │
-│   │   │   ├── models/                  # TypeScript interfaces
-│   │   │   │   ├── asset.ts            # AssetFileLink interface
-│   │   │   │   └── settings.ts         # Settings models (minimal usage)
-│   │   │   │
-│   │   │   ├── services/               # Business logic
-│   │   │   │   └── asset.service.ts   # API integration ⭐
-│   │   │   │
-│   │   │   ├── settings/               # Settings component (currently minimal)
-│   │   │   │   ├── settings.component.ts
-│   │   │   │   └── profile/
-│   │   │   │
-│   │   │   ├── app.module.ts           # Module definitions
-│   │   │   ├── app.component.ts        # Root component
-│   │   │   ├── app-routing.module.ts   # Routes (single route to main)
-│   │   │   └── utilities.ts            # Helper functions (minimal)
-│   │   │
-│   │   ├── assets/                     # Static resources
-│   │   └── i18n/                       # Internationalization (if used)
-│   │
+
+---
+
+## Data flow (end to end)
+
+Manual entry path
+1) User enters Asset ID and one or more files (title, url, description, type id, supplemental).
+2) MainComponent builds `temporary.linksToExtract` payload and posts to:
+   `POST /esploro/v1/assets/{assetId}?op=patch&action=add`.
+3) API acknowledges; files are queued. User proceeds to create a set and run the import job.
+
+CSV path
+1) Upload CSV (<=10 MB). CSVProcessor parses headers/rows with quote/escape handling.
+2) Auto-suggest column mapping for mmsId, remoteUrl, fileTitle, fileDescription, fileType; validate duplicates/required fields.
+3) Validate fileType values:
+   - If values are IDs (exact match against mapping table ids) → OK.
+   - Else try exact/fuzzy name match against mapping table target_code → convert to IDs.
+   - If any still unmapped → prompt for manual selection per unique value.
+4) Optionally cache pre-state for each unique MMS ID by calling `GET /esploro/v1/assets/{mmsId}`.
+5) For each row: validate asset exists; if URL present, call `POST /esploro/v1/assets/{mmsId}/files` with `{ url, title, description, type }`.
+6) Fetch post-state and compare: if file counts unchanged and the URL isn’t present, flag as “unchanged”.
+7) Emit results and generate a MMS ID CSV for successful rows; show instructions to create a Set and run the job.
+
+Data contracts (simplified)
+- AssetFileLink (manual): { title, url, description?, type, supplemental }
+- ProcessedAsset (csv): { mmsId, remoteUrl?, fileTitle?, fileDescription?, fileType?, status, errorMessage?, wasUnchanged? }
+
+---
+
+## External dependencies and roles
+
+- Angular 11 and Angular Material 11 – UI framework and components.
+- RxJS 6 – Observables, operators (`finalize`, `catchError`, etc.).
+- `@exlibris/exl-cloudapp-angular-lib` – Cloud Apps runtime services:
+  - `CloudAppRestService` for proxied REST calls inside Esploro context.
+  - `AlertService` to surface success/info/warn/error banners.
+  - `InitService`, `CloudAppEventsService` for init and page info.
+- `@ngx-translate/core` + `ngx-translate-parser-plural-select` – i18n with ICU.
+
+---
+
+## Coding patterns and practices
+
+- Angular component/service separation; single-responsibility components.
+- Reactive forms for manual entry with validators and pristine/touched management.
+- Observable pipelines with `finalize` for consistent loading flags; `catchError` to avoid stream failures.
+- Progressive enhancement: fallback code-table values when `/conf` APIs aren’t reachable.
+- Config normalization: robust parsing of `/conf` API responses that can vary in shape.
+- Defensive CSV parser: handles quotes, commas, and empty lines; reports per-row issues.
+- Asset-type–aware filtering of file categories using mapping table and asset metadata.
+- Minimal rate-limiting (100 ms delay between CSV rows) to reduce throttling risk.
+
+---
+
+## Critical logic hotspots (security/performance/behavior)
+
+1) File type validation and conversion
+   - The Esploro “AssetFileAndLinkTypes” mapping table requires ID values in API calls. Users often provide labels/names in CSV. The component auto-matches names→IDs and prompts for manual mapping if needed. This prevents subtle API failures.
+
+2) Pre/post asset state comparison
+   - Caches existing files and compares after processing to flag “unchanged” assets—useful when URLs are duplicates or policies prevent attachment. This improves operator awareness.
+
+3) URL validation and trust boundaries
+   - Manual form enforces `^https?://` pattern; CSV path relies on mapping and downstream API errors. Consider adding stricter URL checks and optional allowlists.
+
+4) Error handling and user feedback
+   - Manual path maps HTTP status codes to friendly messages (0/400/401-403). CSV path surfaces per-row failures. AlertService ensures visibility.
+
+5) Performance and throttling
+   - Sequential CSV processing with a small delay; could be extended with concurrency + exponential backoff where safe, but beware of tenant rate limits.
+
+6) Config API variability
+   - Code handles multiple shapes of code-table and mapping-table responses. This resilience is critical for compatibility across deployments.
+
+---
+
+## APIs and payloads in use
+
+- Queue links to extract (manual)
+  - `POST /esploro/v1/assets/{assetId}?op=patch&action=add`
+  - Payload: `{ records: [{ temporary: { linksToExtract: [{ 'link.title', 'link.url', 'link.description'?, 'link.type', 'link.supplemental' }] } }] }`
+
+- Add file (CSV per-row path)
+  - `POST /esploro/v1/assets/{mmsId}/files`
+  - Body: `{ url, title, description, type }`
+
+- Read asset metadata
+  - `GET /esploro/v1/assets/{mmsId}` → used for type, title, and file list.
+
+- Configuration
+  - `GET /conf/code-tables/AssetFileType?view=brief` → file type code table.
+  - `GET /conf/mapping-tables/AssetFileAndLinkTypes` → mapping table with IDs/labels/applicability.
+
+---
+
+## Visual data flow (CSV path)
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant CSV as CSVProcessorComponent
+  participant S as AssetService
+  participant E as Esploro APIs
+
+  U->>CSV: Upload CSV
+  CSV->>CSV: Parse + auto-map + validate
+  CSV->>S: getAssetFilesAndLinkTypes()
+  S->>E: GET /conf/mapping-tables/AssetFileAndLinkTypes
+  E-->>S: Mapping table
+  S-->>CSV: Normalized types
+  CSV->>CSV: Convert file type names → IDs (prompt if needed)
+  loop each row
+    CSV->>S: getAssetMetadata(mmsId)
+    S->>E: GET /esploro/v1/assets/{mmsId}
+    E-->>S: Asset (pre-state)
+    CSV->>E: POST /esploro/v1/assets/{mmsId}/files {url,title,desc,type}
+    E-->>CSV: Ack
+  end
+  CSV->>S: getAssetMetadata() for successes
+  S->>E: GET /esploro/v1/assets/{mmsId}
+  E-->>S: Asset (post-state)
+  CSV->>CSV: Compare states, mark unchanged
+  CSV-->>U: Results + MMS IDs CSV + next steps
+```
+
+---
+
+## Configuration files and significance
+
+- `manifest.json`
+  - App identity, pages (`/#/main`, `/#/settings`), icon, and entity scope `RESEARCH_ASSET`.
+  - Enables fullscreen and relevant sandbox permissions.
+- `package.json`
+  - Angular 11, Material 11, Cloud Apps libraries, i18n libs.
+  - Script `start: eca start` uses Ex Libris Cloud App CLI tooling for dev serving.
+- `settings.json`
+  - Template for persisted app settings if needed (current version uses minimal settings; CSV and mapping are in-app).
+
+---
+
+## Notable implementation details
+
+- i18n: Centralized strings in `cloudapp/src/i18n/en.json` with rich copy for CSV workflow, conversion dialogs, and instructions.
+- UI: Angular Material with an enhanced module wrapper; consistent outline appearance for form fields.
+- Utilities: Generic helpers for chunking, downloads, deep merges; can be leveraged for future features (e.g., batched requests).
+
+---
+
+## Gaps, risks, and questions
+
+Documentation gaps
+- Some legacy docs still reference the old “researcher loader.” The code now supports CSV-based asset file processing—ensure cross-doc consistency (README mostly aligned; verify all references).
+- `settings/` feature is minimal; `esploro-fields.ts` is empty. Either remove or flesh out usage.
+
+Testing/quality
+- No unit tests present. Consider adding tests for:
+  - CSV parsing edge cases (quotes, escapes, malformed rows).
+  - Mapping-table normalization across response shapes.
+  - File type matching (exact/fuzzy/manual) with snapshots.
+  - Pre/post asset comparison logic.
+
+Security
+- Strengthen URL validation beyond `^https?://`; optionally support allowlists or HEAD checks.
+- Confirm Cloud App permissions are the minimum required; validate `entities` is correct for your tenancy.
+
+Performance
+- Consider bounded concurrency with retry/backoff for large CSVs; monitor tenant rate limits.
+
+Open questions to clarify
+- Should CSV processing also support the manual “queue links to extract” endpoint for parity with manual path?
+- Do we need institutional overrides for mapping-table names or alternative code tables?
+- Any need to persist user-defined column mappings or conversions between sessions?
+
+---
+
+## Onboarding quick-start for developers
+
+1) Install dependencies and start dev server
+   - `npm install`
+   - `npm start` (served via Cloud Apps dev tooling)
+2) Load app in Esploro Developer Mode and test both Manual and CSV flows.
+3) Key files to read first
+   - `main.component.ts` – feature container and manual path
+   - `services/asset.service.ts` – API contracts and helpers
+   - `components/csv-processor/*` – CSV path end-to-end
+   - `i18n/en.json` – feature copy and user flows
+
+---
+
+## Requirements coverage summary
+
+- Structure map: Done (folders, languages, entry points, configs)
+- Core components: Done (list + relationships)
+- Data flow: Done (manual and CSV paths + sequence diagram)
+- Dependencies: Done (frameworks and roles)
+- Patterns/practices: Done
+- Critical logic: Done (validation, comparison, errors, throttling)
+- Project purpose & usage: Done
+- Documentation gaps: Done, plus open questions
+- Visual aids: Done (mermaid diagrams)
+
+Last updated: 2025-10-05
+
 │   ├── angular.json                    # Angular configuration
 │   ├── tsconfig.json                   # TypeScript config
 │   └── package.json                    # Frontend dependencies

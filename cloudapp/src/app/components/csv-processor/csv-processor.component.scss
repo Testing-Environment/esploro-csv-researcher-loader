@@ -1,0 +1,303 @@
+.csv-processor {
+  padding: 20px;
+}
+
+.upload-card {
+  margin-bottom: 20px;
+}
+
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover,
+  &.drag-active {
+    border-color: #3f51b5;
+    background-color: rgba(63, 81, 181, 0.05);
+  }
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #3f51b5;
+}
+
+.upload-text {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.upload-subtext {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.file-requirements {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 8px;
+      color: #666;
+    }
+  }
+}
+
+.mapping-card {
+  margin-bottom: 20px;
+}
+
+.data-preview {
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #e3f2fd;
+  border-radius: 4px;
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.mapping-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.mapping-table {
+  width: 100%;
+
+  .csv-header {
+    font-weight: 600;
+    color: #3f51b5;
+  }
+
+  .sample-value {
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .confidence-indicator {
+    margin-top: 8px;
+
+    .confidence-high {
+      color: #4caf50;
+      font-size: 18px;
+    }
+  }
+}
+
+.validation-messages {
+  margin-bottom: 20px;
+
+  mat-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 12px;
+    background-color: #ffebee;
+    border-radius: 4px;
+
+    mat-icon {
+      color: #f44336;
+    }
+  }
+}
+
+.mapping-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.processing-card {
+  margin-bottom: 20px;
+}
+
+.processing-status {
+  padding: 16px;
+
+  p {
+    margin: 12px 0 8px 0;
+    font-weight: 500;
+  }
+
+  .processing-details {
+    margin-top: 8px;
+    color: #666;
+  }
+}
+
+// File Type Conversion Styles
+.conversion-card {
+  margin-bottom: 20px;
+  border: 2px solid #ff9800;
+}
+
+.conversion-info {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background-color: #fff3e0;
+  border-radius: 4px;
+  margin-bottom: 20px;
+
+  .info-icon {
+    color: #ff9800;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .info-text {
+    flex: 1;
+
+    p {
+      margin: 0 0 8px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    strong {
+      color: #f57c00;
+    }
+  }
+}
+
+.conversion-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.conversion-table {
+  width: 100%;
+
+  .csv-value {
+    font-weight: 600;
+    color: #3f51b5;
+    background-color: #e8eaf6;
+    padding: 4px 8px;
+    border-radius: 3px;
+  }
+
+  .matched-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .confidence-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+
+      &.high-confidence {
+        color: #4caf50;
+      }
+
+      &.medium-confidence {
+        color: #ff9800;
+      }
+
+      &.low-confidence {
+        color: #f44336;
+      }
+    }
+  }
+
+  .no-match {
+    color: #f44336;
+    font-style: italic;
+  }
+
+  .matched-id {
+    font-weight: 500;
+    color: #2196f3;
+    background-color: #e3f2fd;
+    padding: 4px 8px;
+    border-radius: 3px;
+  }
+
+  .no-id {
+    color: #999;
+  }
+
+  .manual-select {
+    min-width: 250px;
+  }
+
+  .auto-mapped {
+    color: #4caf50;
+    font-weight: 500;
+  }
+
+  tr.requires-attention {
+    background-color: #ffebee;
+  }
+}
+
+.conversion-summary {
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 20px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.conversion-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+mat-select {
+  width: 100%;
+  max-width: 300px;
+}
+
+.ignore-option {
+  font-style: italic;
+  color: #999;
+}

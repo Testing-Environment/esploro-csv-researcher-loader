@@ -120,5 +120,171 @@
 			"URLLinkRequired": "URLs - Link required",
 			"FundingAgencyRequired": "Funding - Agency required"
 		}
+	},
+	"Tabs": {
+		"ManualEntry": "Manual Entry",
+		"CSVUpload": "CSV Upload"
+	},
+	"CSV": {
+		"Upload": {
+			"Title": "Upload CSV File",
+			"Subtitle": "Bulk process asset files from CSV data",
+			"DragDrop": "Drag and drop your CSV file here",
+			"OrClick": "or click to select file",
+			"SelectFile": "Select CSV File"
+		},
+		"Requirements": {
+			"Title": "File Requirements:",
+			"Format": "CSV format with comma separation",
+			"Headers": "First row must contain column headers",
+			"Encoding": "UTF-8 encoding recommended"
+		},
+		"Mapping": {
+			"Title": "Map CSV Columns",
+			"Subtitle": "Associate your CSV columns with the required fields",
+			"CSVHeader": "CSV Column Header",
+			"SampleValue": "Sample Value",
+			"MapToField": "Map to Field",
+			"SelectField": "Select field type",
+			"IgnoreColumn": "Ignore Column",
+			"HighConfidence": "High confidence mapping"
+		},
+		"Preview": {
+			"Title": "Data Preview",
+			"Records": "Found {count} {count, plural, =1 {record} other {records}}"
+		},
+		"Actions": {
+			"ProcessData": "Process Data",
+			"UploadDifferent": "Upload Different File"
+		},
+		"Processing": {
+			"Status": "Processing {current} of {total} assets",
+			"Current": "Currently processing"
+		},
+		"FileTypeConversion": {
+			"Title": "File Type Validation & Conversion",
+			"Subtitle": "Convert file type names to valid category IDs",
+			"Explanation": "The file type values in your CSV appear to be names (target_code) rather than the required ID values. The system will attempt to match them with valid file type categories from the AssetFileAndLinkTypes mapping table.",
+			"Note": "Note: The ID value must be used in API calls, not the name.",
+			"SubmittedValue": "CSV Value",
+			"MatchedLabel": "Matched Category Name",
+			"MappedID": "Category ID",
+			"ManualMapping": "Manual Selection",
+			"SelectType": "Select file type category",
+			"NoMatch": "No automatic match found",
+			"AutoMapped": "Auto-mapped ✓",
+			"Confidence": "Match confidence: {value}%",
+			"Summary": "Conversion Summary:",
+			"SummaryDetails": "{total} unique {total, plural, =1 {value} other {values}} found: {auto} automatically matched, {manual} require manual selection",
+			"ApplyConversions": "Apply Conversions & Continue",
+			"Cancel": "Cancel Processing"
+		}
+	},
+	"Fields": {
+		"MmsId": {
+			"Description": "Esploro asset identifier (required)"
+		},
+		"RemoteUrl": {
+			"Description": "Direct URL to file content"
+		},
+		"FileTitle": {
+			"Description": "Display name for the file"
+		},
+		"FileDescription": {
+			"Description": "Detailed file description"
+		},
+		"FileType": {
+			"Description": "File type category ID from AssetFileAndLinkTypes mapping table (use ID, not name)"
+		}
+	},
+	"Validation": {
+		"MmsIdRequired": "At least one column must be mapped to MMS ID",
+		"DuplicateMappings": "Duplicate mappings found for: {fields}"
+	},
+	"Results": {
+		"Title": "Processing Results",
+		"Successful": "Successful",
+		"Failed": "Failed",
+		"Unchanged": "Potentially Unchanged",
+		"Detailed": {
+			"Title": "Detailed Results"
+		},
+		"Table": {
+			"Status": "Status",
+			"MmsId": "MMS ID",
+			"FileTitle": "File Title",
+			"Error": "Error Message"
+		},
+		"UnchangedAssets": {
+			"Title": "Potential Unchanged Assets",
+			"Subtitle": "These assets may not have been modified by the import process",
+			"Explanation": "The following {count} {count, plural, =1 {asset was} other {assets were}} successfully processed, but the file list appears unchanged. This could indicate that the file already exists on the asset, was rejected due to duplicate URL, or another issue prevented the attachment.",
+			"Table": {
+				"AssetId": "Asset ID",
+				"FileTitle": "File Title from CSV",
+				"RemoteUrl": "Remote URL from CSV",
+				"Reason": "Likely Reason"
+			},
+			"Reasons": {
+				"NoChange": "File count unchanged after import"
+			},
+			"ActionNote": "Review these assets manually in Esploro to confirm the file status. The provided URLs may already be attached or may have been rejected."
+		}
+	},
+	"Instructions": {
+		"Title": "Next Steps",
+		"Subtitle": "Complete the workflow in Esploro",
+		"Step1": {
+			"Title": "Download MMS ID File",
+			"Description": "Download the generated CSV file containing successful asset MMS IDs:",
+			"DownloadButton": "Download MMS ID CSV",
+			"FileInfo": "File contains {count} asset {count, plural, =1 {identifier} other {identifiers}}"
+		},
+		"Step2": {
+			"Title": "Create Asset Set in Esploro",
+			"Description": "Use the downloaded file to create a set of assets:",
+			"Item1": "Navigate to Search & Browse > Advanced Search",
+			"Item2": "Click \"Upload file with identifiers\"",
+			"Item3": "Upload the downloaded CSV file",
+			"Item4": "Select \"MMS ID\" as the identifier type",
+			"Item5": "Click \"Create Set\" and provide a meaningful name",
+			"OpenAdvancedSearch": "Open Advanced Search"
+		},
+		"Step3": {
+			"Title": "Run Import Asset Files Job",
+			"Description": "Execute the file import job:",
+			"Item1": "Go to Repository > Monitor Jobs > Run a Job",
+			"Item2": "Find and select \"Import Research Assets Files\"",
+			"Item3": "Choose the set created in the previous step",
+			"Item4": "Configure job parameters as needed",
+			"Item5": "Submit the job and monitor progress",
+			"OpenJobs": "Open Repository Jobs"
+		},
+		"Step4": {
+			"Title": "Access Processed Files",
+			"Description": "Once the job completes, access your files using these URLs:",
+			"ViewerUrls": "Esploro Viewer URLs:",
+			"ViewFiles": "View Files",
+			"CopyUrl": "Copy URL to clipboard"
+		}
+	},
+	"Errors": {
+		"InvalidFileType": "Please select a CSV file",
+		"FileTooLarge": "File size must be less than 10MB",
+		"EmptyFile": "The uploaded file is empty",
+		"FileProcessing": "Error processing file",
+		"BatchProcessing": "Error processing batch"
+	},
+	"Success": {
+		"FileUploaded": "Successfully loaded {records} {records, plural, =1 {record} other {records}} from CSV",
+		"BatchProcessed": "Successfully processed {count} {count, plural, =1 {asset} other {assets}}",
+		"FileTypesConverted": "Successfully converted {count} file {count, plural, =1 {type} other {types}} to valid IDs"
+	},
+	"Warnings": {
+		"FileTypesAPIFailed": "Could not load file types from system, using defaults",
+		"FileTypeConversionRequired": "Some file type values require manual mapping. Please review and select the correct categories."
+	},
+	"Info": {
+		"FileTypeConversionAvailable": "File type values can be automatically converted. Please review the suggested mappings."
 	}
 }

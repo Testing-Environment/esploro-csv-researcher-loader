@@ -1,0 +1,5205 @@
+{
+  "job": [
+    {
+      "id": "M4664427330000561",
+      "name": "00806748 test",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4664427330000561"
+    },
+    {
+      "id": "M5042170150000561",
+      "name": "00962645 test",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5042170150000561"
+    },
+    {
+      "id": "M4835396680000561",
+      "name": "01NWU_EAD",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+        "desc": "Discovery generic XML normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4835396680000561"
+    },
+    {
+      "id": "M6235522420000561",
+      "name": "06401623_999",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6235522420000561"
+    },
+    {
+      "id": "M7470515890000561",
+      "name": "100/700/800",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7470515890000561"
+    },
+    {
+      "id": "M4062841260000561",
+      "name": "20190311",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4062841260000561"
+    },
+    {
+      "id": "M4146009440000561",
+      "name": "20190424",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4146009440000561"
+    },
+    {
+      "id": "M9505457720000561",
+      "name": "245_to_998",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9505457720000561"
+    },
+    {
+      "id": "M9505457780000561",
+      "name": "773_to_999",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9505457780000561"
+    },
+    {
+      "id": "M4461205030000561",
+      "name": "852 - Change Location Code",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4461205030000561"
+    },
+    {
+      "id": "M7657766140000561",
+      "name": "852 locatiion",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7657766140000561"
+    },
+    {
+      "id": "M7740532980000561",
+      "name": "996",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7740532980000561"
+    },
+    {
+      "id": "M46595100000521",
+      "name": "Add 245 sf h [Video]",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M46595100000521"
+    },
+    {
+      "id": "M7046181350000561",
+      "name": "Add 583",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7046181350000561"
+    },
+    {
+      "id": "M7150845510000561",
+      "name": "Add 583 Conserve in Title Records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7150845510000561"
+    },
+    {
+      "id": "M1327214140000521",
+      "name": "Add 590 - Donated by Friends of the Library",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1327214140000521"
+    },
+    {
+      "id": "M46603940000521",
+      "name": "Add 900 copied from worldcat",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M46603940000521"
+    },
+    {
+      "id": "M7751272000000561",
+      "name": "Add 931 Panel on Housing",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7751272000000561"
+    },
+    {
+      "id": "M4630258580000561",
+      "name": "add 999",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4630258580000561"
+    },
+    {
+      "id": "M1299610360000521",
+      "name": "Add BIB to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1299610360000521"
+    },
+    {
+      "id": "M1327193830000521",
+      "name": "Add BIB to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "QUALIFIED_DC_NORMALIZATION",
+        "desc": "Qualified DC normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1327193830000521"
+    },
+    {
+      "id": "M7751276230000561",
+      "name": "Add BIB to Collection DC",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "QUALIFIED_DC_NORMALIZATION",
+        "desc": "Qualified DC normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7751276230000561"
+    },
+    {
+      "id": "M1327193850000521",
+      "name": "Add DCAP01 BIB to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DCAP01_NORMALIZATION",
+        "desc": "DC Application profile 1 normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1327193850000521"
+    },
+    {
+      "id": "M1327193870000521",
+      "name": "Add DCAP02 BIB to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DCAP02_NORMALIZATION",
+        "desc": "DC Application profile 2 normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1327193870000521"
+    },
+    {
+      "id": "M7046083670000561",
+      "name": "Add field 583 $a Conserve on Holding Records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7046083670000561"
+    },
+    {
+      "id": "M7045973910000561",
+      "name": "Add field 583 a- Conserve no condition",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7045973910000561"
+    },
+    {
+      "id": "M4436441780000561",
+      "name": "Add KORMARC BIB to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "KORMARCBIB_NORMALIZATION",
+        "desc": "KORMARC Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4436441780000561"
+    },
+    {
+      "id": "M6650990860000561",
+      "name": "Add local extension Rialto DE-GRUYTER",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6650990860000561"
+    },
+    {
+      "id": "M6650985680000561",
+      "name": "Add local extension Rialto TAYLOR&FRANCIS",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6650985680000561"
+    },
+    {
+      "id": "M6650988070000561",
+      "name": "Add local extension Rialto WILEY",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6650988070000561"
+    },
+    {
+      "id": "M51001",
+      "name": "Add MARC21 Fields",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "METADATA_MANAGEMENT",
+        "desc": "Metadata Management"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M51001"
+    },
+    {
+      "id": "M4420063090000561",
+      "name": "Add MMSID",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "QUALIFIED_DC_NORMALIZATION",
+        "desc": "Qualified DC normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4420063090000561"
+    },
+    {
+      "id": "M4175247980000561",
+      "name": "Add MODS BIB to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MODS_NORMALIZATION",
+        "desc": "MODS normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4175247980000561"
+    },
+    {
+      "id": "M3",
+      "name": "Add reminders",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "METADATA_MANAGEMENT",
+        "desc": "Metadata Management"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M3"
+    },
+    {
+      "id": "M50215",
+      "name": "Add Titles to Collection",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50215"
+    },
+    {
+      "id": "M50761",
+      "name": "AddUaAccessModelToSubscriptionEbcPortfoliosJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ADD_UA_ACCESS_MODEL_TO_SUBSCRIPTION_EBC_PORTFOLIOS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50761"
+    },
+    {
+      "id": "M6107789400000561",
+      "name": "Aileen_04292022_NormalizationProcess",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6107789400000561"
+    },
+    {
+      "id": "M6680669740000561",
+      "name": "Aileen_Brieflevel",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6680669740000561"
+    },
+    {
+      "id": "M613",
+      "name": "AI_Normalization",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "NORMALIZATION",
+        "desc": "Normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M613"
+    },
+    {
+      "id": "M50070",
+      "name": "Aleph Bridge Inventory Update Task Chain",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ALEPH_BRIDGE_INVENTORY_UPDATE",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50070"
+    },
+    {
+      "id": "M50838",
+      "name": "Anonymization Task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ANONYMIZATION_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50838"
+    },
+    {
+      "id": "M4175951530000561",
+      "name": "Aran",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4175951530000561"
+    },
+    {
+      "id": "M50591",
+      "name": "AssetsAddedToProfileNotification",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "NEW_ASSETS_ADDED_TO_RESEARCHER_PROFILE_NOTIFICATION",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50591"
+    },
+    {
+      "id": "M4",
+      "name": "Associate standalone portfolios",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ASSOCIATE_STANDALONE_PORTFOLIOS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4"
+    },
+    {
+      "id": "M50636",
+      "name": "AuthorityDisplay population",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INVENTORY_MAINTENANCE",
+        "desc": "Inventory Maintenance"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50636"
+    },
+    {
+      "id": "M50637",
+      "name": "AuthorityDisplay population",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INVENTORY_MAINTENANCE",
+        "desc": "Inventory Maintenance"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50637"
+    },
+    {
+      "id": "M50861",
+      "name": "Author Matching Bulk Update",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "AUTHOR_MATCHING_BULK_UPDATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50861"
+    },
+    {
+      "id": "M50726",
+      "name": "Automatically Ship Rapido Digital Requests",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "AUTOMATICALLY_SHIP_RAPIDO_DIGITAL_REQUESTS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50726"
+    },
+    {
+      "id": "M7",
+      "name": "Bib OCLC Republish Set of Titles",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "PUBLISHING",
+        "desc": "Publishing"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7"
+    },
+    {
+      "id": "M6207767970000561",
+      "name": "BrowZine Contrib 4",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6207767970000561"
+    },
+    {
+      "id": "M50759",
+      "name": "Bulk Merge Duplicate Researchers",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "BULK_MERGE_DUPLICATE_RESEARCHERS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50759"
+    },
+    {
+      "id": "M50800",
+      "name": "CacheCzRecordsInNzJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CACHE_CZ_RECORDS_IN_NZ",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50800"
+    },
+    {
+      "id": "M50080",
+      "name": "Calculate Operational and Auth Heading Task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "OPERATIONAL_AUTH_HEADINGS_RECALCULATION",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50080"
+    },
+    {
+      "id": "M8",
+      "name": "Calculate Operational and FilingValue Task.",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "OPERATIONAL_DISPLAY_FILING_HEADINGS_RECALCULATION",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M8"
+    },
+    {
+      "id": "M9",
+      "name": "Calculate Operational and secondIndicator Task.",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "BIB_HEADING_UPDATE_SECOND_INDICATOR",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9"
+    },
+    {
+      "id": "M50600",
+      "name": "Calculates the ISB10 or ISBN13",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50600"
+    },
+    {
+      "id": "M7751211370000561",
+      "name": "Cambiar 852 EXL",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7751211370000561"
+    },
+    {
+      "id": "M10",
+      "name": "Cancel physical items requests",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "REQUEST",
+        "desc": "Request"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M10"
+    },
+    {
+      "id": "M11",
+      "name": "Cancel physical titles requests",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "REQUEST",
+        "desc": "Request"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M11"
+    },
+    {
+      "id": "M6650984890000561",
+      "name": "Case_06569291",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6650984890000561"
+    },
+    {
+      "id": "M6653239850000561",
+      "name": "Case 06584742 Z39.50 test",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6653239850000561"
+    },
+    {
+      "id": "M6897720850000561",
+      "name": "CCRCTest",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+        "desc": "Discovery generic XML normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6897720850000561"
+    },
+    {
+      "id": "M88377980000521",
+      "name": "change 852 indicator 1=1 to =0",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M88377980000521"
+    },
+    {
+      "id": "M4791684980000561",
+      "name": "Change Bib Material Type",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4791684980000561"
+    },
+    {
+      "id": "M50670",
+      "name": "Change Electronic Collection information",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50670"
+    },
+    {
+      "id": "M16",
+      "name": "Change Electronic portfolio information",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M16"
+    },
+    {
+      "id": "M63184380000521",
+      "name": "change holding library and location",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M63184380000521"
+    },
+    {
+      "id": "M12",
+      "name": "Change Holdings Information",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M12"
+    },
+    {
+      "id": "M924300870000521",
+      "name": "Change holdings location from main to edu-juv",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M924300870000521"
+    },
+    {
+      "id": "M4175726000000561",
+      "name": "change LDR 5 to d",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4175726000000561"
+    },
+    {
+      "id": "M17",
+      "name": "Change loan to claimed returned",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "LOAN",
+        "desc": "Loan"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M17"
+    },
+    {
+      "id": "M18",
+      "name": "Change Physical items information",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M18"
+    },
+    {
+      "id": "M14",
+      "name": "Change PO Lines Status",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "UPDATE_PO_LINES",
+        "desc": "Update PO lines"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M14"
+    },
+    {
+      "id": "M50148",
+      "name": "Change Record DC Application Profile",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "METADATA_MANAGEMENT",
+        "desc": "Metadata Management"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50148"
+    },
+    {
+      "id": "M56",
+      "name": "Change Representation information",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M56"
+    },
+    {
+      "id": "M9312216120000000",
+      "name": "Change Representation information",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9312216120000000"
+    },
+    {
+      "id": "M50584",
+      "name": "Citation Insights job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "UPDATE_READING_LIST_CITATION",
+        "desc": "Citations"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50584"
+    },
+    {
+      "id": "M19",
+      "name": "Citation Resource Locate Task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CITATION_RESOURCE_LOCATE",
+        "desc": "Citation resource locate"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M19"
+    },
+    {
+      "id": "M158",
+      "name": "clean pda",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ITEM_MOVE",
+        "desc": "Move Items"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M158"
+    },
+    {
+      "id": "M50565",
+      "name": "Clear Last Patron Activity Date Task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CLEAR_LAST_PATRON_ACTIVITY_DATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50565"
+    },
+    {
+      "id": "M50595",
+      "name": "Clear Portfolio Libraries For a Collection Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CLEAR_PORTFOLIO_LIBRARIES_FOR_A_COLLECTION_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50595"
+    },
+    {
+      "id": "M20",
+      "name": "Close lost loans",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "LOAN",
+        "desc": "Loan"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M20"
+    },
+    {
+      "id": "M128481200000521",
+      "name": "Cnmarc Bib normalize on save",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CNMARCBIB_NORMALIZATION",
+        "desc": "CNMARC Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M128481200000521"
+    },
+    {
+      "id": "M128481340000521",
+      "name": "Cnmarc Bib Re-sequence",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CNMARCBIB_NORMALIZATION",
+        "desc": "CNMARC Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M128481340000521"
+    },
+    {
+      "id": "M128481360000521",
+      "name": "Cnmarc Bib Re-sequence And Clear empty fields",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CNMARCBIB_NORMALIZATION",
+        "desc": "CNMARC Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M128481360000521"
+    },
+    {
+      "id": "M21",
+      "name": "Cnmarc Set Authority Records Cataloging Level",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CNMARCAUTHORITY_NORMALIZATION",
+        "desc": "CNMARC authority normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M21"
+    },
+    {
+      "id": "M22",
+      "name": "Cnmarc Set Bib Records Cataloging Level",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CNMARCBIB_NORMALIZATION",
+        "desc": "CNMARC Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M22"
+    },
+    {
+      "id": "M50836",
+      "name": "Collecto Generate Recommendations",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "COLLECTO_RECOMMENDATIONS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50836"
+    },
+    {
+      "id": "M50885",
+      "name": "CompleteEBookRequests",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "COMPLETE_EBOOK_REQUESTS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50885"
+    },
+    {
+      "id": "M4679754800000561",
+      "name": "CONNEXION_2_Rules",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4679754800000561"
+    },
+    {
+      "id": "M5094223240000561",
+      "name": "copy 009 to 019",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21HOLDING_NORMALIZATION",
+        "desc": "Marc 21 holding normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5094223240000561"
+    },
+    {
+      "id": "M5099365410000561",
+      "name": "Copy localField4 to Grant Note",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ESPLORO_NORMALIZATION",
+        "desc": "Research assets normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5099365410000561"
+    },
+    {
+      "id": "M50645",
+      "name": "Correct Digital file size",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50645"
+    },
+    {
+      "id": "M50599",
+      "name": "Course Bulk Update",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "UPDATE_COURSE",
+        "desc": "Courses"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50599"
+    },
+    {
+      "id": "M9505676530000561",
+      "name": "Create_997_from_773",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9505676530000561"
+    },
+    {
+      "id": "M26",
+      "name": "Create Physical item move requests",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INFORMATION_UPDATE",
+        "desc": "Information Update"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M26"
+    },
+    {
+      "id": "M27",
+      "name": "Create physical item work orders",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "REQUEST",
+        "desc": "Request"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M27"
+    },
+    {
+      "id": "M50839",
+      "name": "CzCollectionsBatchCreateJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_COLLECTIONS_BATCH_CREATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50839"
+    },
+    {
+      "id": "M50712",
+      "name": "CzCollectionsBatchUpdateTask",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_COLLECTIONS_BATCH_UPDATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50712"
+    },
+    {
+      "id": "M50850",
+      "name": "CZ Direct Ingest 035a Update",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_INGEST_035A_UPDATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50850"
+    },
+    {
+      "id": "M50666",
+      "name": "CZ Direct Ingest Load",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_DIRECT_INGEST_LOAD_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50666"
+    },
+    {
+      "id": "M50664",
+      "name": "CZ Direct Ingest Prepare",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_DIRECT_INGEST_PREPARE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50664"
+    },
+    {
+      "id": "M50798",
+      "name": "CzDirectIngestRegexTestJobTask",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_DIRECT_INGEST_REGEX_TEST_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50798"
+    },
+    {
+      "id": "M50711",
+      "name": "CZ ECollection Activations Per Region Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_ECOLLECTION_ACTIVATIONS_PER_REGION_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50711"
+    },
+    {
+      "id": "M50590",
+      "name": "CZ Electronic Activation Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_ELECTRONIC_ACTIVATION_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50590"
+    },
+    {
+      "id": "M50674",
+      "name": "CZ Link Checker",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_LINK_CHECKER_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50674"
+    },
+    {
+      "id": "M50917",
+      "name": "CzPortfoliosBatchUpdateJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_PORTFOLIOS_BATCH_UPDATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50917"
+    },
+    {
+      "id": "M50977",
+      "name": "CzTitleLevelReportingJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "CZ_TITLE_LEVEL_REPORTING_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50977"
+    },
+    {
+      "id": "M7660064830000561",
+      "name": "DavidDIPTest",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+        "desc": "Discovery generic XML normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7660064830000561"
+    },
+    {
+      "id": "M9122553490000561",
+      "name": "del 590",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9122553490000561"
+    },
+    {
+      "id": "M4169290400000561",
+      "name": "Delete 952",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4169290400000561"
+    },
+    {
+      "id": "M31",
+      "name": "Delete acquisition requests task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DELETE_ACQ_REQUESTS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M31"
+    },
+    {
+      "id": "M687066510000521",
+      "name": "Delete all 9XX fields",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M687066510000521"
+    },
+    {
+      "id": "M50927",
+      "name": "Delete All Esploro Files From AWS Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DELETE_ALL_ESPLORO_FILES_FROM_AWS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50927"
+    },
+    {
+      "id": "M28",
+      "name": "Delete Bibliographic records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ITEM_WITHDRAW",
+        "desc": "Withdraw"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M28"
+    },
+    {
+      "id": "M35",
+      "name": "Deleted Inventory Objects Tables Population",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INVENTORY_MAINTENANCE",
+        "desc": "Inventory Maintenance"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M35"
+    },
+    {
+      "id": "M29",
+      "name": "Delete Draft Deposits",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DELETE_DRAFT_DEPOSITS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M29"
+    },
+    {
+      "id": "M50802",
+      "name": "DeleteElectronicCollectionJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DELETE_ELECTRONIC_COLLECTION",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50802"
+    },
+    {
+      "id": "M34",
+      "name": "Delete Electronic portfolios",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ITEM_WITHDRAW",
+        "desc": "Withdraw"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M34"
+    },
+    {
+      "id": "M50096",
+      "name": "Delete External Data Sources",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_MANAGEMENT",
+        "desc": "Discovery Management"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50096"
+    },
+    {
+      "id": "M50158",
+      "name": "Delete Fulltext",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "FULLTEXT",
+        "desc": "Fulltext"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50158"
+    },
+    {
+      "id": "M32",
+      "name": "Delete Holdings records with no Physical items",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ITEM_WITHDRAW",
+        "desc": "Withdraw"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M32"
+    },
+    {
+      "id": "M33",
+      "name": "Delete local Authority records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ITEM_WITHDRAW",
+        "desc": "Withdraw"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M33"
+    },
+    {
+      "id": "M50950",
+      "name": "Delete POs task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DELETE_PO_JOB_PA",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50950"
+    },
+    {
+      "id": "M50872",
+      "name": "Delete records from ORCID",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCHERS",
+        "desc": "Researchers"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50872"
+    },
+    {
+      "id": "M50592",
+      "name": "Delete Set of Research Assets",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_REPOSITORY_CLEANUP",
+        "desc": "Research Repository Cleanup"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50592"
+    },
+    {
+      "id": "M9312216090000000",
+      "name": "Delete Titles",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ITEM_WITHDRAW",
+        "desc": "Withdraw"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9312216090000000"
+    },
+    {
+      "id": "M50825",
+      "name": "DeleteUsageDataFilesJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DELETE_USAGE_DATA_FILES_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50825"
+    },
+    {
+      "id": "M6440335150000561",
+      "name": "Demo",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6440335150000561"
+    },
+    {
+      "id": "M50071",
+      "name": "Deposit activity report",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DEPOSIT_ACTIVITY_REPORT",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50071"
+    },
+    {
+      "id": "M50641",
+      "name": "Dismiss All CZ Update Task List",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISMISS_ALL_CZ_UPDATE_TASK_LIST_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50641"
+    },
+    {
+      "id": "M50092",
+      "name": "Distribute network administration configuration",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISTRIBUTE_NZ_ADMINISTRATION_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50092"
+    },
+    {
+      "id": "M36",
+      "name": "Distribute NZ Acquisition Changes Task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISTRIBUTE_NZ_ACQUISITION_CHANGES",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M36"
+    },
+    {
+      "id": "M37",
+      "name": "Distribute resource sharing configuration",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISTRIBUTE_CENTRAL_RESOURCE_SHARING_CONFIGURATION",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M37"
+    },
+    {
+      "id": "M50638",
+      "name": "Download Digital Titles Inventory",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50638"
+    },
+    {
+      "id": "M50813",
+      "name": "Download Files",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50813"
+    },
+    {
+      "id": "M9312216160000000",
+      "name": "Download Titles Inventory",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9312216160000000"
+    },
+    {
+      "id": "M7341333260000561",
+      "name": "Dspace_resourcetype",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_DC_NORMALIZATION",
+        "desc": "Discovery DC normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7341333260000561"
+    },
+    {
+      "id": "M4840916500000561",
+      "name": "Efi",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+        "desc": "Discovery generic XML normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4840916500000561"
+    },
+    {
+      "id": "M50725",
+      "name": "Electronic portfolios availability update job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "E_PORTFOLIOS_AVAILABILITY_UPDATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50725"
+    },
+    {
+      "id": "M50662",
+      "name": "Encrypted Columns Populator Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ENCRYPTED_COLUMNS_POPULATOR_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50662"
+    },
+    {
+      "id": "M4469187400000561",
+      "name": "Enhance copyright fee paid article records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4469187400000561"
+    },
+    {
+      "id": "M500",
+      "name": "Enrich Bibliographic Records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "METADATA_MANAGEMENT",
+        "desc": "Metadata Management"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M500"
+    },
+    {
+      "id": "M5005487990000561",
+      "name": "Esploro Asset normalization",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ESPLORO_NORMALIZATION",
+        "desc": "Research assets normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5005487990000561"
+    },
+    {
+      "id": "M50682",
+      "name": "EsploroCollectionUpdateTask",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ESPLORO_COLLECTION_UPDATE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50682"
+    },
+    {
+      "id": "M50787",
+      "name": "Esploro Incite Metrics Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ESPLORO_INCITE_METRICS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50787"
+    },
+    {
+      "id": "M50587",
+      "name": "Esploro Roles Migration",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MIGRATION",
+        "desc": "Migration"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50587"
+    },
+    {
+      "id": "M50974",
+      "name": "Esploro SP Create First Asset Version",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_ASSETS",
+        "desc": "Research Assets"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50974"
+    },
+    {
+      "id": "M50997",
+      "name": "Esploro SP EtdAdmin cleanup",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_ASSETS",
+        "desc": "Research Assets"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50997"
+    },
+    {
+      "id": "M50937",
+      "name": "Esploro SP Remove Authors From Esploro Xml",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_ASSETS",
+        "desc": "Research Assets"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50937"
+    },
+    {
+      "id": "M50676",
+      "name": "EsploroWOSMetricesRetrieverTask",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ESPLORO_WOS_METRICES_RETRIEVER_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50676"
+    },
+    {
+      "id": "M5872632590000561",
+      "name": "E to P",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5872632590000561"
+    },
+    {
+      "id": "M50728",
+      "name": "ExportAlmaLoaderJobTask",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT_ALMA_LOADER",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50728"
+    },
+    {
+      "id": "M43",
+      "name": "Export Authority records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M43"
+    },
+    {
+      "id": "M44",
+      "name": "Export Bibliographic records",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M44"
+    },
+    {
+      "id": "M45",
+      "name": "Export Context Object To BX",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M45"
+    },
+    {
+      "id": "M46",
+      "name": "Export Digital titles",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M46"
+    },
+    {
+      "id": "M50727",
+      "name": "Export e collections",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT_COLLECTIONS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50727"
+    },
+    {
+      "id": "M47",
+      "name": "Export Electronic portfolios",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M47"
+    },
+    {
+      "id": "M50585",
+      "name": "Export Esploro Handles",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_ASSETS",
+        "desc": "Research Assets"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50585"
+    },
+    {
+      "id": "M50129",
+      "name": "Export Handles",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50129"
+    },
+    {
+      "id": "M50892",
+      "name": "Export invoice task",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "ILS_EXPORT_PAYMENT_EXTERNAL_SYS_PA",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50892"
+    },
+    {
+      "id": "M48",
+      "name": "Export Physical items",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M48"
+    },
+    {
+      "id": "M49",
+      "name": "Export Physical items labels",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M49"
+    },
+    {
+      "id": "M50840",
+      "name": "ExportPortfoliosDataJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT_PORTFOLIOS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50840"
+    },
+    {
+      "id": "M9312216070000000",
+      "name": "Export Titles",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9312216070000000"
+    },
+    {
+      "id": "M52",
+      "name": "Export URLs",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXPORT",
+        "desc": "Export"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M52"
+    },
+    {
+      "id": "M50156",
+      "name": "External Capture",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXTERNAL_CAPTURE_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50156"
+    },
+    {
+      "id": "M50627",
+      "name": "External Capture",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXTERNAL_CAPTURE_NG_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50627"
+    },
+    {
+      "id": "M50560",
+      "name": "External Capture Co Authors",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "EXTERNAL_CAPTURE_CO_AUTHORS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50560"
+    },
+    {
+      "id": "M50570",
+      "name": "External Capture Co Authors",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "UPLOAD_E_HOLDINGS_INCREMENTAL_DEPLOYMENT_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50570"
+    },
+    {
+      "id": "M50157",
+      "name": "Extract Fulltext",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "FULLTEXT",
+        "desc": "Fulltext"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50157"
+    },
+    {
+      "id": "M50916",
+      "name": "Extract Global Id From Local Authorities",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21AUTHORITY_NORMALIZATION",
+        "desc": "Marc 21 authority normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50916"
+    },
+    {
+      "id": "M50801",
+      "name": "FetchCzProviderManifestJob",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "FETCH_CZ_PROVIDER_MANIFEST",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50801"
+    },
+    {
+      "id": "M9312216140000000",
+      "name": "File Thumbnail Generation",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "THUMBNAIL",
+        "desc": "Thumbnail"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9312216140000000"
+    },
+    {
+      "id": "M53",
+      "name": "Filter set by indication",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "METADATA_MANAGEMENT",
+        "desc": "Metadata Management"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M53"
+    },
+    {
+      "id": "M50640",
+      "name": "Find and copy the best Marc Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC_MATCHING_JOB",
+        "desc": "Marc Matching type"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50640"
+    },
+    {
+      "id": "M881545240000521",
+      "name": "Fix 856 2nd indicator",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M881545240000521"
+    },
+    {
+      "id": "M50882",
+      "name": "Fix Author Internal Affiliation In Assets",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_ASSETS",
+        "desc": "Research Assets"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50882"
+    },
+    {
+      "id": "M9549459520000561",
+      "name": "fix ISO tag",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "QUALIFIED_DC_NORMALIZATION",
+        "desc": "Qualified DC normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9549459520000561"
+    },
+    {
+      "id": "M54",
+      "name": "Flattening UResolver context object tables",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INVENTORY_MAINTENANCE",
+        "desc": "Inventory Maintenance"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M54"
+    },
+    {
+      "id": "M55",
+      "name": "Flattening UResolver context service tables",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "INVENTORY_MAINTENANCE",
+        "desc": "Inventory Maintenance"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M55"
+    },
+    {
+      "id": "M50659",
+      "name": "GDPR Cleanup",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "GDPR_CLEANUP_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50659"
+    },
+    {
+      "id": "M50165",
+      "name": "Generate Representation from Existing Bib",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MIGRATION",
+        "desc": "Migration"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50165"
+    },
+    {
+      "id": "M4418611410000561",
+      "name": "generic xml",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+        "desc": "Discovery generic XML normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4418611410000561"
+    },
+    {
+      "id": "M6136517110000561",
+      "name": "gift",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6136517110000561"
+    },
+    {
+      "id": "M6136517290000561",
+      "name": "gift",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "UNIMARCBIB_NORMALIZATION",
+        "desc": "UNIMARC Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6136517290000561"
+    },
+    {
+      "id": "M7453134510000561",
+      "name": "Gift to the Library",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7453134510000561"
+    },
+    {
+      "id": "M9506795890000561",
+      "name": "Gift to the library n",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "MARC21BIB_NORMALIZATION",
+        "desc": "Marc 21 Bib normalization"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9506795890000561"
+    },
+    {
+      "id": "M50647",
+      "name": "GtiRepublishingByMmsIdTask",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "GTI_REPUBLISHING_BY_MMS_ID_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50647"
+    },
+    {
+      "id": "M50611",
+      "name": "Handle Bibs With No MD Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_BIBS_WITH_NO_MD",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50611"
+    },
+    {
+      "id": "M50614",
+      "name": "Handle CZ - NZ - IZ Bibs Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_CZ_LINKED_NZ_LINKED_IZ_BIBS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50614"
+    },
+    {
+      "id": "M50612",
+      "name": "Handle Duplicated Bibs  Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_DUPLICATED_BIBS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50612"
+    },
+    {
+      "id": "M50613",
+      "name": "Handle Duplicated Portfolios Job",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_DUPLICATED_PORTFOLIOS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50613"
+    },
+    {
+      "id": "M50699",
+      "name": "Handle Empty Thumbnails",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_EMPTY_THUMBNAILS",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50699"
+    },
+    {
+      "id": "M50170",
+      "name": "Handle Expired Booking Requests",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_EXPIRED_BOOKING_REQUESTS_JOB",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50170"
+    },
+    {
+      "id": "M50700",
+      "name": "Handle Integration",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "HANDLE_INTEGRATION",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50700"
+    },
+    {
+      "id": "M50594",
+      "name": "Handle Relations for Research Assets",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "RESEARCH_ASSETS",
+        "desc": "Research Assets"
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50594"
+    },
+    {
+      "id": "M50910",
+      "name": "Heading Populate Bib Heading URIs",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "BIB_HEADING_POPULATE_URI",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50910"
+    },
+    {
+      "id": "M50887",
+      "name": "Heading Update Registry Id",
+      "type": {
+        "value": "MANUAL",
+        "desc": "Manual"
+      },
+      "category": {
+        "value": "BIB_HEADING_UPDATE_REGISTRY_ID",
+        "desc": ""
+      },
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50887"
+    },
+      {
+        "id": "M50597",
+        "name": "Hold Shelf Reminder",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "HOLD_SHELF_REMINDER_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50597"
+      },
+      {
+        "id": "M59",
+        "name": "Identifying Brief Level",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21MANAGEMENT_TAGS",
+          "desc": "Management tags"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M59"
+      },
+      {
+        "id": "M50220",
+        "name": "Import course user association job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "COURSE_USER_MAPPING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50220"
+      },
+      {
+        "id": "M60",
+        "name": "Import CZ Records from CN members task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "IMPORT",
+          "desc": "Import"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M60"
+      },
+      {
+        "id": "M50084",
+        "name": "Import discovery data",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "IMPORT_NON_ALMA_DATA",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50084"
+      },
+      {
+        "id": "M61",
+        "name": "Import Records Aleph Center Task Chain",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "ALEPH_IMPORT_RECORDS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M61"
+      },
+      {
+        "id": "M50173",
+        "name": "Import Research Assets Files",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSETS",
+          "desc": "Research Assets"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50173"
+      },
+      {
+        "id": "M50204",
+        "name": "Index research assets",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSETS",
+          "desc": "Research Assets"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50204"
+      },
+      {
+        "id": "M50683",
+        "name": "Index Research Entities Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INDEX_RESEARCH_ENTITIES_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50683"
+      },
+      {
+        "id": "M50928",
+        "name": "InsightGeneration",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INSIGHT_GENERATION",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50928"
+      },
+      {
+        "id": "M69",
+        "name": "Inventory Holding population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M69"
+      },
+      {
+        "id": "M464428540000011",
+        "name": "Inventory IEC population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M464428540000011"
+      },
+      {
+        "id": "M302314780000011",
+        "name": "Inventory IED population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M302314780000011"
+      },
+      {
+        "id": "M70",
+        "name": "Inventory IEPA population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M70"
+      },
+      {
+        "id": "M71",
+        "name": "Inventory ITEM population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M71"
+      },
+      {
+        "id": "M72",
+        "name": "Inventory PORTFOLIO population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M72"
+      },
+      {
+        "id": "M73",
+        "name": "Inventory PPS population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M73"
+      },
+      {
+        "id": "M50660",
+        "name": "InventoryRemoteStorageUpdate",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_LOCATION_CHANGES_TRACER",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50660"
+      },
+      {
+        "id": "M74",
+        "name": "Inventory TPS population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M74"
+      },
+      {
+        "id": "M51000",
+        "name": "Invoice from xml task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVOICE_FROM_XML_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M51000"
+      },
+      {
+        "id": "M9563112270000561",
+        "name": "jpcoar_test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+          "desc": "Discovery generic XML normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9563112270000561"
+      },
+      {
+        "id": "M9563444200000561",
+        "name": "jpcoar_test_martin",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+          "desc": "Discovery generic XML normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9563444200000561"
+      },
+      {
+        "id": "M7744328690000561",
+        "name": "Kanopy",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7744328690000561"
+      },
+      {
+        "id": "M4215103530000561",
+        "name": "KD Test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_DC_NORMALIZATION",
+          "desc": "Discovery DC normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4215103530000561"
+      },
+      {
+        "id": "M106374630000521",
+        "name": "Kormarc Bib normalize on save",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "KORMARCBIB_NORMALIZATION",
+          "desc": "KORMARC Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M106374630000521"
+      },
+      {
+        "id": "M106374790000521",
+        "name": "Kormarc Bib Re-sequence",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "KORMARCBIB_NORMALIZATION",
+          "desc": "KORMARC Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M106374790000521"
+      },
+      {
+        "id": "M106374810000521",
+        "name": "Kormarc Bib Re-sequence And Clear empty fields",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "KORMARCBIB_NORMALIZATION",
+          "desc": "KORMARC Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M106374810000521"
+      },
+      {
+        "id": "M82",
+        "name": "Kormarc Set Bib Records Cataloging Level",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "KORMARCBIB_NORMALIZATION",
+          "desc": "KORMARC Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M82"
+      },
+      {
+        "id": "M63386260000521",
+        "name": "Law/Legal to LAWSTACKS",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21HOLDING_NORMALIZATION",
+          "desc": "Marc 21 holding normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M63386260000521"
+      },
+      {
+        "id": "M7666212130000561",
+        "name": "LDR 06-k and 008 33-i",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7666212130000561"
+      },
+      {
+        "id": "M83",
+        "name": "Legal Deposit Annual Receipt Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "VENDOR_REPORTS",
+          "desc": "Vendor reports"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M83"
+      },
+      {
+        "id": "M84",
+        "name": "Letters purge with retention period",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "LETTERS_PURGE_WITH_RETENTION",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M84"
+      },
+      {
+        "id": "M50213",
+        "name": "Load GTI to CDI Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "LOAD_GTI_TO_CDI_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50213"
+      },
+      {
+        "id": "M50218",
+        "name": "Load GTI Update Files Job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "LOAD_GTI_UPDATE_FILES_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50218"
+      },
+      {
+        "id": "M50883",
+        "name": "Load ProQuest ILL eBook List",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "LOAD_PROQUEST_ILL_EBOOK_LIST_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50883"
+      },
+      {
+        "id": "M50072",
+        "name": "Loans - Due Date Correction after Calendar Change",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "UPDATE_ITEMLOAN_DUEDATE_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50072"
+      },
+      {
+        "id": "M36448530000521",
+        "name": "Marc21 Bib Initial Normalization",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M36448530000521"
+      },
+      {
+        "id": "M43588",
+        "name": "Marc21 Bib normalize on save",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M43588"
+      },
+      {
+        "id": "M35617720000521",
+        "name": "Marc21 Bib Re-sequence",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M35617720000521"
+      },
+      {
+        "id": "M43590",
+        "name": "Marc21 Bib Re-sequence And Clear empty fields",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M43590"
+      },
+      {
+        "id": "M7748462240000561",
+        "name": "MARC21 Holding Expand Textual Holdings",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21HOLDING_NORMALIZATION",
+          "desc": "Marc 21 holding normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7748462240000561"
+      },
+      {
+        "id": "M4176943220000561",
+        "name": "Marc 264",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4176943220000561"
+      },
+      {
+        "id": "M7152148900000561",
+        "name": "MARC test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7152148900000561"
+      },
+      {
+        "id": "M8082124900000561",
+        "name": "Marina authority test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21AUTHORITY_NORMALIZATION",
+          "desc": "Marc 21 authority normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M8082124900000561"
+      },
+      {
+        "id": "M8082126460000561",
+        "name": "Marina authority test 1",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21AUTHORITY_NORMALIZATION",
+          "desc": "Marc 21 authority normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M8082126460000561"
+      },
+      {
+        "id": "M50174",
+        "name": "Media Conversion",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MIGRATION",
+          "desc": "Migration"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50174"
+      },
+      {
+        "id": "M50661",
+        "name": "Merge Collections",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_COLLECTIONS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50661"
+      },
+      {
+        "id": "M91",
+        "name": "Merge Consortium Inventory task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_CONSORTIUM_INVENTORY",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M91"
+      },
+      {
+        "id": "M50724",
+        "name": "Merge Fund Transactions",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_FUND_TXN",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50724"
+      },
+      {
+        "id": "M50723",
+        "name": "Merge Invoice",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_INVOICE",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50723"
+      },
+      {
+        "id": "M50669",
+        "name": "Merge IZPhysical",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_IZPHYSICAL",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50669"
+      },
+      {
+        "id": "M50672",
+        "name": "Merge Loans",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_LOANS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50672"
+      },
+      {
+        "id": "M50610",
+        "name": "Merge Non Affiliated",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_NON_AFFILIATED_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50610"
+      },
+      {
+        "id": "M50701",
+        "name": "Merge PO",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_PO",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50701"
+      },
+      {
+        "id": "M50665",
+        "name": "Merge Portfolios",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_PORTFOLIOS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50665"
+      },
+      {
+        "id": "M50673",
+        "name": "Merge Requests",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_REQUESTS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50673"
+      },
+      {
+        "id": "M50671",
+        "name": "Merge Users",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_USERS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50671"
+      },
+      {
+        "id": "M50690",
+        "name": "Merge Vendors",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MERGE_VENDORS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50690"
+      },
+      {
+        "id": "M50668",
+        "name": "MetaDoor Enrichment Job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "METADOOR_ENRICHMENT_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50668"
+      },
+      {
+        "id": "M50888",
+        "name": "Migrate Format",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "FORMAT_MIGRATION_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50888"
+      },
+      {
+        "id": "M93",
+        "name": "MmsDisplay population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M93"
+      },
+      {
+        "id": "M4469187710000561",
+        "name": "mmstagsuppresed test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4469187710000561"
+      },
+      {
+        "id": "M50187",
+        "name": "MODS Bib Normalization On Save",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MODS_NORMALIZATION",
+          "desc": "MODS normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50187"
+      },
+      {
+        "id": "M50083",
+        "name": "Move Electronic portfolio information",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INFORMATION_UPDATE",
+          "desc": "Information Update"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50083"
+      },
+      {
+        "id": "M50147",
+        "name": "Move Portfolios to another Electronic collection",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MOVE_PORTFOLIOS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50147"
+      },
+      {
+        "id": "M50624",
+        "name": "Move Public Access Model to Inventory Section",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MOVE_PUBLIC_ACCESS_MODEL_TO_INVENTORY_SECTION_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50624"
+      },
+      {
+        "id": "M6600193550000561",
+        "name": "MR Publishing profile",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6600193550000561"
+      },
+      {
+        "id": "M4272693340000561",
+        "name": "NBK Publishing - Normalisation Rule",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4272693340000561"
+      },
+      {
+        "id": "M4272739600000561",
+        "name": "NBK Publishing - Normalisation Rule Contrib 1",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4272739600000561"
+      },
+      {
+        "id": "M5081890",
+        "name": "NetworkCalendarDistributeJob",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NETWORK_CALENDAR_DISTRIBUTE_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5081890"
+      },
+      {
+        "id": "M5081887",
+        "name": "NetworkDistributeJob",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NETWORK_DISTRIBUTE_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5081887"
+      },
+      {
+        "id": "M5081888",
+        "name": "NetworkRuleDistributeJob",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NETWORK_RULE_DISTRIBUTE_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5081888"
+      },
+      {
+        "id": "M100",
+        "name": "Network zone linking task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NETWORK_ZONE_LINKING",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M100"
+      },
+      {
+        "id": "M50073",
+        "name": "Notification - Send due date reminder",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "OVERDUE_NOTICE_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50073"
+      },
+      {
+        "id": "M7622216470000561",
+        "name": "OCAD Test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_DC_NORMALIZATION",
+          "desc": "Discovery DC normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7622216470000561"
+      },
+      {
+        "id": "M8052015250000561",
+        "name": "oclc",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M8052015250000561"
+      },
+      {
+        "id": "M6652899340000561",
+        "name": "OCLC_z39.50",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6652899340000561"
+      },
+      {
+        "id": "M50192",
+        "name": "Ongoing Global Title Index Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "ONGOING_GLOBAL_TITLE_INDEX_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50192"
+      },
+      {
+        "id": "M101",
+        "name": "Operational And Headings Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "OPERATIONAL_HEADINGS_RECALCULATION",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M101"
+      },
+      {
+        "id": "M50633",
+        "name": "Overlap Analysis Process Automation",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "OVERLAP_ANALYSIS_PA_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50633"
+      },
+      {
+        "id": "M16374840000122",
+        "name": "Poline claims Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PO_LINE_CLAIMS_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M16374840000122"
+      },
+      {
+        "id": "M2911926520000011",
+        "name": "POLinesRolloverPAJobTask",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PO_LINES_ROLLOVER_PA_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M2911926520000011"
+      },
+      {
+        "id": "M113",
+        "name": "Populate CITATION_METADATA",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "CITATION_METADATA_FLATTEN_TABLE_CREATE",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M113"
+      },
+      {
+        "id": "M50738",
+        "name": "Portal entities url mapper",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PORTAL_ENTITIES_URL_MAPPER_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50738"
+      },
+      {
+        "id": "M4239496730000561",
+        "name": "PreferredLanguageHeading",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4239496730000561"
+      },
+      {
+        "id": "M50899",
+        "name": "PreservationMmsDisplay population",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INVENTORY_MAINTENANCE",
+          "desc": "Inventory Maintenance"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50899"
+      },
+      {
+        "id": "M50786",
+        "name": "Preservation process",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PRESERVATION_JOB",
+          "desc": "Migration"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50786"
+      },
+      {
+        "id": "M50851",
+        "name": "Preserve Digital Content",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MIGRATION",
+          "desc": "Migration"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50851"
+      },
+      {
+        "id": "M114",
+        "name": "Prevent FRBR and/or Dedup in Discovery",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_MANAGEMENT",
+          "desc": "Discovery Management"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M114"
+      },
+      {
+        "id": "M50862",
+        "name": "PrimoVe bulk export of search result",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PRIMO_VE_BULK_EXPORT",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50862"
+      },
+      {
+        "id": "M670420830000011",
+        "name": "ProviderZoneTakeOwnerShip",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PROVIDER_ZONE_TAKE_OWNER_SHIP_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M670420830000011"
+      },
+      {
+        "id": "M50873",
+        "name": "Purchase EBA bulk",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_EBA_PURCHASE_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50873"
+      },
+      {
+        "id": "M51011",
+        "name": "Push Assets To Sword Servers",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PUSH_ASSETS_TO_SWORD_SERVERS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M51011"
+      },
+      {
+        "id": "M50642",
+        "name": "PZ - Export New CZ Records",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PROVIDER_ZONE_EXPORT_NEW_RECORDS_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50642"
+      },
+      {
+        "id": "M4474064470000561",
+        "name": "qdc",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+          "desc": "Discovery generic XML normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4474064470000561"
+      },
+      {
+        "id": "M6874880850000561",
+        "name": "r",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6874880850000561"
+      },
+      {
+        "id": "M4921174550000561",
+        "name": "Rapid ILL Electronic",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4921174550000561"
+      },
+      {
+        "id": "M4928325770000561",
+        "name": "Rapid Item from 866",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4928325770000561"
+      },
+      {
+        "id": "M50122",
+        "name": "Reading List Bulk Update",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "UPDATE_READING_LIST",
+          "desc": "Reading Lists"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50122"
+      },
+      {
+        "id": "M50762",
+        "name": "Reading List Citation Process and Enrich",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "UPDATE_READING_LIST_CITATION",
+          "desc": "Citations"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50762"
+      },
+      {
+        "id": "M50556",
+        "name": "Reading List Citation Update Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "UPDATE_READING_LIST_CITATION",
+          "desc": "Citations"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50556"
+      },
+      {
+        "id": "M121",
+        "name": "Rebuild Physical item description",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INFORMATION_UPDATE",
+          "desc": "Information Update"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M121"
+      },
+      {
+        "id": "M50124",
+        "name": "Recalculate cached CZ Heading Job Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "OPERATIONAL_HEADINGS_RECALCULATION",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50124"
+      },
+      {
+        "id": "M122",
+        "name": "Recalculate Local Resource Types Job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_MANAGEMENT",
+          "desc": "Discovery Management"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M122"
+      },
+      {
+        "id": "M50171",
+        "name": "Receive all one time polines",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RECEIVE_ALL_POLINES_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50171"
+      },
+      {
+        "id": "M4215177590000561",
+        "name": "Record with local field COCC",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4215177590000561"
+      },
+      {
+        "id": "M50739",
+        "name": "ReduceCzDistributionChangeLogJob",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "REDUCE_CZ_DISTRIBUTION_CHANGE_LOG",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50739"
+      },
+      {
+        "id": "M50589",
+        "name": "Refresh Analytics Data for Research Assets",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSETS",
+          "desc": "Research Assets"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50589"
+      },
+      {
+        "id": "M50771",
+        "name": "Refresh or Revoke ORCID tokens",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCHER_REFRESH_OR_REVOKE_TOKEN_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50771"
+      },
+      {
+        "id": "M50573",
+        "name": "Register DOIs for Research Assets",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSETS",
+          "desc": "Research Assets"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50573"
+      },
+      {
+        "id": "M50139",
+        "name": "Remote Representation Migration",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MIGRATION",
+          "desc": "Migration"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50139"
+      },
+      {
+        "id": "M4874846530000561",
+        "name": "Remove 856",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4874846530000561"
+      },
+      {
+        "id": "M6661794470000561",
+        "name": "remove 999 alexandra test",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6661794470000561"
+      },
+      {
+        "id": "M55199100000521",
+        "name": "Remove Bib Field 999",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M55199100000521"
+      },
+      {
+        "id": "M50221",
+        "name": "Remove course user association job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "COURSE_USER_MAPPING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50221"
+      },
+      {
+        "id": "M50615",
+        "name": "Remove Duplicated Portfolios ProQuest",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "UPLOAD_E_HOLDINGS_PROQUEST_REMOVE_DUP_PORTFOLIOS_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50615"
+      },
+      {
+        "id": "M50797",
+        "name": "Remove Historical Author Matching Tasks",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "AUTHOR_MATCHING_TASKS_CLEANUP_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50797"
+      },
+      {
+        "id": "M50898",
+        "name": "Remove Links From Duplicate Headings",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "REMOVE_LINK_FROM_DUPLICATE_HEADINGS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50898"
+      },
+      {
+        "id": "M50216",
+        "name": "Remove Titles from Collection",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "INFORMATION_UPDATE",
+          "desc": "Information Update"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50216"
+      },
+      {
+        "id": "M107610330000521",
+        "name": "Remove Vendor Data 856",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M107610330000521"
+      },
+      {
+        "id": "M50663",
+        "name": "RenderResearchAssetsTask",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "ESPLORO_RENDER_ASSETS_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50663"
+      },
+      {
+        "id": "M1327181230000521",
+        "name": "replace hc with hardcover",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1327181230000521"
+      },
+      {
+        "id": "M117",
+        "name": "Republish a set of Bibliographic records to Primo",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PUBLISHING",
+          "desc": "Publishing"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M117"
+      },
+      {
+        "id": "M57",
+        "name": "Republish Holdings records to OCLC (LHRs)",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PUBLISHING",
+          "desc": "Publishing"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M57"
+      },
+      {
+        "id": "M50849",
+        "name": "Research Asset Flattening",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSET_FLATTENING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50849"
+      },
+      {
+        "id": "M50210",
+        "name": "Research assets CSV export",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSETS",
+          "desc": "Research Assets"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50210"
+      },
+      {
+        "id": "M50984",
+        "name": "Research Asset Versioning",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSET_VERSIONING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50984"
+      },
+      {
+        "id": "M50760",
+        "name": "RESEARCH_ENTITY_INDEX_TASK",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NO_REP_ENTITY_INDEX",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50760"
+      },
+      {
+        "id": "M50679",
+        "name": "Researcher Activities Loader",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCHER_ACTIVITIES_LOADER_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50679"
+      },
+      {
+        "id": "M50577",
+        "name": "Researcher Duplicate Report",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCHER_DUPLICATE_REPORT_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50577"
+      },
+      {
+        "id": "M50897",
+        "name": "Researcher General Notification",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCHERS",
+          "desc": "Researchers"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50897"
+      },
+      {
+        "id": "M509102",
+        "name": "RESET_INVOICE_LINE_NEW_DATES_FIELDS",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESET_INVOICE_LINE_NEW_DATES_FIELDS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M509102"
+      },
+      {
+        "id": "M509101",
+        "name": "RESET_PO_LINE_JBPM_NEW_NODE",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESET_PO_LINE_JBPM_NEW_NODE",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M509101"
+      },
+      {
+        "id": "M50667",
+        "name": "ReShare Updates",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESHARE_UPDATES_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50667"
+      },
+      {
+        "id": "M50571",
+        "name": "Resource Sharing Claiming and Cancellation",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESOURCE_SHARING_CLAIM_AND_CANCEL_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50571"
+      },
+      {
+        "id": "M127",
+        "name": "Restore local extensions",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESTORE_LOCAL_EXTENSIONS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M127"
+      },
+      {
+        "id": "M126",
+        "name": "Restore MMS record",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESTORE_MMS_RECORD",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M126"
+      },
+      {
+        "id": "M50748",
+        "name": "Retrieve ORCID Profile with list of assets for Researcher",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCHERS",
+          "desc": "Researchers"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50748"
+      },
+      {
+        "id": "M50646",
+        "name": "Rialto EBA",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_EBA_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50646"
+      },
+      {
+        "id": "M50652",
+        "name": "Rialto EBA Portfolio Cleanup",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_EBA_PORTFOLIO_CLEANUP_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50652"
+      },
+      {
+        "id": "M5041153760000561",
+        "name": "Rialto - Ebook Central",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5041153760000561"
+      },
+      {
+        "id": "M50575",
+        "name": "Rialto Manual Publishing",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_PUBLISHING_JOB",
+          "desc": "Rialto Publishing Job"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50575"
+      },
+      {
+        "id": "M50244",
+        "name": "Rialto Ongoing Publishing",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_PUBLISHING_JOB",
+          "desc": "Rialto Publishing Job"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50244"
+      },
+      {
+        "id": "M50583",
+        "name": "Rialto Scheduled Purchasing",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_SCHEDULED_PURCHASING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50583"
+      },
+      {
+        "id": "M50616",
+        "name": "Rialto Selection Plan",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_SELECTION_PLAN_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50616"
+      },
+      {
+        "id": "M50722",
+        "name": "Rialto sushi usage publishing job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_SUSHI_USAGE_PUBLISHING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50722"
+      },
+      {
+        "id": "M50677",
+        "name": "Rialto Title Alert Job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RIALTO_TITLE_ALERT_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50677"
+      },
+      {
+        "id": "M130",
+        "name": "Rollback record",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "ROLLBACK",
+          "desc": "Rollback"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M130"
+      },
+      {
+        "id": "M4962970690000561",
+        "name": "Rule 852 KD",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21HOLDING_NORMALIZATION",
+          "desc": "Marc 21 holding normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4962970690000561"
+      },
+      {
+        "id": "M4147862700000561",
+        "name": "rule \"julac_NR\"",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21HOLDING_NORMALIZATION",
+          "desc": "Marc 21 holding normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4147862700000561"
+      },
+      {
+        "id": "M50632",
+        "name": "Run Clear Portfolio Libraries For All Collections",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RUN_CLEAR_PORTFOLIO_LIBRARIES_FOR_ALL",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50632"
+      },
+      {
+        "id": "M50555",
+        "name": "Runs the PZ Relinking Job",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "PROVIDER_ZONE_RELINKING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50555"
+      },
+      {
+        "id": "M4385044480000561",
+        "name": "save 005 update date in local field",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21HOLDING_NORMALIZATION",
+          "desc": "Marc 21 holding normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4385044480000561"
+      },
+      {
+        "id": "M131",
+        "name": "Save And Index Electronic collection Tree",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SAVE_AND_INDEX_IEPA_TREE",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M131"
+      },
+      {
+        "id": "M132",
+        "name": "Save And Index Items",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SAVE_AND_INDEX_ITEMS",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M132"
+      },
+      {
+        "id": "M133",
+        "name": "Save And Index Mms Tree",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SAVE_AND_INDEX_MMS_TREE",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M133"
+      },
+      {
+        "id": "M4385044420000561",
+        "name": "save update date in local field",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4385044420000561"
+      },
+      {
+        "id": "M50179",
+        "name": "SBN AUTH Alignment Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SBN_AUTH_ALIGNMENT",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50179"
+      },
+      {
+        "id": "M50178",
+        "name": "SBN BIB Alignment Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SBN_BIB_ALIGNMENT",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50178"
+      },
+      {
+        "id": "M50214",
+        "name": "Send Courtesy Notices and Handle Loan Renewals",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "LOAN_RENEWAL_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50214"
+      },
+      {
+        "id": "M50837",
+        "name": "Send invoice to partners",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SEND_INVOICE_TO_PARTNER_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50837"
+      },
+      {
+        "id": "M134",
+        "name": "Set Authority Records Cataloging Level",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21AUTHORITY_NORMALIZATION",
+          "desc": "Marc 21 authority normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M134"
+      },
+      {
+        "id": "M135",
+        "name": "Set Bib Records Cataloging Level",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M135"
+      },
+      {
+        "id": "M50561",
+        "name": "Set Management Tags",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21MANAGEMENT_TAGS",
+          "desc": "Management tags"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50561"
+      },
+      {
+        "id": "M4840916130000561",
+        "name": "Sigal - csiro",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+          "desc": "Discovery generic XML normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4840916130000561"
+      },
+      {
+        "id": "M50710",
+        "name": "Smart Expansion via Alma",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SMART_EXPANSION_VIA_ALMA_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50710"
+      },
+      {
+        "id": "M50630",
+        "name": "Smart Expansion via Citation Lists",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SMART_EXPANSION_VIA_CITATION_LISTS_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50630"
+      },
+      {
+        "id": "M50650",
+        "name": "Smart Expansion via CSV File",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SMART_EXPANSION_VIA_CSV_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50650"
+      },
+      {
+        "id": "M50962",
+        "name": "Specto_AI_Document_Normalization",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NORMALIZATION",
+          "desc": "Normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50962"
+      },
+      {
+        "id": "M50963",
+        "name": "Specto_AI_Image_Normalization",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "NORMALIZATION",
+          "desc": "Normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50963"
+      },
+      {
+        "id": "M50926",
+        "name": "Specto Collection Indexing",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_COLLECTION_INDEXING_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50926"
+      },
+      {
+        "id": "M50998",
+        "name": "Specto Content Analysis (Pre-Processing)",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_FILE_ENTITY_EXTRACTION_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50998"
+      },
+      {
+        "id": "M50959",
+        "name": "Specto Digital Content Type Identification",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_DIGITAL_CONTENT_TYPE_IDENTIFICATION",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50959"
+      },
+      {
+        "id": "M50912",
+        "name": "Specto Enrichment",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_ENRICHMENT_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50912"
+      },
+      {
+        "id": "M50999",
+        "name": "Specto Entity Extraction and Grouping for images and text",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_TITLE_ENTITY_EXTRACTION_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50999"
+      },
+      {
+        "id": "M50949",
+        "name": "Specto Entity Extraction from Text",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_NER_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50949"
+      },
+      {
+        "id": "M50913",
+        "name": "Specto Face Recognition",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_FACE_RECOGNITION_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50913"
+      },
+      {
+        "id": "M50948",
+        "name": "Specto Metadata Enrichment",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SPECTO_METADATA_ENRICHMENT_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50948"
+      },
+      {
+        "id": "M50617",
+        "name": "SP Research assets updates",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "RESEARCH_ASSETS",
+          "desc": "Research Assets"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50617"
+      },
+      {
+        "id": "M12889750000541",
+        "name": "Suppress Bib records from discovery",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M12889750000541"
+      },
+      {
+        "id": "M4406520710000561",
+        "name": "Suppress Bib records from discovery DC",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "QUALIFIED_DC_NORMALIZATION",
+          "desc": "Qualified DC normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4406520710000561"
+      },
+      {
+        "id": "M4406520730000561",
+        "name": "Suppress Bib records from discovery DCAP01",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DCAP01_NORMALIZATION",
+          "desc": "DC Application profile 1 normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4406520730000561"
+      },
+      {
+        "id": "M4406520750000561",
+        "name": "Suppress Bib records from discovery DCAP02",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DCAP02_NORMALIZATION",
+          "desc": "DC Application profile 2 normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4406520750000561"
+      },
+      {
+        "id": "M4406520770000561",
+        "name": "Suppress Bib records from discovery ETD",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "ETD_NORMALIZATION",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4406520770000561"
+      },
+      {
+        "id": "M4406520790000561",
+        "name": "Suppress Bib records from discovery MODS",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MODS_NORMALIZATION",
+          "desc": "MODS normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4406520790000561"
+      },
+      {
+        "id": "M1293938580000521",
+        "name": "Suppress Bib records from discovery UNIMARC",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "UNIMARCBIB_NORMALIZATION",
+          "desc": "UNIMARC Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M1293938580000521"
+      },
+      {
+        "id": "M137",
+        "name": "Sushi harvesting Task",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SUSHI_HARVESTING_SYSTEM_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M137"
+      },
+      {
+        "id": "M5081879",
+        "name": "SyncAICZJob",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "SYNC_INST_AI_WITH_CZ_JOB",
+          "desc": ""
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M5081879"
+      },
+      {
+        "id": "M12889770000541",
+        "name": "Synchronize Bib records with external catalog",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M12889770000541"
+      },
+      {
+        "id": "M138",
+        "name": "Synchronize MMS with national catalog",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M138"
+      },
+      {
+        "id": "M7657740420000561",
+        "name": "Tarefa de Importação",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+          "desc": "Discovery generic XML normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7657740420000561"
+      },
+      {
+        "id": "M6662153100000561",
+        "name": "Test1",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6662153100000561"
+      },
+      {
+        "id": "M4681488780000561",
+        "name": "test 2 drools",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4681488780000561"
+      },
+      {
+        "id": "M6236271660000561",
+        "name": "Test 4 Success",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6236271660000561"
+      },
+      {
+        "id": "M4239496490000561",
+        "name": "test alexandra",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4239496490000561"
+      },
+      {
+        "id": "M4406465980000561",
+        "name": "test author name thing",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M4406465980000561"
+      },
+      {
+        "id": "M9495840610000561",
+        "name": "test DC Sabine",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "QUALIFIED_DC_NORMALIZATION",
+          "desc": "Qualified DC normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M9495840610000561"
+      },
+      {
+        "id": "M7659870840000561",
+        "name": "TestImportAna",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "DISCOVERY_GENERIC_XML_NORMALIZATION",
+          "desc": "Discovery generic XML normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7659870840000561"
+      },
+      {
+        "id": "M7666181460000561",
+        "name": "Testing and more Testing",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M7666181460000561"
+      },
+      {
+        "id": "M6107822610000561",
+        "name": "Test Process 1",
+        "type": {
+          "value": "MANUAL",
+          "desc": "Manual"
+        },
+        "category": {
+          "value": "MARC21BIB_NORMALIZATION",
+          "desc": "Marc 21 Bib normalization"
+        },
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M6107822610000561"
+      }
+    ],
+    "total_record_count": 439
+  }

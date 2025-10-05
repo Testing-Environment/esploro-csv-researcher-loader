@@ -1,0 +1,18 @@
+{
+    "id": "M50173",
+    "name": "Import Research Assets Files",
+    "description": "Import Research Assets Files",
+    "type": {
+      "value": "MANUAL",
+      "desc": "Manual"
+    },
+    "category": {
+      "value": "RESEARCH_ASSETS",
+      "desc": "Research Assets"
+    },
+    "content": {
+      "value": "IMPORT_RESEARCH_ASSETS_FILES",
+      "desc": "Research assets"
+    },
+    "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/jobs/M50173"
+  }
