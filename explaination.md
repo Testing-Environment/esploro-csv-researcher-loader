@@ -10,7 +10,7 @@ At a glance: An Angular 11 Cloud App for Esploro that lets users attach files/li
 
 - Purpose: Enrich existing Esploro research assets by adding files/links with proper metadata.
 - Manual path: Enter one asset ID and one or more file records; app posts a “queue files” payload to the asset.
-- CSV path: Upload a CSV with MMS IDs and file metadata, auto-map columns, validate/convert file type values to required IDs, process each row, and produce a “successful MMS IDs” CSV to help create a set and run the import job in Esploro.
+- CSV path: Upload a CSV with MMS IDs and file metadata. The processor enforces MMS ID and File URL as required columns/values, auto-maps optional columns (title, description, file type), converts file type names to required IDs (prompting for any unresolved values), processes each row, and produces a “successful MMS IDs” CSV to help create a set and run the import job in Esploro.
 - Typical workflow:
   1) Open app inside Esploro, 2) choose Manual Entry or CSV Upload, 3) submit, 4) create a set from the MMS IDs, 5) run the “Import Research Assets Files” job.
 
@@ -36,10 +36,10 @@ Angular app (Cloud App)
   - `processing-results/…` – Summary table, MMS ID download, deep links back to Esploro.
 - `cloudapp/src/app/services/asset.service.ts` – Esploro REST calls and mapping-table helpers.
 - `cloudapp/src/app/models/` – Shared interfaces: `asset.ts`, `types.ts`.
-- `cloudapp/src/app/constants/file-types.ts` – Fallback file types for resilience.
+- `cloudapp/src/app/constants/file-types.ts` – Legacy placeholder (fallback retired; mapping table is authoritative).
 - `cloudapp/src/app/utilities.ts` – Misc. helpers.
 - `cloudapp/src/i18n/en.json` – All user-facing strings with ICU message format.
-- `cloudapp/src/assets/researcherLoader.png` – App icon.
+- `cloudapp/src/assets/assetFileLoader.png` – App icon.
 
 Languages and frameworks
 - Language: TypeScript (Angular 11)
@@ -58,12 +58,12 @@ Main entry points
   - Displays `<cloudapp-alert>` and `<router-outlet>`; no logic beyond app initialization.
 - MainComponent (feature container)
   - Holds reactive form for single-asset manual submissions.
-  - Loads file type code table and the AssetFileAndLinkTypes mapping table.
+  - Loads the AssetFileAndLinkTypes mapping table and derives display hints and default selections from it.
   - Detects asset type by MMS ID to filter compatible file/link categories.
   - Hosts CSVProcessorComponent and ProcessingResultsComponent.
 - CSVProcessorComponent (bulk CSV engine)
-  - CSV upload, parsing (RFC 4180 style), column auto-mapping, mapping validation.
-  - File type value validation against mapping table; fuzzy match to convert names to required IDs.
+  - CSV upload, parsing (RFC 4180 style), column auto-mapping, mapping validation, and enforcement that MMS ID + Remote URL columns exist while other fields remain optional.
+  - File type value validation against mapping table; fuzzy match to convert names to required IDs and track unresolved values until the user maps them manually.
   - Caches “before” asset file state, calls APIs per row, fetches “after” state, flags unchanged assets.
   - Emits processed rows and generates a “successful MMS IDs” CSV for downstream Esploro steps.
 - ProcessingResultsComponent (outcome UI)
@@ -71,7 +71,7 @@ Main entry points
   - Provides deep links to Esploro Viewer, Advanced Search, Jobs.
 - AssetService (integration/service layer)
   - Adds files via “queue links to extract” payload to `/esploro/v1/assets/{id}?op=patch&action=add`.
-  - Retrieves file type code table and mapping table (AssetFileAndLinkTypes) from `/conf` APIs.
+  - Retrieves the AssetFileAndLinkTypes mapping table from `/conf` APIs.
   - Retrieves asset metadata to resolve asset type and compare files before/after.
 - AppService (bootstrap helper)
   - Placeholder for Cloud App InitService usage.
@@ -87,7 +87,6 @@ flowchart TD
   CSV -->|REST calls| AssetService
   CSV --> Results[ProcessingResultsComponent]
   Main --> Results
-  AssetService -->|/conf/code-tables| Esploro[Esploro Config APIs]
   AssetService -->|/conf/mapping-tables| Esploro
   AssetService -->|/esploro/v1/assets| Esploro
 ```
@@ -97,26 +96,27 @@ flowchart TD
 ## Data flow (end to end)
 
 Manual entry path
-1) User enters Asset ID and one or more files (title, url, description, type id, supplemental).
-2) MainComponent builds `temporary.linksToExtract` payload and posts to:
-   `POST /esploro/v1/assets/{assetId}?op=patch&action=add`.
-3) API acknowledges; files are queued. User proceeds to create a set and run the import job.
+1) Stage 1 – user adds one or more rows. Each row requires an **Asset ID** and **File URL**; title/description/supplemental are optional.
+2) User chooses **Specify Types of Each File** or **Proceed Without Selecting File Types**. The component validates asset IDs via `GET /esploro/v1/assets/{assetId}`; invalid rows are highlighted and sorted to the top.
+3) Stage 2 (when selected) – user picks the file type ID for each row, with options filtered by asset type. If Stage 2 is skipped, a default compatible file type ID is applied automatically.
+4) MainComponent groups rows by asset ID, builds the `temporary.linksToExtract` payload(s), and issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` sequentially.
+5) API acknowledgements surface in the UI. The user then creates a Set and runs the "Import Research Assets Files" job in Esploro to finalize ingestion.
 
 CSV path
 1) Upload CSV (<=10 MB). CSVProcessor parses headers/rows with quote/escape handling.
-2) Auto-suggest column mapping for mmsId, remoteUrl, fileTitle, fileDescription, fileType; validate duplicates/required fields.
+2) Auto-suggest column mapping for `mmsId` and `remoteUrl` (required) plus optional `fileTitle`, `fileDescription`, `fileType`; prevent duplicate assignments and raise errors for missing required columns immediately.
 3) Validate fileType values:
    - If values are IDs (exact match against mapping table ids) → OK.
    - Else try exact/fuzzy name match against mapping table target_code → convert to IDs.
-   - If any still unmapped → prompt for manual selection per unique value.
+  - If any still unmapped → collect unique unresolved values, block conversion, and prompt for manual selection before continuing.
 4) Optionally cache pre-state for each unique MMS ID by calling `GET /esploro/v1/assets/{mmsId}`.
-5) For each row: validate asset exists; if URL present, call `POST /esploro/v1/assets/{mmsId}/files` with `{ url, title, description, type }`.
+5) For each row: confirm MMS ID and Remote URL values are present, validate the asset exists, then call `POST /esploro/v1/assets/{mmsId}/files` with `{ url, title, description, type }`.
 6) Fetch post-state and compare: if file counts unchanged and the URL isn’t present, flag as “unchanged”.
 7) Emit results and generate a MMS ID CSV for successful rows; show instructions to create a Set and run the job.
 
 Data contracts (simplified)
 - AssetFileLink (manual): { title, url, description?, type, supplemental }
-- ProcessedAsset (csv): { mmsId, remoteUrl?, fileTitle?, fileDescription?, fileType?, status, errorMessage?, wasUnchanged? }
+- ProcessedAsset (csv): { mmsId, remoteUrl, fileTitle?, fileDescription?, fileType?, status, errorMessage?, wasUnchanged? }
 
 ---
 
@@ -137,7 +137,7 @@ Data contracts (simplified)
 - Angular component/service separation; single-responsibility components.
 - Reactive forms for manual entry with validators and pristine/touched management.
 - Observable pipelines with `finalize` for consistent loading flags; `catchError` to avoid stream failures.
-- Progressive enhancement: fallback code-table values when `/conf` APIs aren’t reachable.
+- Progressive enhancement: gracefully handles mapping-table outages by hiding hints and prompting users to retry, while still enforcing valid IDs.
 - Config normalization: robust parsing of `/conf` API responses that can vary in shape.
 - Defensive CSV parser: handles quotes, commas, and empty lines; reports per-row issues.
 - Asset-type–aware filtering of file categories using mapping table and asset metadata.
@@ -148,7 +148,7 @@ Data contracts (simplified)
 ## Critical logic hotspots (security/performance/behavior)
 
 1) File type validation and conversion
-   - The Esploro “AssetFileAndLinkTypes” mapping table requires ID values in API calls. Users often provide labels/names in CSV. The component auto-matches names→IDs and prompts for manual mapping if needed. This prevents subtle API failures.
+  - The Esploro “AssetFileAndLinkTypes” mapping table requires ID values in API calls. Users often provide labels/names in CSV. The component auto-matches names→IDs, tracks unresolved values until mapped, and prompts for manual selection if needed. This prevents subtle API failures.
 
 2) Pre/post asset state comparison
    - Caches existing files and compares after processing to flag “unchanged” assets—useful when URLs are duplicates or policies prevent attachment. This improves operator awareness.
@@ -163,7 +163,7 @@ Data contracts (simplified)
    - Sequential CSV processing with a small delay; could be extended with concurrency + exponential backoff where safe, but beware of tenant rate limits.
 
 6) Config API variability
-   - Code handles multiple shapes of code-table and mapping-table responses. This resilience is critical for compatibility across deployments.
+  - Code handles multiple shapes of mapping-table responses. This resilience is critical for compatibility across deployments.
 
 ---
 
@@ -181,7 +181,6 @@ Data contracts (simplified)
   - `GET /esploro/v1/assets/{mmsId}` → used for type, title, and file list.
 
 - Configuration
-  - `GET /conf/code-tables/AssetFileType?view=brief` → file type code table.
   - `GET /conf/mapping-tables/AssetFileAndLinkTypes` → mapping table with IDs/labels/applicability.
 
 ---
@@ -378,54 +377,54 @@ Last updated: 2025-10-05
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                    PRESENTATION LAYER                         │
-│                                                                │
+│                    PRESENTATION LAYER                        │
+│                                                              │
 │  ┌────────────────────────────────────────────────────────┐  │
 │  │           MainComponent (main.component.ts)            │  │
-│  │                                                         │  │
+│  │                                                        │  │
 │  │  - Reactive Form (FormGroup + FormArray)               │  │
 │  │  - User interaction handlers                           │  │
 │  │  - Validation logic                                    │  │
 │  │  - UI state management                                 │  │
 │  └─────────────────┬──────────────────────────────────────┘  │
-│                    │                                          │
-└────────────────────┼──────────────────────────────────────────┘
+│                    │                                         │
+└────────────────────┼─────────────────────────────────────────┘
                      │ Dependency Injection
                      ▼
 ┌──────────────────────────────────────────────────────────────┐
-│                     SERVICE LAYER                             │
-│                                                                │
+│                     SERVICE LAYER                            │
+│                                                              │
 │  ┌────────────────────────────────────────────────────────┐  │
 │  │           AssetService (asset.service.ts)              │  │
-│  │                                                         │  │
+│  │                                                        │  │
 │  │  - API integration                                     │  │
 │  │  - Data transformation (UI ↔ API format)               │  │
 │  │  - HTTP request construction                           │  │
 │  │  - Response parsing                                    │  │
 │  └─────────────────┬──────────────────────────────────────┘  │
-│                    │                                          │
-└────────────────────┼──────────────────────────────────────────┘
+│                    │                                         │
+└────────────────────┼─────────────────────────────────────────┘
                      │ Uses
                      ▼
 ┌──────────────────────────────────────────────────────────────┐
-│                    INTEGRATION LAYER                          │
-│                                                                │
+│                    INTEGRATION LAYER                         │
+│                                                              │
 │  ┌────────────────────────────────────────────────────────┐  │
 │  │      CloudAppRestService (Ex Libris SDK)               │  │
-│  │                                                         │  │
+│  │                                                        │  │
 │  │  - Authentication                                      │  │
 │  │  - Base URL configuration                              │  │
 │  │  - Request/response interception                       │  │
 │  └─────────────────┬──────────────────────────────────────┘  │
-│                    │                                          │
-└────────────────────┼──────────────────────────────────────────┘
+│                    │                                         │
+└────────────────────┼─────────────────────────────────────────┘
                      │ HTTP Calls
                      ▼
 ┌──────────────────────────────────────────────────────────────┐
-│                      ESPLORO APIs                             │
-│                                                                │
+│                      ESPLORO APIs                            │
+│                                                              │
 │  - POST /esploro/v1/assets/{id}?op=patch&action=add          │
-│  - GET  /conf/code-tables/AssetFileType                       │
+│  - GET  /conf/mapping-tables/AssetFileAndLinkTypes           │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -463,31 +462,22 @@ Last updated: 2025-10-05
 
 ```typescript
 export class MainComponent implements OnInit {
-  // Form instance
   form: FormGroup;
-  
-  // File type options loaded from API
-  fileTypes: CodeTableEntry[] = [];
-  
-  // Loading state for file types
-  loadingFileTypes = false;
-  
-  // Submission in progress
+  stage: ManualEntryStage = 'stage1';
+  stageTwoSkipped = false;
+  assetValidationInProgress = false;
+  fileTypes: FileType[] = [];
+  assetFileAndLinkTypes: AssetFileAndLinkType[] = [];
   submitting = false;
-  
-  // Result of last submission
-  submissionResult: { 
-    type: 'success' | 'error'; 
-    message: string 
-  } | null = null;
-  
-  // Fallback file types if API fails
-  private readonly fallbackFileTypes: CodeTableEntry[] = [
-    { value: 'accepted', description: 'Accepted version' },
-    { value: 'submitted', description: 'Submitted version' },
-    { value: 'supplementary', description: 'Supplementary material' },
-    { value: 'administrative', description: 'Administrative' }
-  ];
+  submissionResult: { type: 'success' | 'error'; message: string } | null = null;
+  assetMetadataMap = new Map<string, AssetMetadata>();
+
+  processedAssets: ProcessedAsset[] = [];
+  mmsIdDownloadUrl = '';
+  showResults = false;
+  showWorkflowInstructions = false;
+
+  private readonly urlPattern = /^https?:\/\//i;
 }
 ```
 
@@ -497,144 +487,104 @@ export class MainComponent implements OnInit {
 Constructor
   ├─► Inject dependencies (FormBuilder, AssetService, AlertService)
   └─► Initialize form structure
-      ├─► assetId: FormControl (required)
-      └─► files: FormArray (dynamic)
+      └─► entries: FormArray of row FormGroups (assetId, url, optional metadata, type)
 
 ngOnInit()
-  └─► Load file types from API
-      ├─► Set loadingFileTypes = true
-      ├─► Call assetService.getFileTypes()
-      └─► Handle response
-          ├─► Success: populate fileTypes array
-          └─► Error: use fallback types
+  └─► Load AssetFileAndLinkTypes mapping table (derive file type hints and default IDs)
 
 User Interaction
-  ├─► User fills form
-  ├─► User clicks "Add another file" → addFile()
-  ├─► User clicks remove icon → removeFile(index)
-  └─► User clicks "Submit files" → submit()
-      ├─► Validate form
-      ├─► Build payload
-      ├─► Call assetService.addFilesToAsset()
-      └─► Handle response
-          ├─► Success: show alert, reset files
-          └─► Error: show alert, keep form
-
-ngOnDestroy() (implicit)
-  └─► Subscriptions cleaned up by finalize()
+  ├─► Stage 1 editing
+  │   ├─► "Add another file" → addEntry()
+  │   └─► Remove icon → removeEntry(index)
+  ├─► "Specify Types of Each File" → specifyTypesForEachFile()
+  │   ├─► Validate required fields
+  │   ├─► Validate asset IDs via `getAssetMetadata` (reorder invalid rows)
+  │   ├─► Apply type validators and default suggestions
+  │   └─► Transition to Stage 2 (stage = 'stage2')
+  ├─► "Proceed Without Selecting File Types" → proceedWithoutSelectingTypes()
+  │   ├─► Validate required fields and asset IDs
+  │   ├─► Assign default type IDs per entry
+  │   └─► Submit immediately with `executeSubmission(true)`
+  ├─► Stage 2 form (type selection)
+  │   ├─► User picks types, can adjust optional metadata
+  │   └─► "Back to Details" → returnToStageOne()
+  └─► Submit button → submitWithSelectedTypes()
+      ├─► Ensure type controls valid
+      ├─► Group entries by assetId
+      ├─► Call assetService.addFilesToAsset() sequentially
+      └─► Display success/error and reset Stage 1 state
 ```
 
 #### Key Methods
 
-##### `submit(): void`
-**Purpose**: Handle form submission
+##### `addEntry()` / `removeEntry(index)`
+- Manage the Stage 1 FormArray of file rows.
+- Prevents removing the final entry to keep at least one row on screen.
 
-**Logic Flow**:
-1. Check form validity
-2. Extract asset ID and file data
-3. Build AssetFileLink[] payload
-4. Set `submitting = true`
-5. Call `assetService.addFilesToAsset()`
-6. Subscribe to Observable
-7. On success: show alert, update result, reset files
-8. On error: show alert, update result, keep form
-9. Finally: set `submitting = false`
+##### `specifyTypesForEachFile()`
+- Marks required controls, validates Stage 1 rows, and calls `validateStageOneEntries()` to confirm every asset exists.
+- Invalid asset IDs are highlighted and moved to the top of the list for quick correction.
+- When validation passes, applies type validators, pre-fills suggested defaults, and flips the component to Stage 2.
 
-##### `addFile(): void`
-**Purpose**: Add another file group to the form
+##### `proceedWithoutSelectingTypes()`
+- Shares the same Stage 1 validation path.
+- Assigns a default file type ID for each entry (based on asset type filtering) and immediately calls `executeSubmission(true)` to queue the files without entering Stage 2.
 
-**Implementation**:
-```typescript
-addFile(): void {
-  this.files.push(this.createFileGroup());
-}
-```
+##### `submitWithSelectedTypes()`
+- Stage 2 submission handler. Ensures every type control is valid before delegating to `executeSubmission(false)`.
 
-##### `removeFile(index: number): void`
-**Purpose**: Remove a file group from the form
+##### `executeSubmission(skippedStageTwo: boolean)` (private)
+- Groups rows by `assetId`, transforms them into `AssetFileLink[]`, and calls `assetService.addFilesToAsset()` sequentially via `concatMap`.
+- Aggregates success counts across assets, surfaces errors with context, and resets the Stage 1 form when finished.
 
-**Safety Check**: Prevents removing the last file group
+##### `validateStageOneEntries()` (private)
+- Ensures asset IDs and URLs are populated, uses `forkJoin` to fetch metadata for each unique asset, and returns `false` if any lookups fail (while flagging the offending rows).
 
-```typescript
-removeFile(index: number): void {
-  if (this.files.length === 1) {
-    return; // Always keep at least one file group
-  }
-  this.files.removeAt(index);
-}
-```
+##### `assignDefaultType(group)` / `getFilteredFileTypes(group)` (private)
+- Guarantee each entry carries a valid file type ID, either via Stage 2 selection or by choosing the first compatible mapping-table value.
 
-##### `loadFileTypes(): void` (private)
-**Purpose**: Fetch file type options from Esploro
+##### `createEntryGroup()` (private)
+- Factory for each row form group: `{ assetId, title, url, description, type, supplemental }` with only `assetId` and `url` marked as required in Stage 1.
 
-**Error Handling**: Falls back to hardcoded types on failure
-
-##### `resetFiles(): void` (private)
-**Purpose**: Reset file form groups after successful submission
-
-**Behavior**: 
-- Removes all file groups
-- Adds one empty file group
-- **Retains** the asset ID for convenience
-- Marks form as pristine
-
-##### `buildFilePayload(): AssetFileLink[]` (private)
-**Purpose**: Transform form data to API format
-
-**Transformation**:
-- Extracts values from FormArray
-- Maps to AssetFileLink interface
-- Handles optional description field
-- Converts supplemental to boolean
-
-##### `createFileGroup(): FormGroup` (private)
-**Purpose**: Factory method for file form groups
-
-**Structure**:
-```typescript
-{
-  title: ['', Validators.required],
-  url: ['', [Validators.required, Validators.pattern(/^https?:\/\//i)]],
-  description: [''],
-  type: ['', Validators.required],
-  supplemental: [false]
-}
-```
+##### `loadAssetFilesAndLinkTypes()` (private)
+- Fetches the AssetFileAndLinkTypes mapping table, caches valid IDs, and builds the file type hint list used by both manual and CSV flows. On error, clears the hint list and surfaces an alert so users know to retry.
 
 #### Template Integration
 
 **File**: `cloudapp/src/app/main/main.component.html`
 
-**Structure**:
+**Structure Outline**:
 ```html
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <!-- Asset ID input -->
-  <mat-form-field>
-    <input formControlName="assetId">
-  </mat-form-field>
-  
-  <!-- File type hint section -->
-  <section *ngIf="fileTypes.length">
-    <!-- Display available file types -->
-  </section>
-  
-  <!-- Dynamic file groups -->
-  <section formArrayName="files">
-    <mat-card *ngFor="let fileGroup of files.controls; let i = index">
-      <!-- File fields for each group -->
-    </mat-card>
-  </section>
-  
-  <!-- Add file button -->
-  <button type="button" (click)="addFile()">Add another file</button>
-  
-  <!-- Submit button -->
-  <button type="submit" [disabled]="submitting">Submit files</button>
-  
-  <!-- Progress bar -->
-  <mat-progress-bar *ngIf="submitting"></mat-progress-bar>
-  
-  <!-- Result message -->
+<form [formGroup]="form" (ngSubmit)="submitWithSelectedTypes()">
+  <ng-container [ngSwitch]="stage">
+    <ng-container *ngSwitchCase="'stage1'">
+      <!-- Guidance callout + Stage 1 formArray (assetId + URL required) -->
+      <section formArrayName="entries">
+        <mat-card *ngFor="let entryGroup of entries.controls; let i = index" [formGroupName]="i">
+          <!-- Asset ID, URL, optional metadata -->
+        </mat-card>
+      </section>
+      <button type="button" (click)="specifyTypesForEachFile()">Specify Types of Each File</button>
+      <button type="button" (click)="proceedWithoutSelectingTypes()">Proceed Without Selecting File Types</button>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'stage2'">
+      <!-- Stage 2 summary + type selectors -->
+      <section formArrayName="entries">
+        <mat-card *ngFor="let entryGroup of entries.controls; let i = index" [formGroupName]="i">
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let option of getFilteredFileTypes(entryGroup)">
+              {{ option.targetCode }} (ID: {{ option.id }})
+            </mat-option>
+          </mat-select>
+        </mat-card>
+      </section>
+      <button type="button" (click)="returnToStageOne()">Back to Details</button>
+      <button type="submit">Submit Files</button>
+    </ng-container>
+  </ng-container>
+
+  <mat-progress-bar *ngIf="submitting || assetValidationInProgress"></mat-progress-bar>
   <div *ngIf="submissionResult">{{ submissionResult.message }}</div>
 </form>
 ```
@@ -671,7 +621,7 @@ export class AssetService {
   
   // Public API methods
   addFilesToAsset(assetId: string, files: AssetFileLink[]): Observable<any>
-  getFileTypes(): Observable<CodeTableEntry[]>
+  getAssetFilesAndLinkTypes(): Observable<AssetFileAndLinkType[]>
 }
 ```
 
@@ -741,80 +691,50 @@ Content-Type: application/json
 
 **Key Implementation Detail**: The `supplemental` field is converted to a string (`"true"` or `"false"`) because the Esploro API expects string values for this field.
 
-#### Method: `getFileTypes()`
+#### Method: `getAssetFilesAndLinkTypes()`
 
 **Signature**:
 ```typescript
-getFileTypes(): Observable<CodeTableEntry[]>
+getAssetFilesAndLinkTypes(): Observable<AssetFileAndLinkType[]>
 ```
 
-**Purpose**: Fetch available file type codes from Esploro configuration
+**Purpose**: Retrieve the AssetFileAndLinkTypes mapping table, which supplies the valid file/link category IDs and labels required for both manual and CSV flows.
 
 **API Call**:
 ```http
-GET /conf/code-tables/AssetFileType?view=brief
+GET /conf/mapping-tables/AssetFileAndLinkTypes
 ```
 
 **Response Parsing**:
-The Esploro API can return code tables in various formats:
+The mapping-table API can return rows in several formats. The service normalizes each row into a consistent shape:
 
-```typescript
-// Format 1: Nested structure
-{
-  "code_table": {
-    "codes": {
-      "code": [ ... ]
-    }
-  }
-}
-
-// Format 2: Direct codes
-{
-  "code_table": {
-    "code": [ ... ]
-  }
-}
-
-// Format 3: Root array
-{
-  "code_table": [ ... ]
-}
-```
-
-**Normalization Logic**:
 ```typescript
 .pipe(
   map((response: any) => {
-    // Try to extract codes array
-    const codes = response?.code_table?.codes?.code
-      ?? response?.code_table?.code
-      ?? response?.code_table
+    const rows = response?.mapping_table?.rows?.row
+      ?? response?.rows?.row
+      ?? response?.row
       ?? [];
 
-    // Ensure it's an array
-    const normalized = Array.isArray(codes) ? codes : [codes];
+    const normalized = Array.isArray(rows) ? rows : [rows];
 
-    // Map to CodeTableEntry format
     return normalized
-      .filter(Boolean) // Remove null/undefined
-      .map((code: any) => ({
-        value: code?.value ?? code?.code ?? '',
-        description: code?.description ?? code?.desc ?? code?.value ?? ''
+      .filter(Boolean)
+      .map((row: any) => ({
+        id: row?.id ?? row?.ID ?? '',
+        targetCode: row?.target_code ?? row?.TARGET_CODE ?? '',
+        sourceCode1: row?.source_code_1 ?? row?.SOURCE_CODE_1 ?? '',
+        sourceCode2: row?.source_code_2 ?? row?.SOURCE_CODE_2 ?? '',
+        sourceCode3: row?.source_code_3 ?? row?.SOURCE_CODE_3 ?? '',
+        sourceCode4: row?.source_code_4 ?? row?.SOURCE_CODE_4 ?? '',
+        sourceCode5: row?.source_code_5 ?? row?.SOURCE_CODE_5 ?? ''
       }))
-      .filter(entry => !!entry.value); // Remove entries without values
+      .filter((entry: AssetFileAndLinkType) => !!entry.id && !!entry.targetCode);
   })
 )
 ```
 
-**Output**: `CodeTableEntry[]`
-```typescript
-[
-  { value: "accepted", description: "Accepted version" },
-  { value: "submitted", description: "Submitted version" },
-  { value: "supplementary", description: "Supplementary material" },
-  { value: "administrative", description: "Administrative" }
-]
-```
+**Output**: `AssetFileAndLinkType[]` containing IDs, human-readable labels (`targetCode`), and applicability metadata. This collection is cached for default type assignment, Stage 2 dropdowns, and CSV auto-conversion heuristics.
 
 ---
 
@@ -829,7 +749,7 @@ export interface AssetFileLink {
   title: string;          // Display name in Esploro UI
   url: string;            // HTTP(S) URL where file can be downloaded
   description?: string;   // Optional description shown to users
-  type: string;           // File type code from AssetFileType table
+  type: string;           // AssetFileAndLinkTypes ID required by the Esploro API
   supplemental: boolean;  // Is this a supplemental/additional file?
 }
 ```
@@ -839,7 +759,7 @@ export interface AssetFileLink {
 - **title**: Required. The name shown in Esploro's file list. Example: "Supplementary Data Table S1"
 - **url**: Required. Must be a valid HTTP or HTTPS URL accessible to Esploro servers. Example: "https://repository.example.edu/files/dataset.csv"
 - **description**: Optional. Additional context for users. Example: "Raw experimental data in CSV format"
-- **type**: Required. Must match a code from the AssetFileType code table. Example: "supplementary"
+- **type**: Required. Must match an ID from the AssetFileAndLinkTypes mapping table. Example: the ID associated with "Supplementary material"
 - **supplemental**: Required (default: false). Indicates if this is additional material rather than the primary file
 
 **Usage Example**:
@@ -848,29 +768,8 @@ const file: AssetFileLink = {
   title: "Research Dataset",
   url: "https://data.example.edu/dataset.zip",
   description: "Complete experimental dataset with README",
-  type: "supplementary",
+  type: "62", // Example ID for "Supplementary material"
   supplemental: true
-};
-```
-
-### CodeTableEntry (`cloudapp/src/app/services/asset.service.ts`)
-
-**Purpose**: Represents a code table entry from Esploro configuration
-
-```typescript
-export interface CodeTableEntry {
-  value: string;          // Code value (e.g., "accepted")
-  description?: string;   // Human-readable description
-}
-```
-
-**Usage**: Populates dropdown menus and validates file types
-
-**Example**:
-```typescript
-const fileType: CodeTableEntry = {
-  value: "accepted",
-  description: "Accepted version"
 };
 ```
 
@@ -892,92 +791,19 @@ const fileType: CodeTableEntry = {
 │     MainComponent Initializes        │
 │                                      │
 │  ngOnInit() called                   │
-│  └─► loadFileTypes()                 │
-│      └─► AssetService.getFileTypes() │
+│  └─► loadAssetFilesAndLinkTypes()    │
+│      └─► AssetService.getAssetFilesAndLinkTypes() │
 └──────────┬───────────────────────────┘
            │
-           │ 2. API call to fetch file types
+           │ 2. API call to fetch file type mapping table
            ▼
-┌────────────────────────────────────────────┐
-│  GET /conf/code-tables/AssetFileType       │
-│                                            │
-│  Response: [ {value, description}, ... ]   │
-└──────────┬─────────────────────────────────┘
-           │
-           │ 3. File types loaded (or fallback used)
-           ▼
-┌──────────────────────────────────────┐
-│     Form Ready for User Input        │
-│                                      │
-│  - Asset ID field (empty)            │
-│  - File #1 group (empty)             │
-│  - File type dropdown (populated)    │
-└──────────┬───────────────────────────┘
-           │
-           │ 4. User enters data
-           │    - Asset ID: "12345678900001234"
-           │    - File 1: title, URL, type, etc.
-           │    - File 2: (optional) add another
-           ▼
-┌──────────────────────────────────────┐
-│     User Clicks "Submit files"       │
-│                                      │
-│  submit() method called              │
-└──────────┬───────────────────────────┘
-           │
-           │ 5. Form validation
-           ├─► If invalid: Show errors, STOP
-           │
-           │ 6. If valid: Build payload
-           ▼
-┌────────────────────────────────────────────────┐
-│  buildFilePayload()                            │
-│                                                │
-│  Input (form values):                          │
-│    files: [                                    │
-│      {                                         │
-│        title: "My File",                       │
-│        url: "https://example.com/file.pdf",    │
-│        description: "Test",                    │
-│        type: "accepted",                       │
-│        supplemental: false                     │
-│      }                                         │
-│    ]                                           │
-│                                                │
-│  Output (AssetFileLink[]):                     │
-│    [                                           │
-│      {                                         │
-│        title: "My File",                       │
-│        url: "https://example.com/file.pdf",    │
-│        description: "Test",                    │
-│        type: "accepted",                       │
-│        supplemental: false                     │
-│      }                                         │
-│    ]                                           │
-└──────────┬─────────────────────────────────────┘
-           │
-           │ 7. Call service
-           ▼
-┌────────────────────────────────────────────────┐
-│  AssetService.addFilesToAsset(assetId, files)  │
-│                                                │
-│  Transforms to API payload:                    │
-│    {                                           │
-│      records: [{                               │
-│        temporary: {                            │
-│          linksToExtract: [                     │
-│            {                                   │
-│              "link.title": "My File",          │
-│              "link.url": "https://...",        │
-│              "link.description": "Test",       │
-│              "link.type": "accepted",          │
-│              "link.supplemental": "false"      │
-│            }                                   │
-│          ]                                     │
-│        }                                       │
-│      }]                                        │
-│    }                                           │
-└──────────┬─────────────────────────────────────┘
+Flow summary (Stage 1 → Stage 2):
+
+1. User enters rows in Stage 1 (Asset ID + File URL required, optional metadata).
+2. On **Specify Types of Each File**, `specifyTypesForEachFile()` validates fields and asset IDs via `getAssetMetadata`. Invalid rows are highlighted and moved to the top.
+3. Stage 2 renders, enforcing `type` selections with options filtered by asset type. Users can go back to Stage 1 or submit with chosen IDs.
+4. On **Proceed Without Selecting File Types**, `proceedWithoutSelectingTypes()` performs the same validation but assigns default type IDs and skips Stage 2 entirely.
+5. `executeSubmission(skippedStageTwo)` groups rows by asset ID and builds the `temporary.linksToExtract` payload that `AssetService.addFilesToAsset()` posts to `/esploro/v1/assets/{assetId}?op=patch&action=add`.
            │
            │ 8. HTTP POST
            ▼
@@ -1143,30 +969,32 @@ Accept: application/json
 
 ### Alma Configuration API
 
-#### Endpoint: Get Code Table
+#### Endpoint: Get Mapping Table
 
-**URL**: `/conf/code-tables/{codeTableName}?view=brief`
+**URL**: `/conf/mapping-tables/{mappingTableName}`
 
 **Method**: GET
 
-**Used For**: `AssetFileType` code table
+**Used For**: `AssetFileAndLinkTypes` mapping table
 
 **Response Format** (varies):
 ```json
 {
-  "code_table": {
-    "name": "AssetFileType",
-    "codes": {
-      "code": [
+  "mapping_table": {
+    "name": "AssetFileAndLinkTypes",
+    "rows": {
+      "row": [
         {
-          "value": "accepted",
-          "description": "Accepted version",
-          "enabled": "true"
+          "id": "62",
+          "target_code": "Supplementary material",
+          "source_code_1": "both",
+          "source_code_2": "publication,patent"
         },
         {
-          "value": "submitted",
-          "description": "Submitted version",
-          "enabled": "true"
+          "id": "63",
+          "target_code": "Accepted version",
+          "source_code_1": "file",
+          "source_code_2": "publication"
         }
       ]
     }
@@ -1340,7 +1168,7 @@ if (control.touched && control.invalid) {
 │     LAYER 1: CLIENT-SIDE            │
 │     (Immediate Feedback)            │
 │                                     │
-│  ✓ Required fields                  │
+│  ✓ Required fields (manual form + CSV MMS ID/Remote URL) │
 │  ✓ URL format (HTTP/HTTPS)          │
 │  ✓ Form structure                   │
 │                                     │
@@ -1401,9 +1229,9 @@ if (control.touched && control.invalid) {
 
 #### File Type
 - **Required**: Yes
-- **Format**: Must match a code from `AssetFileType` table
-- **Validation**: Required + dynamic dropdown
-- **Example**: "accepted", "submitted", "supplementary"
+- **Format**: Must match an ID from the `AssetFileAndLinkTypes` mapping table
+- **Validation**: Required + dynamic dropdown filtered by asset type
+- **Example**: `62` (ID for "Supplementary material")
 
 #### Supplemental
 - **Required**: No (has default)
@@ -1423,7 +1251,7 @@ Error Sources:
 │   └── Handled by: Angular Forms + mat-error
 │
 ├── File Type Loading Errors (API)
-│   └── Handled by: Fallback to hardcoded types
+│   └── Handled by: Alert the user and hide type hints until the mapping table loads successfully
 │
 └── File Submission Errors (API)
     └── Handled by: subscribe.error() + AlertService
@@ -1453,16 +1281,21 @@ if (this.form.invalid) {
 
 #### 2. API Errors - File Types
 
-**When**: `getFileTypes()` fails
+**When**: `getAssetFilesAndLinkTypes()` fails
 
 **Handling**:
 ```typescript
-this.assetService.getFileTypes()
+this.assetService.getAssetFilesAndLinkTypes()
   .subscribe({
-    next: (types) => { ... },
-    error: () => {
-      // Use fallback types
-      this.fileTypes = this.fallbackFileTypes;
+    next: (types) => {
+      this.assetFileAndLinkTypes = types;
+      this.fileTypes = this.buildFileTypeHints(types);
+    },
+    error: (error) => {
+      console.error('Failed to load AssetFileAndLinkTypes mapping table:', error);
+      this.alert.error('Failed to load file type categories. Some features may be limited.');
+      this.assetFileAndLinkTypes = [];
+      this.fileTypes = [];
     }
   });
 ```
@@ -1530,9 +1363,9 @@ this.assetService.addFilesToAsset(assetId, files)
 - **State**: Form data preserved (except on success)
 
 #### File Type Loading Failure
-- **Action**: None required
-- **Guidance**: None shown to user
-- **State**: Fallback types used automatically
+- **Action**: Review alert, retry loading the mapping table once connectivity is restored
+- **Guidance**: Error banner explains that file type categories could not be retrieved
+- **State**: Type hints hidden until the mapping table loads successfully
 
 ---
 
@@ -1542,8 +1375,8 @@ this.assetService.addFilesToAsset(assetId, files)
 
 ```
 1. App Load
-   ├─► Shows form with loading spinner for file types
-   └─► File types load (or fallback)
+  ├─► Shows form and begins loading AssetFileAndLinkTypes mapping table
+  └─► File type hints appear after the mapping table loads (if the call fails, an alert advises the user to retry)
    
 2. Data Entry
    ├─► User enters asset ID
@@ -1575,8 +1408,8 @@ this.assetService.addFilesToAsset(assetId, files)
 ### UX Best Practices Implemented
 
 1. **Progressive Enhancement**
-   - Form works even if file types fail to load
-   - Fallback types ensure functionality
+  - Form works even if the mapping table fails to load
+  - Clear guidance prompts users to retry when file type hints are unavailable
 
 2. **Immediate Feedback**
    - Validation errors shown on blur/submit
@@ -1627,7 +1460,7 @@ this.assetService.addFilesToAsset(assetId, files)
   },
   "icon": {
     "type": "url",
-    "value": "/assets/researcherLoader.png"
+  "value": "/assets/assetFileLoader.png"
   },
   "fullscreen": {
     "allow": true,
@@ -1646,20 +1479,18 @@ this.assetService.addFilesToAsset(assetId, files)
 
 **Current Usage**: The settings component exists but is not actively used in the file upload workflow.
 
-### Code Table Configuration
+### Mapping Table Configuration
 
-**File Type Code Table**: `AssetFileType`
+**Mapping Table**: `AssetFileAndLinkTypes`
 
 **Location**: Esploro Configuration → Repository → Asset Details → File and Link Types
 
-**Example Codes**:
-- `accepted` - Accepted version
-- `submitted` - Submitted version
-- `supplementary` - Supplementary material
-- `administrative` - Administrative
-- `published` - Published version
+**Example Rows**:
+- ID `62` – `Supplementary material` (applicability: both; asset types: publication, patent)
+- ID `63` – `Accepted version` (applicability: file; asset types: publication)
+- ID `64` – `Published version` (applicability: file; asset types: publication)
 
-**Customization**: Administrators can add/modify file types in Esploro, which automatically appear in the app.
+**Customization**: Administrators can add or adjust mapping table rows in Esploro, which automatically flow into the app for manual entry and CSV type validation.
 
 ---
 
@@ -1755,7 +1586,7 @@ npm run build
 6. **File Types Loading**
    - Open app
    - Observe file type dropdown
-   - Expected: Types loaded from API or fallback shown
+  - Expected: Types loaded from mapping table; if the call fails, the alert banner advises the user and type hints stay hidden
 
 7. **Form Reset After Success**
    - Submit files successfully
@@ -1903,8 +1734,8 @@ describe('AssetService', () => {
 3. Test with Esploro API documentation
 
 **Add new file type**:
-1. Configure in Esploro (Configuration → Code Tables)
-2. App automatically picks it up via `getFileTypes()`
+1. Configure in Esploro (Configuration → Repository → Asset Details → File and Link Types mapping table)
+2. App automatically picks it up via `getAssetFilesAndLinkTypes()`
 
 **Debug API calls**:
 1. Check browser Network tab

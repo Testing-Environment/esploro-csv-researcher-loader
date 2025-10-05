@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetFileLink } from '../models/asset';
@@ -10,12 +10,6 @@ export interface AddFilesToAssetResponse {
   [key: string]: any;
 }
 
-export interface CodeTableEntry {
-  value: string;
-  description?: string;
-}
-
-const FILE_TYPE_CODE_TABLE = 'AssetFileType';
 const ASSET_FILES_AND_LINK_TYPES_TABLE = 'AssetFileAndLinkTypes';
 
 @Injectable({
@@ -53,30 +47,6 @@ export class AssetService {
       requestBody: payload,
       method: HttpMethod.POST
     });
-  }
-
-  getFileTypes(): Observable<CodeTableEntry[]> {
-    return this.restService.call({
-      url: `/conf/code-tables/${FILE_TYPE_CODE_TABLE}?view=brief`,
-      method: HttpMethod.GET
-    }).pipe(
-      map((response: any) => {
-        const codes = response?.code_table?.codes?.code
-          ?? response?.code_table?.code
-          ?? response?.code_table
-          ?? [];
-
-        const normalized = Array.isArray(codes) ? codes : [codes];
-
-        return normalized
-          .filter(Boolean)
-          .map((code: any) => ({
-            value: code?.value ?? code?.code ?? '',
-            description: code?.description ?? code?.desc ?? code?.value ?? ''
-          }))
-          .filter(entry => !!entry.value);
-      })
-    );
   }
 
   /**
@@ -117,7 +87,7 @@ export class AssetService {
    * Get asset metadata including type and current files
    * Used for pre-import caching and asset type-aware file type filtering
    */
-  getAssetMetadata(mmsId: string): Observable<AssetMetadata> {
+  getAssetMetadata(mmsId: string): Observable<AssetMetadata | null> {
     return this.restService.call({
       url: `/esploro/v1/assets/${mmsId}`,
       method: HttpMethod.GET
@@ -159,12 +129,12 @@ export class AssetService {
         };
       }),
       catchError(error => {
+        if (error?.status === 404) {
+          return of(null);
+        }
+
         console.error(`Failed to fetch metadata for asset ${mmsId}:`, error);
-        return of({
-          mmsId,
-          assetType: '',
-          files: []
-        });
+        return throwError(() => error);
       })
     );
   }

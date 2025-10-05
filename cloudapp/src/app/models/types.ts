@@ -1,3 +1,8 @@
+/**
+ * Lightweight representation of a file type hint derived from the
+ * AssetFileAndLinkTypes mapping table. Used primarily for UI guidance
+ * and CSV auto-mapping heuristics.
+ */
 export interface FileType {
   code: string;
   description: string;

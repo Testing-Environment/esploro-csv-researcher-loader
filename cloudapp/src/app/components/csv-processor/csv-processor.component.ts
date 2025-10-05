@@ -2,8 +2,9 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, Observable, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import * as Papa from 'papaparse';
 import { 
   ColumnMapping, 
   ProcessedAsset, 
@@ -12,9 +13,67 @@ import {
   AssetFileAndLinkType,
   FileTypeConversion,
   FileTypeValidationState,
-  CachedAssetState
+  CachedAssetState,
+  AssetMetadata
 } from '../../models/types';
 import { AssetService } from '../../services/asset.service';
+
+class ObservableEmptyError extends Error {
+  constructor() {
+    super('Observable completed without emitting a value.');
+    this.name = 'ObservableEmptyError';
+  }
+}
+
+function firstValueFrom<T>(source: Observable<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    let hasValue = false;
+    let subscription: Subscription | null = null;
+
+    subscription = source.subscribe({
+      next: value => {
+        if (!hasValue) {
+          hasValue = true;
+          resolve(value);
+          subscription?.unsubscribe();
+        }
+      },
+      error: err => {
+        reject(err);
+        subscription?.unsubscribe();
+      },
+      complete: () => {
+        if (!hasValue) {
+          reject(new ObservableEmptyError());
+        }
+      }
+    });
+  });
+}
+
+function lastValueFrom<T>(source: Observable<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    let hasValue = false;
+    let lastValue: T | undefined;
+    const subscription = source.subscribe({
+      next: value => {
+        hasValue = true;
+        lastValue = value;
+      },
+      error: err => {
+        reject(err);
+        subscription.unsubscribe();
+      },
+      complete: () => {
+        if (hasValue) {
+          resolve(lastValue as T);
+        } else {
+          reject(new ObservableEmptyError());
+        }
+      }
+    });
+  });
+}
 
 @Component({
   selector: 'app-csv-processor',
@@ -39,6 +98,7 @@ export class CSVProcessorComponent implements OnInit {
   showFileTypeConversion = false;
   fileTypeConversions: FileTypeConversion[] = [];
   conversionDisplayedColumns = ['csvValue', 'matchedTargetCode', 'matchedId', 'manualMapping'];
+  unresolvedFileTypeValues: string[] = [];
 
   get hasPendingManualMappings(): boolean {
     return this.fileTypeConversions.some(conversion => conversion.requiresManualMapping && !conversion.matchedId);
@@ -64,6 +124,7 @@ export class CSVProcessorComponent implements OnInit {
 
   // Asset state caching for before/after comparison
   assetCacheMap: Map<string, CachedAssetState> = new Map();
+  private pendingFieldMapping: { [key: string]: string } | null = null;
 
   // UI state
   isDragActive = false;
@@ -149,93 +210,51 @@ export class CSVProcessorComponent implements OnInit {
   }
 
   /**
-   * Parse CSV file following RFC 4180 standard
-   * Enhanced version from Ex Libris tutorial patterns
+   * Parse CSV file with PapaParse for robust RFC 4180 handling
    */
   private parseCSVFile(file: File): Promise<CSVData> {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        try {
-          const csv = (e.target?.result as string);
-          const lines = csv.split(/\r?\n/);
-
-          if (lines.length === 0) {
-            throw new Error('Empty file');
+      Papa.parse<string[]>(file, {
+        skipEmptyLines: 'greedy',
+        encoding: 'utf-8',
+        worker: true,
+        transform: value => (typeof value === 'string' ? value.trim() : value),
+        complete: (result) => {
+          if (result.errors && result.errors.length > 0) {
+            reject(new Error(result.errors[0].message));
+            return;
           }
 
-          // Parse headers with proper CSV handling
-          const headers = this.parseCSVRow(lines[0]);
+          const rows = (result.data || []).filter(row => Array.isArray(row) && row.some(cell => (cell ?? '').toString().trim() !== ''));
 
-          if (headers.length === 0) {
-            throw new Error('No headers found');
+          if (rows.length === 0) {
+            reject(new Error('Empty file'));
+            return;
           }
 
-          // Parse data rows
-          const data = lines.slice(1)
-            .filter(line => line.trim())
-            .map((line, index) => {
-              try {
-                const values = this.parseCSVRow(line);
-                const row: any = {};
+          const headers = rows[0].map(cell => (cell ?? '').toString());
 
-                headers.forEach((header, headerIndex) => {
-                  row[header] = values[headerIndex] || '';
-                });
+          if (headers.length === 0 || headers.every(header => header === '')) {
+            reject(new Error('No headers found'));
+            return;
+          }
 
-                return row;
-              } catch (parseError) {
-                console.warn(`Error parsing row ${index + 2}:`, parseError);
-                return null;
-              }
-            })
-            .filter(row => row !== null);
+          const data = rows.slice(1).map((row) => {
+            const record: Record<string, string> = {};
+            headers.forEach((header, index) => {
+              const value = row[index];
+              record[header] = value !== undefined && value !== null ? value.toString() : '';
+            });
+            return record;
+          });
 
           resolve({ headers, data });
-
-        } catch (error: any) {
-          reject(new Error('Failed to parse CSV: ' + error.message));
+        },
+        error: (error) => {
+          reject(new Error(`Failed to parse CSV: ${error.message}`));
         }
-      };
-
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsText(file, 'utf-8');
+      });
     });
-  }
-
-  /**
-   * Parse a single CSV row handling quoted values and commas
-   */
-  private parseCSVRow(row: string): string[] {
-    const result: string[] = [];
-    let current = '';
-    let inQuotes = false;
-    let i = 0;
-
-    while (i < row.length) {
-      const char = row[i];
-
-      if (char === '"') {
-        if (inQuotes && row[i + 1] === '"') {
-          current += '"';
-          i += 2;
-        } else {
-          inQuotes = !inQuotes;
-          i++;
-        }
-      } else if (char === ',' && !inQuotes) {
-        result.push(current.trim());
-        current = '';
-        i++;
-      } else {
-        current += char;
-        i++;
-      }
-    }
-
-    result.push(current.trim());
-    return result;
   }
 
   /**
@@ -309,20 +328,24 @@ export class CSVProcessorComponent implements OnInit {
 
     const mappedFields = this.columnMappingData.map(col => col.mappedField);
 
-    // Check for required MMS ID
+    // Check for required MMS ID and Remote URL columns
     if (!mappedFields.includes('mmsId')) {
       this.validationErrors.push(this.translate.instant('Validation.MmsIdRequired'));
     }
 
+    if (!mappedFields.includes('remoteUrl')) {
+      this.validationErrors.push(this.translate.instant('Validation.RemoteUrlRequired'));
+    }
+
     // Check for duplicate mappings
     const duplicates = mappedFields.filter((field, index) =>
-      field !== 'ignore' && mappedFields.indexOf(field) !== index
+      field !== 'ignore' && field !== '' && mappedFields.indexOf(field) !== index
     );
 
     if (duplicates.length > 0) {
       this.validationErrors.push(
         this.translate.instant('Validation.DuplicateMappings', {
-          fields: [...new Set(duplicates)].join(', ')
+          fields: Array.from(new Set(duplicates)).join(', ')
         })
       );
     }
@@ -396,6 +419,7 @@ export class CSVProcessorComponent implements OnInit {
 
     const hasInvalidTypes = conversions.some(c => c.requiresManualMapping || c.confidence < 1.0);
     const autoConvertible = conversions.every(c => !c.requiresManualMapping);
+    this.refreshUnresolvedFileTypeValues(conversions);
 
     return {
       hasInvalidTypes,
@@ -460,6 +484,7 @@ export class CSVProcessorComponent implements OnInit {
       conversion.matchedTargetCode = mappingType.targetCode;
       conversion.confidence = 0.9; // Manual selection has high confidence
       conversion.requiresManualMapping = false;
+      this.refreshUnresolvedFileTypeValues(this.fileTypeConversions);
     }
   }
 
@@ -502,9 +527,10 @@ export class CSVProcessorComponent implements OnInit {
 
     this.showFileTypeConversion = false;
     this.fileTypeValidation = null;
-    
-    // Continue with processing
-    this.executeBatchProcessing();
+    this.unresolvedFileTypeValues = [];
+
+    // Continue with processing using last known field mapping
+    this.executeBatchProcessing(this.pendingFieldMapping || undefined);
   }
 
   /**
@@ -512,6 +538,8 @@ export class CSVProcessorComponent implements OnInit {
    */
   cancelFileTypeConversion() {
     this.showFileTypeConversion = false;
+    this.pendingFieldMapping = null;
+    this.unresolvedFileTypeValues = [];
   }
 
   /**
@@ -523,6 +551,16 @@ export class CSVProcessorComponent implements OnInit {
       return;
     }
 
+    const fieldMapping = this.buildFieldMapping();
+    const requiredValueValidation = this.validateRequiredFieldValues(fieldMapping);
+
+    if (!requiredValueValidation.valid) {
+      requiredValueValidation.messages.forEach(message => this.alertService.error(message));
+      return;
+    }
+
+    this.pendingFieldMapping = fieldMapping;
+
     // Validate file types before processing
     this.fileTypeValidation = this.validateFileTypes();
     
@@ -530,6 +568,7 @@ export class CSVProcessorComponent implements OnInit {
       // Show conversion dialog if file types need conversion
       this.fileTypeConversions = this.fileTypeValidation.conversions;
       this.showFileTypeConversion = true;
+      this.refreshUnresolvedFileTypeValues(this.fileTypeConversions);
       
       if (!this.fileTypeValidation.autoConvertible) {
         this.alertService.warn(
@@ -544,7 +583,7 @@ export class CSVProcessorComponent implements OnInit {
       return; // Wait for user to confirm/adjust conversions
     }
 
-    this.executeBatchProcessing();
+    this.executeBatchProcessing(fieldMapping);
   }
 
   /**
@@ -555,7 +594,7 @@ export class CSVProcessorComponent implements OnInit {
     this.assetCacheMap.clear();
 
     // Extract unique MMS IDs
-    const uniqueMmsIds = [...new Set(assets.map(a => a.mmsId).filter(id => id))];
+  const uniqueMmsIds = Array.from(new Set(assets.map(a => a.mmsId).filter(id => id)));
 
     if (uniqueMmsIds.length === 0) {
       return;
@@ -572,7 +611,7 @@ export class CSVProcessorComponent implements OnInit {
     );
 
     try {
-      const results = await forkJoin(cacheRequests).toPromise();
+  const results = await lastValueFrom(forkJoin(cacheRequests)) as (AssetMetadata | null)[];
 
       // Store cached states
       results?.forEach((metadata, index) => {
@@ -600,7 +639,7 @@ export class CSVProcessorComponent implements OnInit {
   /**
    * Execute batch processing after validation
    */
-  async executeBatchProcessing() {
+  async executeBatchProcessing(fieldMappingOverride?: { [key: string]: string }) {
     if (!this.csvData) {
       return;
     }
@@ -611,24 +650,42 @@ export class CSVProcessorComponent implements OnInit {
     this.totalCount = this.csvData.data.length;
 
     // Create field mapping
-    const fieldMapping: { [key: string]: string } = {};
-    this.columnMappingData.forEach(col => {
-      if (col.mappedField !== 'ignore') {
-        fieldMapping[col.mappedField] = col.csvHeader;
-      }
-    });
+    const fieldMapping = fieldMappingOverride || this.pendingFieldMapping || this.buildFieldMapping();
 
     // Transform data
     const transformedData: ProcessedAsset[] = this.csvData.data.map((row: any) => {
       const asset: ProcessedAsset = {
         mmsId: '',
+        remoteUrl: '',
+        fileTitle: '',
+        fileDescription: '',
+        fileType: '',
         status: 'pending'
       };
 
       Object.keys(fieldMapping).forEach(field => {
         const csvColumn = fieldMapping[field];
-        if (field in asset) {
-          (asset as any)[field] = row[csvColumn] || '';
+        const rawValue = row[csvColumn];
+        const normalizedValue = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+
+        switch (field) {
+          case 'mmsId':
+            asset.mmsId = (normalizedValue || '').toString();
+            break;
+          case 'remoteUrl':
+            asset.remoteUrl = (normalizedValue || '').toString();
+            break;
+          case 'fileTitle':
+            asset.fileTitle = normalizedValue || '';
+            break;
+          case 'fileDescription':
+            asset.fileDescription = normalizedValue || '';
+            break;
+          case 'fileType':
+            asset.fileType = normalizedValue || '';
+            break;
+          default:
+            (asset as any)[field] = normalizedValue || '';
         }
       });
 
@@ -664,6 +721,7 @@ export class CSVProcessorComponent implements OnInit {
       );
     } finally {
       this.isProcessing = false;
+      this.pendingFieldMapping = null;
     }
   }
 
@@ -728,7 +786,7 @@ export class CSVProcessorComponent implements OnInit {
     );
 
     try {
-      const results = await forkJoin(comparisonRequests).toPromise();
+  const results = await lastValueFrom(forkJoin(comparisonRequests)) as (AssetMetadata | null)[];
 
       results?.forEach((metadata, index) => {
         if (!metadata) return;
@@ -775,7 +833,7 @@ export class CSVProcessorComponent implements OnInit {
    */
   private async validateAsset(mmsId: string): Promise<void> {
     try {
-      await this.restService.call(`/esploro/v1/assets/${mmsId}`).toPromise();
+  await firstValueFrom(this.restService.call(`/esploro/v1/assets/${mmsId}`));
     } catch (error: any) {
       if (error.status === 404) {
         throw new Error(`Asset ${mmsId} not found`);
@@ -796,11 +854,11 @@ export class CSVProcessorComponent implements OnInit {
     };
 
     try {
-      await this.restService.call({
+      await firstValueFrom(this.restService.call({
         url: `/esploro/v1/assets/${asset.mmsId}/files`,
         method: 'POST',
         requestBody: fileData
-      } as any).toPromise();
+      } as any));
 
     } catch (error: any) {
       throw new Error(`Failed to process file for ${asset.mmsId}: ${error.message}`);
@@ -837,5 +895,71 @@ export class CSVProcessorComponent implements OnInit {
     this.showFileTypeConversion = false;
     this.fileTypeConversions = [];
     this.assetCacheMap.clear();
+    this.pendingFieldMapping = null;
+    this.unresolvedFileTypeValues = [];
+  }
+
+  private refreshUnresolvedFileTypeValues(conversions: FileTypeConversion[]) {
+    this.unresolvedFileTypeValues = Array.from(new Set(
+      conversions
+        .filter(conversion => conversion.requiresManualMapping && !conversion.matchedId)
+        .map(conversion => conversion.csvValue)
+    ));
+  }
+
+  private buildFieldMapping(): { [key: string]: string } {
+    const mapping: { [key: string]: string } = {};
+    this.columnMappingData.forEach(col => {
+      if (col.mappedField && col.mappedField !== 'ignore') {
+        mapping[col.mappedField] = col.csvHeader;
+      }
+    });
+    return mapping;
+  }
+
+  private validateRequiredFieldValues(fieldMapping: { [key: string]: string }): { valid: boolean; messages: string[] } {
+    if (!this.csvData) {
+      return { valid: false, messages: [] };
+    }
+
+    const requiredFields: Array<{ key: string; label: string }> = [
+      { key: 'mmsId', label: this.translate.instant('CSV.RequiredFields.MmsId') },
+      { key: 'remoteUrl', label: this.translate.instant('CSV.RequiredFields.RemoteUrl') }
+    ];
+
+    const messages: string[] = [];
+
+    requiredFields.forEach(field => {
+      const csvHeader = fieldMapping[field.key];
+      if (!csvHeader) {
+        messages.push(this.translate.instant('Validation.RequiredColumnMissing', {
+          field: field.label
+        }));
+        return;
+      }
+
+      const missingRows: number[] = [];
+      this.csvData!.data.forEach((row, index) => {
+        const value = row[csvHeader];
+        const hasValue = typeof value === 'string' ? value.trim().length > 0 : value !== undefined && value !== null;
+        if (!hasValue) {
+          missingRows.push(index + 2); // +2 accounts for header row and 1-based indexing
+        }
+      });
+
+      if (missingRows.length > 0) {
+        messages.push(this.translate.instant('Validation.RequiredFieldValuesMissing', {
+          field: field.label,
+          count: missingRows.length,
+          rows: missingRows.slice(0, 10).join(', '),
+          truncated: missingRows.length > 10
+        }));
+      }
+    });
+
+    return {
+      valid: messages.length === 0,
+      messages
+    };
   }
 }

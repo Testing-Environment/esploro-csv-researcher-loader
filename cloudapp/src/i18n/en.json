@@ -125,6 +125,47 @@
 		"ManualEntry": "Manual Entry",
 		"CSVUpload": "CSV Upload"
 	},
+	"ManualEntry": {
+		"Stage1CalloutTitle": "Stage 1: Enter asset and file details",
+		"Stage1CalloutDescription": "Asset ID and file URL are mandatory for every row. Other metadata is optional and can be refined later.",
+		"Stage1CalloutSkip": "You can choose file types in Stage 2 or skip that step by selecting \"Proceed Without Selecting File Types\".",
+		"FileTypesTitle": "Available file types",
+		"FileTypesHint": "These values come from your institution's Asset File Type configuration.",
+		"Stage1FileHeading": "File {index}",
+		"Stage2Title": "Stage 2: Specify file types",
+		"Stage2Description": "Select the appropriate file type for each entry. These IDs are required by the Esploro API.",
+		"Stage2FileHeading": "File {index} – type selection",
+		"Fields": {
+			"AssetId": "Asset ID",
+			"AssetTitle": "Asset title",
+			"FileTitle": "File name",
+			"FileUrl": "File URL",
+			"Description": "Description",
+			"FileType": "File type",
+			"Supplemental": "Supplemental file"
+		},
+		"Placeholders": {
+			"FileTitle": "Display name shown in Esploro",
+			"Description": "Optional description shown to researchers"
+		},
+		"Hints": {
+			"FileUrl": "Provide the fully qualified URL that Esploro can fetch."
+		},
+		"Actions": {
+			"AddAnother": "Add another file",
+			"SpecifyTypes": "Specify Types of Each File",
+			"SkipTypeSelection": "Proceed Without Selecting File Types",
+			"BackToDetails": "Back to Details",
+			"SubmitFiles": "Submit Files"
+		},
+		"Errors": {
+			"AssetIdRequired": "Asset ID is required.",
+			"AssetIdInvalid": "Asset ID not found in Esploro.",
+			"UrlRequired": "File URL is required.",
+			"UrlFormat": "Enter a valid http(s) URL.",
+			"FileTypeRequired": "Select a file type."
+		}
+	},
 	"CSV": {
 		"Upload": {
 			"Title": "Upload CSV File",
@@ -141,13 +182,14 @@
 		},
 		"Mapping": {
 			"Title": "Map CSV Columns",
-			"Subtitle": "Associate your CSV columns with the required fields",
+			"Subtitle": "Associate your CSV columns with the required fields. Only MMS ID and Remote URL must be mapped; all other columns are optional.",
 			"CSVHeader": "CSV Column Header",
 			"SampleValue": "Sample Value",
 			"MapToField": "Map to Field",
 			"SelectField": "Select field type",
 			"IgnoreColumn": "Ignore Column",
-			"HighConfidence": "High confidence mapping"
+			"HighConfidence": "High confidence mapping",
+			"RequiredFieldsNote": "MMS ID and Remote URL must be present. Other metadata can be left unmapped or added later."
 		},
 		"Preview": {
 			"Title": "Data Preview",
@@ -176,6 +218,7 @@
 			"Confidence": "Match confidence: {value}%",
 			"Summary": "Conversion Summary:",
 			"SummaryDetails": "{total} unique {total, plural, =1 {value} other {values}} found: {auto} automatically matched, {manual} require manual selection",
+			"UnresolvedListIntro": "The following {count, plural, =1 {value requires} other {values require}} manual file type selection:",
 			"ApplyConversions": "Apply Conversions & Continue",
 			"Cancel": "Cancel Processing"
 		}
@@ -197,9 +240,16 @@
 			"Description": "File type category ID from AssetFileAndLinkTypes mapping table (use ID, not name)"
 		}
 	},
+	"RequiredFields": {
+		"MmsId": "MMS ID",
+		"RemoteUrl": "Remote URL"
+	},
 	"Validation": {
 		"MmsIdRequired": "At least one column must be mapped to MMS ID",
-		"DuplicateMappings": "Duplicate mappings found for: {fields}"
+		"RemoteUrlRequired": "At least one column must be mapped to Remote URL",
+		"DuplicateMappings": "Duplicate mappings found for: {fields}",
+		"RequiredColumnMissing": "The column for {field} is required.",
+		"RequiredFieldValuesMissing": "{field} is missing in {count} {count, plural, =1 {row} other {rows}} (rows: {rows}{truncated, select, true { …} other {}}). Please update the values before continuing."
 	},
 	"Results": {
 		"Title": "Processing Results",

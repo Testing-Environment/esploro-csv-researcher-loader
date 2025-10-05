@@ -56,6 +56,11 @@
         <p>{{ 'CSV.Preview.Records' | translate : {count: csvData.data.length} }}</p>
       </div>
 
+      <div class="required-note">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'CSV.Mapping.RequiredFieldsNote' | translate }}</span>
+      </div>
+
       <!-- Column mapping table -->
       <div class="mapping-container">
         <table mat-table [dataSource]="columnMappingData" class="mapping-table">
@@ -236,6 +241,13 @@
             manual: manualMappingRequiredCount
           } }}
         </p>
+      </div>
+
+      <div class="conversion-unresolved" *ngIf="unresolvedFileTypeValues.length > 0">
+        <p>{{ 'CSV.FileTypeConversion.UnresolvedListIntro' | translate : { count: unresolvedFileTypeValues.length } }}</p>
+        <ul>
+          <li *ngFor="let value of unresolvedFileTypeValues">{{ value }}</li>
+        </ul>
       </div>
 
       <!-- Action Buttons -->

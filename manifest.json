@@ -18,7 +18,7 @@
    },
    "icon": {
       "type": "url",
-      "value": "/assets/researcherLoader.png"
+   "value": "/assets/assetFileLoader.png"
    },
    "fullscreen": {
       "allow": true,

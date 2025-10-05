@@ -9,94 +9,162 @@
     <!-- Manual Entry Tab - Existing Implementation -->
     <mat-tab [label]="'Tabs.ManualEntry' | translate">
       <div class="tab-content">
-        <form class="file-form" [formGroup]="form" (ngSubmit)="submit()">
-          <section class="form-section">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Asset ID</mat-label>
-              <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
-              <mat-error *ngIf="form.get('assetId')?.hasError('required')">Asset ID is required.</mat-error>
-            </mat-form-field>
-          </section>
+        <form class="file-form" [formGroup]="form" (ngSubmit)="submitWithSelectedTypes()" novalidate>
+          <ng-container [ngSwitch]="stage">
+            <ng-container *ngSwitchCase="'stage1'">
+              <div class="stage-callout" role="note">
+                <mat-icon color="primary">info</mat-icon>
+                <div class="stage-callout__content">
+                  <h2>{{ 'ManualEntry.Stage1CalloutTitle' | translate }}</h2>
+                  <p>{{ 'ManualEntry.Stage1CalloutDescription' | translate }}</p>
+                  <p>{{ 'ManualEntry.Stage1CalloutSkip' | translate }}</p>
+                </div>
+              </div>
 
-  <section class="file-type-hint" *ngIf="fileTypes.length">
-    <h2>Available file types</h2>
-    <p class="hint-text">Select one of the configured file types when uploading each file.</p>
-    <div class="file-type-list">
-      <div class="file-type-item" *ngFor="let type of fileTypes">
-        <span class="code">{{ type.value }}</span>
-        <span class="description" *ngIf="type.description && type.description !== type.value">{{ type.description }}</span>
-      </div>
-    </div>
-  </section>
+              <section class="file-type-hint" *ngIf="fileTypes.length">
+                <h2>{{ 'ManualEntry.FileTypesTitle' | translate }}</h2>
+                <p class="hint-text">{{ 'ManualEntry.FileTypesHint' | translate }}</p>
+                <div class="file-type-list">
+                  <div class="file-type-item" *ngFor="let type of fileTypes">
+                    <span class="code">{{ type.code }}</span>
+                    <span class="description" *ngIf="type.description && type.description !== type.code">{{ type.description }}</span>
+                  </div>
+                </div>
+              </section>
 
-  <section formArrayName="files" class="files-section">
-    <mat-card class="file-card" *ngFor="let fileGroup of files.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
-      <div class="file-card__header">
-        <h2>File {{ i + 1 }}</h2>
-        <button mat-icon-button type="button" color="warn" (click)="removeFile(i)" *ngIf="files.length > 1">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+              <section formArrayName="entries" class="files-section">
+                <mat-card class="file-card" *ngFor="let entryGroup of entries.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i" [ngClass]="{ 'invalid-asset': isAssetInvalid(i) }">
+                  <div class="file-card__header">
+                    <h2>{{ 'ManualEntry.Stage1FileHeading' | translate:{ index: i + 1 } }}</h2>
+                    <button mat-icon-button type="button" color="warn" (click)="removeEntry(i)" *ngIf="entries.length > 1">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>File name</mat-label>
-        <input matInput formControlName="title" placeholder="Display name shown in Esploro" />
-        <mat-error *ngIf="fileGroup.get('title')?.hasError('required')">File name is required.</mat-error>
-      </mat-form-field>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.AssetId' | translate }}</mat-label>
+                    <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
+                    <mat-error *ngIf="entryGroup.get('assetId')?.hasError('required')">{{ 'ManualEntry.Errors.AssetIdRequired' | translate }}</mat-error>
+                    <mat-error *ngIf="entryGroup.get('assetId')?.hasError('invalidAsset')">{{ 'ManualEntry.Errors.AssetIdInvalid' | translate }}</mat-error>
+                  </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>File URL</mat-label>
-        <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
-        <mat-hint>Provide the fully qualified URL from which Esploro can download the file.</mat-hint>
-        <mat-error *ngIf="fileGroup.get('url')?.hasError('required')">File URL is required.</mat-error>
-        <mat-error *ngIf="fileGroup.get('url')?.hasError('pattern')">Enter a valid http(s) URL.</mat-error>
-      </mat-form-field>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.FileTitle' | translate }}</mat-label>
+                    <input matInput formControlName="title" placeholder="{{ 'ManualEntry.Placeholders.FileTitle' | translate }}" />
+                  </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description" rows="2" placeholder="Optional description shown to researchers"></textarea>
-      </mat-form-field>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.FileUrl' | translate }}</mat-label>
+                    <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
+                    <mat-hint>{{ 'ManualEntry.Hints.FileUrl' | translate }}</mat-hint>
+                    <mat-error *ngIf="entryGroup.get('url')?.hasError('required')">{{ 'ManualEntry.Errors.UrlRequired' | translate }}</mat-error>
+                    <mat-error *ngIf="entryGroup.get('url')?.hasError('pattern')">{{ 'ManualEntry.Errors.UrlFormat' | translate }}</mat-error>
+                  </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>File type</mat-label>
-        <mat-select formControlName="type" [disabled]="loadingFileTypes || loadingAssetMetadata || filteredFileTypes.length === 0">
-          <mat-option *ngFor="let type of filteredFileTypes" [value]="type.id">
-            {{ type.targetCode }}<span *ngIf="type.id"> (ID: {{ type.id }})</span>
-          </mat-option>
-        </mat-select>
-        <mat-hint *ngIf="loadingFileTypes || loadingAssetMetadata">Loading file type categories…</mat-hint>
-        <mat-hint *ngIf="!loadingFileTypes && !loadingAssetMetadata && filteredFileTypes.length > 0 && currentAssetType">
-          Showing categories compatible with {{ currentAssetType }} assets. The ID value will be used in the API call.
-        </mat-hint>
-        <mat-hint *ngIf="!loadingFileTypes && !loadingAssetMetadata && filteredFileTypes.length > 0 && !currentAssetType">
-          Select a file type category. The ID value will be used in the API call.
-        </mat-hint>
-        <mat-hint *ngIf="!loadingFileTypes && !loadingAssetMetadata && filteredFileTypes.length === 0">
-          No compatible file types found for this asset type.
-        </mat-hint>
-        <mat-error *ngIf="fileGroup.get('type')?.hasError('required')">Select a file type.</mat-error>
-      </mat-form-field>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.Description' | translate }}</mat-label>
+                    <textarea matInput formControlName="description" rows="2" placeholder="{{ 'ManualEntry.Placeholders.Description' | translate }}"></textarea>
+                  </mat-form-field>
 
-      <mat-checkbox formControlName="supplemental">Supplemental file</mat-checkbox>
-    </mat-card>
-  </section>
+                  <mat-checkbox formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
+                </mat-card>
+              </section>
 
-  <div class="add-file-row">
-    <button mat-stroked-button color="primary" type="button" (click)="addFile()">
-      <mat-icon>add</mat-icon>
-      <span>Add another file</span>
-    </button>
-  </div>
+              <div class="add-file-row">
+                <button mat-stroked-button color="primary" type="button" (click)="addEntry()">
+                  <mat-icon>add</mat-icon>
+                  <span>{{ 'ManualEntry.Actions.AddAnother' | translate }}</span>
+                </button>
+              </div>
 
-  <div class="form-actions">
-    <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Submit files</button>
-  </div>
+              <div class="form-actions stage1-actions">
+                <button mat-flat-button color="primary" type="button" (click)="specifyTypesForEachFile()" [disabled]="assetValidationInProgress || submitting">
+                  {{ 'ManualEntry.Actions.SpecifyTypes' | translate }}
+                </button>
+                <button mat-stroked-button type="button" (click)="proceedWithoutSelectingTypes()" [disabled]="assetValidationInProgress || submitting">
+                  {{ 'ManualEntry.Actions.SkipTypeSelection' | translate }}
+                </button>
+              </div>
+            </ng-container>
 
-  <mat-progress-bar *ngIf="submitting" mode="indeterminate"></mat-progress-bar>
+            <ng-container *ngSwitchCase="'stage2'">
+              <div class="stage-two-header">
+                <h2>{{ 'ManualEntry.Stage2Title' | translate }}</h2>
+                <p>{{ 'ManualEntry.Stage2Description' | translate }}</p>
+              </div>
 
-  <div class="submission-result" *ngIf="submissionResult" [ngClass]="submissionResult.type">
-    {{ submissionResult.message }}
-  </div>
+              <section class="file-type-hint" *ngIf="fileTypes.length">
+                <h2>{{ 'ManualEntry.FileTypesTitle' | translate }}</h2>
+                <p class="hint-text">{{ 'ManualEntry.FileTypesHint' | translate }}</p>
+                <div class="file-type-list">
+                  <div class="file-type-item" *ngFor="let type of fileTypes">
+                    <span class="code">{{ type.code }}</span>
+                    <span class="description" *ngIf="type.description && type.description !== type.code">{{ type.description }}</span>
+                  </div>
+                </div>
+              </section>
+
+              <section formArrayName="entries" class="files-section stage-two">
+                <mat-card class="file-card" *ngFor="let entryGroup of entries.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i">
+                  <div class="file-card__header">
+                    <h2>{{ 'ManualEntry.Stage2FileHeading' | translate:{ index: i + 1 } }}</h2>
+                  </div>
+
+                  <div class="stage-two-summary">
+                    <div class="summary-item">
+                      <span class="label">{{ 'ManualEntry.Fields.AssetId' | translate }}</span>
+                      <span class="value">{{ entryGroup.get('assetId')?.value }}</span>
+                    </div>
+                    <div class="summary-item" *ngIf="assetMetadataMap.get(entryGroup.get('assetId')?.value)?.title">
+                      <span class="label">{{ 'ManualEntry.Fields.AssetTitle' | translate }}</span>
+                      <span class="value">{{ assetMetadataMap.get(entryGroup.get('assetId')?.value)?.title }}</span>
+                    </div>
+                    <div class="summary-item">
+                      <span class="label">{{ 'ManualEntry.Fields.FileUrl' | translate }}</span>
+                      <span class="value">{{ entryGroup.get('url')?.value }}</span>
+                    </div>
+                  </div>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.FileTitle' | translate }}</mat-label>
+                    <input matInput formControlName="title" placeholder="{{ 'ManualEntry.Placeholders.FileTitle' | translate }}" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.Description' | translate }}</mat-label>
+                    <textarea matInput formControlName="description" rows="2" placeholder="{{ 'ManualEntry.Placeholders.Description' | translate }}"></textarea>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ 'ManualEntry.Fields.FileType' | translate }}</mat-label>
+                    <mat-select formControlName="type" [disabled]="submitting">
+                      <mat-option *ngFor="let type of getFilteredFileTypes(entryGroup as FormGroup)" [value]="type.id">
+                        {{ type.targetCode }}<span *ngIf="type.id"> (ID: {{ type.id }})</span>
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="entryGroup.get('type')?.hasError('required')">{{ 'ManualEntry.Errors.FileTypeRequired' | translate }}</mat-error>
+                  </mat-form-field>
+
+                  <mat-checkbox formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
+                </mat-card>
+              </section>
+
+              <div class="form-actions stage2-actions">
+                <button mat-stroked-button type="button" (click)="returnToStageOne()" [disabled]="submitting">
+                  {{ 'ManualEntry.Actions.BackToDetails' | translate }}
+                </button>
+                <button mat-flat-button color="primary" type="submit" [disabled]="submitting">
+                  {{ 'ManualEntry.Actions.SubmitFiles' | translate }}
+                </button>
+              </div>
+            </ng-container>
+          </ng-container>
+
+          <mat-progress-bar *ngIf="submitting || assetValidationInProgress" mode="indeterminate"></mat-progress-bar>
+
+          <div class="submission-result" *ngIf="submissionResult" [ngClass]="submissionResult.type">
+            {{ submissionResult.message }}
+          </div>
         </form>
       </div>
     </mat-tab>
