@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, of, Observable, Subscription } from 'rxjs';
+import { forkJoin, of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import * as Papa from 'papaparse';
 import { 
@@ -17,63 +17,7 @@ import {
   AssetMetadata
 } from '../../models/types';
 import { AssetService } from '../../services/asset.service';
-
-class ObservableEmptyError extends Error {
-  constructor() {
-    super('Observable completed without emitting a value.');
-    this.name = 'ObservableEmptyError';
-  }
-}
-
-function firstValueFrom<T>(source: Observable<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    let hasValue = false;
-    let subscription: Subscription | null = null;
-
-    subscription = source.subscribe({
-      next: value => {
-        if (!hasValue) {
-          hasValue = true;
-          resolve(value);
-          subscription?.unsubscribe();
-        }
-      },
-      error: err => {
-        reject(err);
-        subscription?.unsubscribe();
-      },
-      complete: () => {
-        if (!hasValue) {
-          reject(new ObservableEmptyError());
-        }
-      }
-    });
-  });
-}
-
-function lastValueFrom<T>(source: Observable<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    let hasValue = false;
-    let lastValue: T | undefined;
-    const subscription = source.subscribe({
-      next: value => {
-        hasValue = true;
-        lastValue = value;
-      },
-      error: err => {
-        reject(err);
-        subscription.unsubscribe();
-      },
-      complete: () => {
-        if (hasValue) {
-          resolve(lastValue as T);
-        } else {
-          reject(new ObservableEmptyError());
-        }
-      }
-    });
-  });
-}
+import { firstValueFrom, lastValueFrom } from '../../utilities/rxjs-helpers';
 
 @Component({
   selector: 'app-csv-processor',
