@@ -161,14 +161,14 @@ export class AssetService {
   }
 
   /**
-   * Validate URL accessibility by making a HEAD request
+   * Validate URL accessibility by making a GET request
    * @param url The URL to validate
    * @returns Observable with validation result
    */
   validateUrl(url: string): Observable<UrlValidationResult> {
     return this.restService.call({
       url: url,
-      method: HttpMethod.HEAD
+      method: HttpMethod.GET
     }).pipe(
       map((response: any) => ({
         url,
