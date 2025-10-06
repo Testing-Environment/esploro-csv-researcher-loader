@@ -1,15 +1,8 @@
 # Developer Quick Reference Guide
 
-## Esploro Asset File Loader
+## Esploro CSV Asset Loader
 
-> **Quick start guide for developers working on the Esploro Asset File Loader project**
-
-### Recent Updates
-
-**New Features (Latest)**:
-- ✨ **Bulk URL Update**: Update multiple assets with a single file URL
-- ✨ **URL Validation**: Validate remote file URLs for accessibility
-- 📖 See [BULK_UPDATE_AND_URL_VALIDATION.md](documentation/BULK_UPDATE_AND_URL_VALIDATION.md) for detailed documentation
+> **Quick start guide for developers working on the Esploro CSV Asset Loader project**
 
 ---
 
@@ -66,19 +59,15 @@ esploro-csv-researcher-loader/
 ├── cloudapp/                    # Main application code
 │   └── src/
 │       └── app/
-│           ├── main/            # File upload component (with tabs)
+│           ├── main/            # File upload component
 │           ├── models/          # TypeScript interfaces
 │           │   ├── asset.ts     # Asset data model
 │           │   └── settings.ts  # Settings/Profile models
 │           ├── services/        # Business logic
 │           │   ├── asset.service.ts  # API calls for assets
 │           │   └── app.service.ts    # Settings management
-│           ├── constants/       # Application constants
-│           │   └── file-types.ts # File type fallback values
 │           └── utilities.ts     # Helper functions
-├── documentation/               # API and feature documentation
-│   ├── BULK_UPDATE_AND_URL_VALIDATION.md  # New features guide
-│   └── ...                     # Other documentation
+├── documentation/               # API documentation
 ├── manifest.json               # Cloud App configuration
 ├── package.json               # Node dependencies
 └── README.md                  # User documentation
