@@ -101,6 +101,8 @@ This project includes comprehensive documentation for developers, administrators
 - **[Developer Quick Reference](DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
 - **[Architecture Diagrams](ARCHITECTURE_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
 - **[Detailed Code Explanation](explaination.md)** - Deep-dive analysis of the codebase
+- **[RxJS Migration Guide](documentation/RXJS_MIGRATION.md)** - Migration from toPromise() to firstValueFrom/lastValueFrom
+- **[CSV Parsing Enhancement](documentation/CSV_PARSING.md)** - PapaParse integration for robust CSV handling
 
 ### For Product Owners & Project Managers
 - **[Complete Summary](COMPLETE_SUMMARY.md)** - Overview of all work, documentation index, and project status

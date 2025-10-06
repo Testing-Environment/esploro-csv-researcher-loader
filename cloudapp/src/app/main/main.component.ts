@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, from, lastValueFrom, throwError } from 'rxjs';
+import { forkJoin, from, throwError } from 'rxjs';
 import { catchError, concatMap, map, toArray } from 'rxjs/operators';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetService } from '../services/asset.service';
 import { AssetFileLink } from '../models/asset';
 import { ProcessedAsset, FileType, AssetFileAndLinkType, AssetMetadata } from '../models/types';
+import { lastValueFrom } from '../utilities/rxjs-helpers';
 
 type ManualEntryStage = 'stage1' | 'stage2';
 
