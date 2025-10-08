@@ -115,19 +115,52 @@ export class MainComponent implements OnInit {
       return;
     }
 
-    // Compute Stage 3 review counts
-    const rows = this.entries.controls
-      .map(g => (g as FormGroup).value as ManualEntryFormValue)
-      .map(v => ({ assetId: (v.assetId || '').trim(), url: (v.url || '').trim() }))
-      .filter(v => !!v.assetId && !!v.url);
+    const skippedStageTwo = !this.fileTypesToggle;
 
-    const uniqueAssets = new Set(rows.map(r => r.assetId));
-    const uniqueUrls = new Set(rows.map(r => r.url));
+    if (skippedStageTwo) {
+      const allAssigned = this.entries.controls.every((group: FormGroup) => this.assignDefaultType(group));
+      if (!allAssigned) {
+        this.alert.error('Unable to determine a default file type for one or more entries. Please specify file types manually.');
+        return;
+      }
+      this.applyTypeValidators(false);
+    } else {
+      // Ensure type selection is complete (similar to submitWithSelectedTypes)
+      const hasTypeErrors = this.entries.controls.some(group => {
+        const control = (group as FormGroup).get('type');
+        control?.markAsTouched();
+        return control?.invalid;
+      });
 
-    this.reviewAssetsCount = uniqueAssets.size;
-    this.reviewFilesCount = rows.length;
+      if (hasTypeErrors) {
+        this.alert.error('Please choose a file type for each entry before continuing.');
+        return;
+      }
+    }
+
+    // Build payload to confirm counts
+    const payload = this.buildSubmissionPayload();
+    if (!payload.size) {
+      this.alert.error('There are no entries to submit. Please add at least one file.');
+      return;
+    }
+
+    let totalFiles = 0;
+    const uniqueUrls = new Set<string>();
+
+    payload.forEach(files => {
+      totalFiles += files.length;
+      files.forEach(file => {
+        if (file.url) {
+          uniqueUrls.add(file.url);
+        }
+      });
+    });
+
+    this.reviewAssetsCount = payload.size;
+    this.reviewFilesCount = totalFiles;
     this.reviewUniqueUrlsCount = uniqueUrls.size;
-
+    this.stageTwoSkipped = skippedStageTwo;
     this.stage = 'stage3';
   }
 
@@ -190,9 +223,7 @@ export class MainComponent implements OnInit {
 
   /** Placeholder for job run orchestration; will be wired to services in Phase 2 */
   async runImportJob(): Promise<void> {
-    // In the full implementation: ensure set exists and members added, then
-    // find job → run job → poll instance → present results
-    this.alert.info('Job orchestration will run here (create set, add members, run job, poll).');
+    await this.executeSubmission(this.stageTwoSkipped);
   }
 
   trackByIndex(index: number): number {

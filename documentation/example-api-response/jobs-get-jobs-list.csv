@@ -1,0 +1,401 @@
+id,name
+M4664427330000561,00806748 test
+M5042170150000561,00962645 test
+M4835396680000561,01NWU_EAD
+M6235522420000561,06401623_999
+M7470515890000561,100/700/800
+M4062841260000561,20190311
+M4146009440000561,20190424
+M9505457720000561,245_to_998
+M9505457780000561,773_to_999
+M4461205030000561,852 - Change Location Code
+M7657766140000561,852 locatiion
+M7740532980000561,996
+M46595100000521,Add 245 sf h [Video]
+M7046181350000561,Add 583
+M7150845510000561,Add 583 Conserve in Title Records
+M1327214140000521,Add 590 - Donated by Friends of the Library
+M46603940000521,Add 900 copied from worldcat
+M7751272000000561,Add 931 Panel on Housing
+M4630258580000561,add 999
+M1299610360000521,Add BIB to Collection
+M1327193830000521,Add BIB to Collection
+M7751276230000561,Add BIB to Collection DC
+M1327193850000521,Add DCAP01 BIB to Collection
+M1327193870000521,Add DCAP02 BIB to Collection
+M7046083670000561,Add field 583 $a Conserve on Holding Records
+M7045973910000561,Add field 583 a- Conserve no condition
+M4436441780000561,Add KORMARC BIB to Collection
+M6650990860000561,Add local extension Rialto DE-GRUYTER
+M6650985680000561,Add local extension Rialto TAYLOR&FRANCIS
+M6650988070000561,Add local extension Rialto WILEY
+M51001,Add MARC21 Fields
+M4420063090000561,Add MMSID
+M4175247980000561,Add MODS BIB to Collection
+M3,Add reminders
+M50215,Add Titles to Collection
+M50761,AddUaAccessModelToSubscriptionEbcPortfoliosJob
+M6107789400000561,Aileen_04292022_NormalizationProcess
+M6680669740000561,Aileen_Brieflevel
+M613,AI_Normalization
+M50070,Aleph Bridge Inventory Update Task Chain
+M50838,Anonymization Task
+M4175951530000561,Aran
+M50591,AssetsAddedToProfileNotification
+M4,Associate standalone portfolios
+M50636,AuthorityDisplay population
+M50637,AuthorityDisplay population
+M50861,Author Matching Bulk Update
+M50726,Automatically Ship Rapido Digital Requests
+M7,Bib OCLC Republish Set of Titles
+M6207767970000561,BrowZine Contrib 4
+M50759,Bulk Merge Duplicate Researchers
+M50800,CacheCzRecordsInNzJob
+M50080,Calculate Operational and Auth Heading Task
+M8,Calculate Operational and FilingValue Task.
+M9,Calculate Operational and secondIndicator Task.
+M50600,Calculates the ISB10 or ISBN13
+M7751211370000561,Cambiar 852 EXL
+M10,Cancel physical items requests
+M11,Cancel physical titles requests
+M6650984890000561,Case_06569291
+M6653239850000561,Case 06584742 Z39.50 test
+M6897720850000561,CCRCTest
+M88377980000521,change 852 indicator 1=1 to =0
+M4791684980000561,Change Bib Material Type
+M50670,Change Electronic Collection information
+M16,Change Electronic portfolio information
+M63184380000521,change holding library and location
+M12,Change Holdings Information
+M924300870000521,Change holdings location from main to edu-juv
+M4175726000000561,change LDR 5 to d
+M17,Change loan to claimed returned
+M18,Change Physical items information
+M14,Change PO Lines Status
+M50148,Change Record DC Application Profile
+M56,Change Representation information
+M9312216120000000,Change Representation information
+M50584,Citation Insights job
+M19,Citation Resource Locate Task
+M158,clean pda
+M50565,Clear Last Patron Activity Date Task
+M50595,Clear Portfolio Libraries For a Collection Job
+M20,Close lost loans
+M128481200000521,Cnmarc Bib normalize on save
+M128481340000521,Cnmarc Bib Re-sequence
+M128481360000521,Cnmarc Bib Re-sequence And Clear empty fields
+M21,Cnmarc Set Authority Records Cataloging Level
+M22,Cnmarc Set Bib Records Cataloging Level
+M50836,Collecto Generate Recommendations
+M50885,CompleteEBookRequests
+M4679754800000561,CONNEXION_2_Rules
+M5094223240000561,copy 009 to 019
+M5099365410000561,Copy localField4 to Grant Note
+M50645,Correct Digital file size
+M50599,Course Bulk Update
+M9505676530000561,Create_997_from_773
+M26,Create Physical item move requests
+M27,Create physical item work orders
+M50839,CzCollectionsBatchCreateJob
+M50712,CzCollectionsBatchUpdateTask
+M50850,CZ Direct Ingest 035a Update
+M50666,CZ Direct Ingest Load
+M50664,CZ Direct Ingest Prepare
+M50798,CzDirectIngestRegexTestJobTask
+M50711,CZ ECollection Activations Per Region Job
+M50590,CZ Electronic Activation Job
+M50674,CZ Link Checker
+M50917,CzPortfoliosBatchUpdateJob
+M50977,CzTitleLevelReportingJob
+M7660064830000561,DavidDIPTest
+M9122553490000561,del 590
+M4169290400000561,Delete 952
+M31,Delete acquisition requests task
+M687066510000521,Delete all 9XX fields
+M50927,Delete All Esploro Files From AWS Job
+M28,Delete Bibliographic records
+M35,Deleted Inventory Objects Tables Population
+M29,Delete Draft Deposits
+M50802,DeleteElectronicCollectionJob
+M34,Delete Electronic portfolios
+M50096,Delete External Data Sources
+M50158,Delete Fulltext
+M32,Delete Holdings records with no Physical items
+M33,Delete local Authority records
+M50950,Delete POs task
+M50872,Delete records from ORCID
+M50592,Delete Set of Research Assets
+M9312216090000000,Delete Titles
+M50825,DeleteUsageDataFilesJob
+M6440335150000561,Demo
+M50071,Deposit activity report
+M50641,Dismiss All CZ Update Task List
+M50092,Distribute network administration configuration
+M36,Distribute NZ Acquisition Changes Task
+M37,Distribute resource sharing configuration
+M50638,Download Digital Titles Inventory
+M50813,Download Files
+M9312216160000000,Download Titles Inventory
+M7341333260000561,Dspace_resourcetype
+M4840916500000561,Efi
+M50725,Electronic portfolios availability update job
+M50662,Encrypted Columns Populator Job
+M4469187400000561,Enhance copyright fee paid article records
+M500,Enrich Bibliographic Records
+M5005487990000561,Esploro Asset normalization
+M50682,EsploroCollectionUpdateTask
+M50787,Esploro Incite Metrics Job
+M50587,Esploro Roles Migration
+M50974,Esploro SP Create First Asset Version
+M50997,Esploro SP EtdAdmin cleanup
+M50937,Esploro SP Remove Authors From Esploro Xml
+M50676,EsploroWOSMetricesRetrieverTask
+M5872632590000561,E to P
+M50728,ExportAlmaLoaderJobTask
+M43,Export Authority records
+M44,Export Bibliographic records
+M45,Export Context Object To BX
+M46,Export Digital titles
+M50727,Export e collections
+M47,Export Electronic portfolios
+M50585,Export Esploro Handles
+M50129,Export Handles
+M50892,Export invoice task
+M48,Export Physical items
+M49,Export Physical items labels
+M50840,ExportPortfoliosDataJob
+M9312216070000000,Export Titles
+M52,Export URLs
+M50156,External Capture
+M50627,External Capture
+M50560,External Capture Co Authors
+M50570,External Capture Co Authors
+M50157,Extract Fulltext
+M50916,Extract Global Id From Local Authorities
+M50801,FetchCzProviderManifestJob
+M9312216140000000,File Thumbnail Generation
+M53,Filter set by indication
+M50640,Find and copy the best Marc Job
+M881545240000521,Fix 856 2nd indicator
+M50882,Fix Author Internal Affiliation In Assets
+M9549459520000561,fix ISO tag
+M54,Flattening UResolver context object tables
+M55,Flattening UResolver context service tables
+M50659,GDPR Cleanup
+M50165,Generate Representation from Existing Bib
+M4418611410000561,generic xml
+M6136517110000561,gift
+M6136517290000561,gift
+M7453134510000561,Gift to the Library
+M9506795890000561,Gift to the library n
+M50647,GtiRepublishingByMmsIdTask
+M50611,Handle Bibs With No MD Job
+M50614,Handle CZ - NZ - IZ Bibs Job
+M50612,Handle Duplicated Bibs  Job
+M50613,Handle Duplicated Portfolios Job
+M50699,Handle Empty Thumbnails
+M50170,Handle Expired Booking Requests
+M50700,Handle Integration
+M50594,Handle Relations for Research Assets
+M50910,Heading Populate Bib Heading URIs
+M50887,Heading Update Registry Id
+M50597,Hold Shelf Reminder
+M59,Identifying Brief Level
+M50220,Import course user association job
+M60,Import CZ Records from CN members task
+M50084,Import discovery data
+M61,Import Records Aleph Center Task Chain
+M50173,Import Research Assets Files
+M50204,Index research assets
+M50683,Index Research Entities Task
+M50928,InsightGeneration
+M69,Inventory Holding population
+M464428540000011,Inventory IEC population
+M302314780000011,Inventory IED population
+M70,Inventory IEPA population
+M71,Inventory ITEM population
+M72,Inventory PORTFOLIO population
+M73,Inventory PPS population
+M50660,InventoryRemoteStorageUpdate
+M74,Inventory TPS population
+M51000,Invoice from xml task
+M9563112270000561,jpcoar_test
+M9563444200000561,jpcoar_test_martin
+M7744328690000561,Kanopy
+M4215103530000561,KD Test
+M106374630000521,Kormarc Bib normalize on save
+M106374790000521,Kormarc Bib Re-sequence
+M106374810000521,Kormarc Bib Re-sequence And Clear empty fields
+M82,Kormarc Set Bib Records Cataloging Level
+M63386260000521,Law/Legal to LAWSTACKS
+M7666212130000561,LDR 06-k and 008 33-i
+M83,Legal Deposit Annual Receipt Task
+M84,Letters purge with retention period
+M50213,Load GTI to CDI Task
+M50218,Load GTI Update Files Job
+M50883,Load ProQuest ILL eBook List
+M50072,Loans - Due Date Correction after Calendar Change
+M36448530000521,Marc21 Bib Initial Normalization
+M43588,Marc21 Bib normalize on save
+M35617720000521,Marc21 Bib Re-sequence
+M43590,Marc21 Bib Re-sequence And Clear empty fields
+M7748462240000561,MARC21 Holding Expand Textual Holdings
+M4176943220000561,Marc 264
+M7152148900000561,MARC test
+M8082124900000561,Marina authority test
+M8082126460000561,Marina authority test 1
+M50174,Media Conversion
+M50661,Merge Collections
+M91,Merge Consortium Inventory task
+M50724,Merge Fund Transactions
+M50723,Merge Invoice
+M50669,Merge IZPhysical
+M50672,Merge Loans
+M50610,Merge Non Affiliated
+M50701,Merge PO
+M50665,Merge Portfolios
+M50673,Merge Requests
+M50671,Merge Users
+M50690,Merge Vendors
+M50668,MetaDoor Enrichment Job
+M50888,Migrate Format
+M93,MmsDisplay population
+M4469187710000561,mmstagsuppresed test
+M50187,MODS Bib Normalization On Save
+M50083,Move Electronic portfolio information
+M50147,Move Portfolios to another Electronic collection
+M50624,Move Public Access Model to Inventory Section
+M6600193550000561,MR Publishing profile
+M4272693340000561,NBK Publishing - Normalisation Rule
+M4272739600000561,NBK Publishing - Normalisation Rule Contrib 1
+M5081890,NetworkCalendarDistributeJob
+M5081887,NetworkDistributeJob
+M5081888,NetworkRuleDistributeJob
+M100,Network zone linking task
+M50073,Notification - Send due date reminder
+M7622216470000561,OCAD Test
+M8052015250000561,oclc
+M6652899340000561,OCLC_z39.50
+M50192,Ongoing Global Title Index Task
+M101,Operational And Headings Task
+M50633,Overlap Analysis Process Automation
+M16374840000122,Poline claims Task
+M2911926520000011,POLinesRolloverPAJobTask
+M113,Populate CITATION_METADATA
+M50738,Portal entities url mapper
+M4239496730000561,PreferredLanguageHeading
+M50899,PreservationMmsDisplay population
+M50786,Preservation process
+M50851,Preserve Digital Content
+M114,Prevent FRBR and/or Dedup in Discovery
+M50862,PrimoVe bulk export of search result
+M670420830000011,ProviderZoneTakeOwnerShip
+M50873,Purchase EBA bulk
+M51011,Push Assets To Sword Servers
+M50642,PZ - Export New CZ Records
+M4474064470000561,qdc
+M6874880850000561,r
+M4921174550000561,Rapid ILL Electronic
+M4928325770000561,Rapid Item from 866
+M50122,Reading List Bulk Update
+M50762,Reading List Citation Process and Enrich
+M50556,Reading List Citation Update Task
+M121,Rebuild Physical item description
+M50124,Recalculate cached CZ Heading Job Task
+M122,Recalculate Local Resource Types Job
+M50171,Receive all one time polines
+M4215177590000561,Record with local field COCC
+M50739,ReduceCzDistributionChangeLogJob
+M50589,Refresh Analytics Data for Research Assets
+M50771,Refresh or Revoke ORCID tokens
+M50573,Register DOIs for Research Assets
+M50139,Remote Representation Migration
+M4874846530000561,Remove 856
+M6661794470000561,remove 999 alexandra test
+M55199100000521,Remove Bib Field 999
+M50221,Remove course user association job
+M50615,Remove Duplicated Portfolios ProQuest
+M50797,Remove Historical Author Matching Tasks
+M50898,Remove Links From Duplicate Headings
+M50216,Remove Titles from Collection
+M107610330000521,Remove Vendor Data 856
+M50663,RenderResearchAssetsTask
+M1327181230000521,replace hc with hardcover
+M117,Republish a set of Bibliographic records to Primo
+M57,Republish Holdings records to OCLC (LHRs)
+M50849,Research Asset Flattening
+M50210,Research assets CSV export
+M50984,Research Asset Versioning
+M50760,RESEARCH_ENTITY_INDEX_TASK
+M50679,Researcher Activities Loader
+M50577,Researcher Duplicate Report
+M50897,Researcher General Notification
+M509102,RESET_INVOICE_LINE_NEW_DATES_FIELDS
+M509101,RESET_PO_LINE_JBPM_NEW_NODE
+M50667,ReShare Updates
+M50571,Resource Sharing Claiming and Cancellation
+M127,Restore local extensions
+M126,Restore MMS record
+M50748,Retrieve ORCID Profile with list of assets for Researcher
+M50646,Rialto EBA
+M50652,Rialto EBA Portfolio Cleanup
+M5041153760000561,Rialto - Ebook Central
+M50575,Rialto Manual Publishing
+M50244,Rialto Ongoing Publishing
+M50583,Rialto Scheduled Purchasing
+M50616,Rialto Selection Plan
+M50722,Rialto sushi usage publishing job
+M50677,Rialto Title Alert Job
+M130,Rollback record
+M4962970690000561,Rule 852 KD
+M4147862700000561,"rule ""julac_NR"""
+M50632,Run Clear Portfolio Libraries For All Collections
+M50555,Runs the PZ Relinking Job
+M4385044480000561,save 005 update date in local field
+M131,Save And Index Electronic collection Tree
+M132,Save And Index Items
+M133,Save And Index Mms Tree
+M4385044420000561,save update date in local field
+M50179,SBN AUTH Alignment Task
+M50178,SBN BIB Alignment Task
+M50214,Send Courtesy Notices and Handle Loan Renewals
+M50837,Send invoice to partners
+M134,Set Authority Records Cataloging Level
+M135,Set Bib Records Cataloging Level
+M50561,Set Management Tags
+M4840916130000561,Sigal - csiro
+M50710,Smart Expansion via Alma
+M50630,Smart Expansion via Citation Lists
+M50650,Smart Expansion via CSV File
+M50962,Specto_AI_Document_Normalization
+M50963,Specto_AI_Image_Normalization
+M50926,Specto Collection Indexing
+M50998,Specto Content Analysis (Pre-Processing)
+M50959,Specto Digital Content Type Identification
+M50912,Specto Enrichment
+M50999,Specto Entity Extraction and Grouping for images and text
+M50949,Specto Entity Extraction from Text
+M50913,Specto Face Recognition
+M50948,Specto Metadata Enrichment
+M50617,SP Research assets updates
+M12889750000541,Suppress Bib records from discovery
+M4406520710000561,Suppress Bib records from discovery DC
+M4406520730000561,Suppress Bib records from discovery DCAP01
+M4406520750000561,Suppress Bib records from discovery DCAP02
+M4406520770000561,Suppress Bib records from discovery ETD
+M4406520790000561,Suppress Bib records from discovery MODS
+M1293938580000521,Suppress Bib records from discovery UNIMARC
+M137,Sushi harvesting Task
+M5081879,SyncAICZJob
+M12889770000541,Synchronize Bib records with external catalog
+M138,Synchronize MMS with national catalog
+M7657740420000561,Tarefa de ImportaÃ§Ã£o
+M6662153100000561,Test1
+M4681488780000561,test 2 drools
+M6236271660000561,Test 4 Success
+M4239496490000561,test alexandra
+M4406465980000561,test author name thing
+M9495840610000561,test DC Sabine
+M7659870840000561,TestImportAna
+M7666181460000561,Testing and more Testing
+M6107822610000561,Test Process 1

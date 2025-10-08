@@ -128,7 +128,7 @@
 	"ManualEntry": {
 		"Stage1CalloutTitle": "Stage 1: Enter asset and file details",
 		"Stage1CalloutDescription": "Asset ID and file URL are mandatory for every row. Other metadata is optional and can be refined later.",
-		"Stage1CalloutSkip": "You can choose file types in Stage 2 or skip that step by selecting \"Proceed Without Selecting File Types\".",
+		"Stage1CalloutTypeNext": "File type selection will be presented on the next screen, filtered by each asset's type.",
 		"FileTypesTitle": "Available file types",
 		"FileTypesHint": "These values come from your institution's Asset File Type configuration.",
 		"Stage1FileHeading": "File {index}",
@@ -153,8 +153,8 @@
 		},
 		"Actions": {
 			"AddAnother": "Add another file",
-			"SpecifyTypes": "Specify Types of Each File",
-			"SkipTypeSelection": "Proceed Without Selecting File Types",
+			"NextSpecifyTypes": "Next > Specify File Types",
+			"NextValidateEntries": "Next > Validate Entries",
 			"BackToDetails": "Back to Details",
 			"SubmitFiles": "Submit Files"
 		},
@@ -164,6 +164,17 @@
 			"UrlRequired": "File URL is required.",
 			"UrlFormat": "Enter a valid http(s) URL.",
 			"FileTypeRequired": "Select a file type."
+		}
+	},
+	"Review": {
+		"Title": "Review & Confirm",
+		"Description": "Confirm the assets and files that will be queued before running the import job.",
+		"AssetsCount": "Assets to update",
+		"FilesCount": "Total files to queue",
+		"UniqueUrlsCount": "Unique file URLs",
+		"Actions": {
+			"Back": "Back to make changes",
+			"RunJob": "Run Import Job"
 		}
 	},
 	"CSV": {
