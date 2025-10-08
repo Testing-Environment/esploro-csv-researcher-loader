@@ -442,6 +442,109 @@ proceedToImport(): void {
   if (this.exportValidOnSubmit) {
     this.exportValidEntries();
   }
+  ## Manual Entry – File Types Toggle Gating and Stage Routing
+
+  Status: Planned
+
+  Summary
+  - Add a chip-like toggle for “File Types” in Stage 1 (default OFF) that controls whether Stage 2 is shown.
+  - When OFF: Stage 2 is skipped; show primary action “Next > Validate Entries” and hide “Next > Specify File Types”.
+  - When ON: show a callout “File type selection will be presented next” and the primary action becomes “Next > Specify File Types”.
+
+  Behavior
+  - OFF path: Stage 1 → Validate → Create Set + Add Members → Stage 3 (Review) → Run Job
+  - ON path: Stage 1 → Stage 2 (type selection filtered per asset type via AssetFileAndLinkTypes) → Validate → Create Set + Add Members → Stage 3 (Review) → Run Job
+
+  Validation
+  - Same Stage 1 rules: required Asset ID + URL, duplicate AssetID+URL detection, batch asset validation (GET /esploro/v1/assets/{ids}), optional URL validation pre-check.
+  - Stage 2 (only when ON): enforce File Type selection; options filtered using mapping table and asset type.
+
+  Notes
+  - AssetFileAndLinkTypes MUST be retrieved from the mapping-table API (/conf/mapping-tables/AssetFileAndLinkTypes). Remove any legacy code-table references.
+  - Add i18n strings for the callout and button label swaps.
+
+  ---
+
+  ## Stage 3 – Review & Confirm (All Input Methods)
+
+  Status: Planned
+
+  Purpose
+  - Provide a universal confirmation step after set creation/member add and before running the import job.
+
+  Display
+  - Count of assets to be updated (set members successfully added)
+  - Count of files to upload (total items queued)
+  - Count of unique files (distinct remote URLs)
+  - Optional mini preview and downloadable plan CSV
+
+  Actions
+  - “Run Import Job” → proceed to POST /conf/jobs/{jobId}/instances and start polling
+  - “Back” → return to previous stage for edits
+
+  Error Handling
+  - If some members failed to add, show reconciliation list and allow retry add-members or backtrack.
+
+  Scope
+  - Applies to Manual (File-to-Asset), File-to-Group (Bulk URL Update), and CSV flows.
+
+  ---
+
+  ## CSV Multi-Stage Flow (Header Detection, Mapping, and Validation)
+
+  Status: Planned
+
+  Stage 1 – Upload + Header Definition
+  - UI: “Download Template CSV” (mmsId, remoteUrl, fileTitle, fileDescription, fileType) and “Load CSV File”.
+  - Parsing:
+    - Attempt header detection by name/shape; if ambiguous, prompt modal with:
+      - Radios: “File has a header row” / “No header row”
+      - Live preview for both interpretations (first rows)
+      - Confirm via “Confirm Header Definition”
+    - If no header: name columns as Column_1, Column_2, …
+  - Identification & trimming:
+    - Trim whitespace for candidate values
+    - Find candidate Asset ID columns (numeric or alphanumeric, typically 14 chars; configurable)
+    - Find candidate URL columns (must match http/https)
+    - Proceed when Asset ID and URL columns are identified—others can be unmatched
+  - Edge cases:
+    - Missing required columns → block with guidance
+    - Only required columns present → valid
+    - Extra columns → ignore with non-blocking notice
+    - Duplicate MMS ID + URL rows → flag and require resolution
+
+  Stage 2 – Mapping Grid (4 Columns + Constraints)
+  - Grid rows:
+    - Row 0: Header labels + tooltips
+    - Row 1: Asset ID mapping (mandatory, single column)
+    - Row 2: Remote URL mapping (mandatory)
+    - Subsequent rows: follow CSV column order; each CSV column can appear once
+  - Columns:
+    1) Include? (checkbox) – Asset ID & URL rows are checked and disabled
+    2) CSV Column Name (dropdown) – names or Column_#
+    3) Sample values (non-editable) – first 3 values; above-grid dropdown to choose the sample row (limit first 5 rows)
+    4) Submission Field (dropdown) – assetId, remoteUrl, fileTitle, fileDescription (multi-allowed), fileType
+  - Description concatenation preview:
+    - Show concatenated description (space-separated, 500-char cap) based on selected description rows (top→bottom order)
+  - Include/Exclude summary:
+    - Show which submission fields and CSV columns will be included/excluded
+  - Validation on “Next > Validate and Submit”:
+    - Enforce assetId and remoteUrl mapping
+    - Trim values
+    - Convert fileType names/target codes → IDs via AssetFileAndLinkTypes mapping table
+
+  Post-Validation Choices
+  - Show valid vs invalid entries
+  - Offer:
+    - “Accept as is and continue to Review” → go to Stage 3
+    - “Fix invalid entries” → open a Manual-like grid for invalids; re-validate and resume
+
+  Notes
+  - Maintain policy: Only MMS ID and Remote URL are mandatory for CSV.
+  - Use mapping-table API exclusively for file types.
+
+  ---
+
   
   if (this.exportInvalidOnSubmit) {
     this.exportInvalidEntries();

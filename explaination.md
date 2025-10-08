@@ -79,80 +79,18 @@ Main entry points
 Relationship diagram
 
 ```mermaid
-flowchart TD
-  App[AppComponent]
-  App --> Main[MainComponent]
-  Main -->|manual submit| AssetService
-  Main --> CSV[CSVProcessorComponent]
-  CSV -->|REST calls| AssetService
-  CSV --> Results[ProcessingResultsComponent]
-  Main --> Results
-  AssetService -->|/conf/mapping-tables| Esploro
-  AssetService -->|/esploro/v1/assets| Esploro
-```
+# Esploro CSV Asset Loader – Comprehensive Codebase Analysis (2025)
+
+This guide onboards new developers and reviewers to the Esploro CSV Asset Loader Cloud App: structure, key components, data flows, dependencies, patterns, and critical logic. It reflects the latest CSV contract where MMS ID and File URL are required; other fields are optional.
 
 ---
 
-## Data flow (end to end)
+## Project purpose and typical usage
 
-Manual entry path
-1) Stage 1 – Users can select which optional fields to include via toggle chips at the top of the form. Asset ID and File URL are always required and visible. Optional fields (Title, Description, File Type, Supplemental) can be toggled on/off:
-   - **Toggle On**: Field column appears in all rows with validators applied
-   - **Toggle Off**: Field column hides (data preserved) and excluded from submission
-   - Users add one or more rows, each requiring **Asset ID** and **File URL** as minimum
-
-2) User chooses **Specify Types of Each File** or **Proceed Without Selecting File Types**. The component validates asset IDs via `GET /esploro/v1/assets/{assetIds}` using a batch approach:
-   
-   - **Valid Asset Processing**: For successfully validated rows, the component extracts and stores asset type information and existing file data for each asset. This data is maintained in a "diffing list" that will be used later to compare pre-processing and post-processing states.
-   
-   - **Invalid Asset Tracking**: Asset IDs that fail validation are stored in a separate "retry list" for subsequent validation attempts.
-   
-   - **Duplicate URL+Asset ID Detection**: The component validates that each unique combination of Asset ID and File URL appears only once across all active rows. Duplicate combinations are flagged as invalid and highlighted in red with a tooltip explaining: "Duplicate entry: This asset ID and URL combination already exists. The same file cannot be attached to the same asset multiple times until the current upload completes."
-   
-   - **Deleted Entries Management**: Rows that are deleted by the user (after any fields were populated) are moved to a "deleted list" and displayed in a collapsible section below all active rows. These deleted entries:
-     - Are displayed with greyed-out styling to distinguish them from active rows
-     - Can be restored individually or in bulk back to active entries via restore buttons
-     - Are automatically removed from the deleted list if a new active row is added with identical field values (excluding asset ID)
-     - Remain in the deleted list until the job is submitted (unless restored or auto-removed)
-     - Can be exported as a CSV file at any time via the "Export Deleted Entries as CSV file" button
-     - Can be permanently removed from the deleted list via individual delete buttons
-     - The deleted entries section only appears when the deleted list is not empty
-   
-   - **Row Duplication**: Users can duplicate any active row by clicking a duplicate button, which:
-     - Copies all populated fields from the source row except the Asset ID field
-     - Creates a new row immediately below the duplicated row
-     - Leaves the Asset ID field empty for the user to populate
-     - Maintains all other field values (URL, title, description, type, supplemental)
-     - Only copies values from fields that are currently active/visible
-   
-   - **Dynamic List Management During Stage 1**: 
-     - **Invalid Asset ID Cleanup**: If the user deletes all rows containing a specific invalid asset ID, that asset ID is automatically removed from the retry list
-     - **New Asset ID Addition**: When new rows are added during this stage, their asset IDs are included in the retry list for validation and highlighted in orange with a tooltip: "New asset ID: This asset ID has not been validated yet and will be checked in the next validation cycle."
-     - **Valid Asset ID Removal**: If a valid asset ID is removed from all rows (either by editing the asset ID field or deleting all rows associated with that asset ID), the corresponding entry is removed from the diffing list
-     - **Valid Asset ID Field Changes**: 
-       - If a user edits a valid row's asset ID field to an asset ID that already exists in the diffing list, the row is highlighted in yellow with a tooltip: "Validated asset: This asset ID has already been validated. You can proceed with this entry." No changes are made to the diffing list
-       - If a user edits a valid row's asset ID field to a new asset ID that hasn't been validated, the row is highlighted in orange, sorted to appear just under the invalid rows section, and the new asset ID is added to the retry list with a tooltip: "Pending validation: This asset ID will be validated before submission."
-     - **Deleted Row Tracking**: When a user deletes a row that has any populated fields:
-       - The row is moved to the deleted list (not permanently removed)
-       - The row is displayed in a collapsible "Deleted Entries" section below active rows with greyed-out styling
-       - The deleted row is excluded from validation and submission processes
-       - The deleted row can be restored to active entries at any time
-     - **Automatic Deleted List Cleanup**: When a user adds a new row with field values (excluding asset ID) that exactly match a deleted row, the matching deleted row is automatically removed from the deleted list
-   
-   - **Retry Validation**: Once the user completes their corrections, the retry list is processed via `GET /esploro/v1/assets/{assetIds}`. The successful responses provide asset category/type data and existing files data, which are then appended to the diffing list.
-   
-   - **Final Validation**: The process continues until all rows contain valid asset IDs, unique URL+Asset ID combinations, and all required field data is captured for the next processing steps.
-   
-   - **Pre-Submission Export Options**: Before proceeding to import asset files, users are presented with three export options:
-     - **Export Deleted Entries as CSV file** (checkbox): Download all deleted entries for future reference or recovery
-     - **Export Valid Entries as CSV file** (checkbox): Download all successfully validated entries
-     - **Export Invalid Entries as CSV file** (checkbox): Download all entries that failed validation
-     
-     Users can select any combination of these options before clicking "Proceed to Import Asset Files". The deleted list is only cleared after successful job submission.
-
-Invalid rows are highlighted and sorted to the top for easy correction, with tooltips providing context-specific guidance for each validation state.
-3) Stage 2 (when selected) – user picks the file type ID for each row, with options filtered by asset type. If Stage 2 is skipped, the file type field is excluded from the payload for step 4 altogether (or uses default if File Type field was toggled on in Stage 1).
-4) MainComponent groups rows by asset ID, builds the `temporary.linksToExtract` payload(s) using only active/visible fields, and issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` sequentially.
+- Purpose: Enrich existing Esploro research assets by adding files/links with proper metadata.
+- Manual path: Enter one asset ID and one or more file records; app posts a “queue files” payload to the asset.
+- CSV path: Upload a CSV with MMS IDs and file metadata. The processor enforces MMS ID and File URL as required columns/values, auto-maps optional columns (title, description, file type), converts file type names to required IDs (prompting for any unresolved values), processes each row, and produces a “successful MMS IDs” CSV to help create a set and run the import job in Esploro.
+- Typical workflow: Open the app in Esploro → choose Manual Entry or CSV Upload → submit → create a set from the MMS IDs → run the “Import Research Assets Files” job.
 
 ---
 
@@ -166,49 +104,215 @@ Top-level
 - `documentation/` – Rich docs suite, examples, diagrams, API references.
 
 Angular app (Cloud App)
-- `cloudapp/src/app/app.module.ts` – Root Angular module; declares components and imports Cloud Apps libs and i18n.
-- `cloudapp/src/app/app-routing.module.ts` – Routes; root route renders `MainComponent`.
+- `cloudapp/src/app/app.module.ts` – Root module; declares App, Main, CSV Processor, Processing Results; wires Material and i18n.
+- `cloudapp/src/app/app-routing.module.ts` – Routes; root path renders `MainComponent`.
 - `cloudapp/src/app/app.component.ts` – Root shell with alert outlet + router outlet.
-- `cloudapp/src/app/main/` – Manual entry form UI and CSV tab container.
-  - `main.component.ts|html|scss` – Orchestrates manual form and hosts CSV components and results.
+- `cloudapp/src/app/main/` – Manual entry and CSV host UI.
+  - `main.component.ts|html|scss` – Orchestrates manual forms, validation, submission, and hosts CSV/results components.
 - `cloudapp/src/app/components/`
-  - `csv-processor/…` – CSV upload, mapping, validation, conversion, batch processing.
+  - `csv-processor/…` – CSV upload, header mapping, required-field validation, file-type conversion, batch processing.
   - `processing-results/…` – Summary table, MMS ID download, deep links back to Esploro.
-- `cloudapp/src/app/services/asset.service.ts` – Esploro REST calls and mapping-table helpers.
+- `cloudapp/src/app/services/asset.service.ts` – Esploro REST calls, mapping-table fetch, asset metadata retrieval, type filtering.
 - `cloudapp/src/app/models/` – Shared interfaces: `asset.ts`, `types.ts`.
-- `cloudapp/src/app/constants/file-types.ts` – Legacy placeholder (fallback retired; mapping table is authoritative).
-- `cloudapp/src/app/utilities.ts` – Misc. helpers.
-- `cloudapp/src/i18n/en.json` – All user-facing strings with ICU message format.
-- `cloudapp/src/assets/assetFileLoader.png` – App icon.
+- `cloudapp/src/app/constants/file-types.ts` – Legacy hints only; authoritative mapping comes from `/conf` API.
+- `cloudapp/src/app/utilities/` – Helpers such as `rxjs-helpers`.
+- `cloudapp/src/i18n/en.json` – User-facing strings with ICU formatting.
 
 Languages and frameworks
-- Language: TypeScript (Angular 11)
-- UI: Angular Material 11
-- Esploro integration: Ex Libris Cloud Apps SDK (`@exlibris/exl-cloudapp-angular-lib`)
+- TypeScript (Angular 11), Angular Material, RxJS, Ex Libris Cloud Apps SDK.
 
 Main entry points
-- Cloud App loads `/#/` which routes to `MainComponent` (`app-routing.module.ts`).
-- `MainComponent` renders tabs for Manual Entry and CSV Upload and wires results view.
+- App loads `/#/` → `MainComponent` (via `app-routing.module.ts`).
+- `MainComponent` hosts both manual and CSV flows and the results view.
 
 ---
 
 ## Core components and relationships
 
-- AppComponent (root shell)
-  - Displays `<cloudapp-alert>` and `<router-outlet>`; no logic beyond app initialization.
+- AppComponent
+  - Displays `<cloudapp-alert>` and `<router-outlet>`; minimal logic.
 - MainComponent (feature container)
-  - Holds reactive form for single-asset manual submissions.
-  - Loads the AssetFileAndLinkTypes mapping table and derives display hints and default selections from it.
-  - Detects asset type by MMS ID to filter compatible file/link categories.
+  - Reactive manual form with two-stage flow; validates assets in batch; can auto-assign default types.
+  - Loads AssetFileAndLinkTypes; derives display hints; filters types by asset type.
   - Hosts CSVProcessorComponent and ProcessingResultsComponent.
 - CSVProcessorComponent (bulk CSV engine)
-  - CSV upload, parsing (RFC 4180 style), column auto-mapping, mapping validation, and enforcement that MMS ID + Remote URL columns exist while other fields remain optional.
-  - File type value validation against mapping table; fuzzy match to convert names to required IDs and track unresolved values until the user maps them manually.
-  - Caches “before” asset file state, calls APIs per row, fetches “after” state, flags unchanged assets.
-  - Emits processed rows and generates a “successful MMS IDs” CSV for downstream Esploro steps.
+  - CSV upload, robust parsing (PapaParse), header auto-mapping with confidence, duplicate mapping checks.
+  - Enforces presence of MMS ID and Remote URL columns; optional fields are accepted.
+  - Validates file-type values against the mapping table; converts names→IDs; tracks unresolved values for manual mapping.
+  - Caches pre-state, posts per-row files, fetches post-state, flags unchanged assets.
+  - Emits processed rows and generates a “successful MMS IDs” CSV.
 - ProcessingResultsComponent (outcome UI)
-  - Renders success/error/unchanged counts and per-row status.
-  - Provides deep links to Esploro Viewer, Advanced Search, Jobs.
+  - Renders success/error/unchanged counts and per-row status; provides Esploro links and jobs navigation.
+- AssetService (integration/service layer)
+  - Adds files via `POST /esploro/v1/assets/{assetId}?op=patch&action=add` with `temporary.linksToExtract`.
+  - Retrieves AssetFileAndLinkTypes via `/conf/mapping-tables/AssetFileAndLinkTypes`.
+  - Retrieves asset metadata; filters file types by asset type and applicability.
+
+Relationship diagram
+
+```mermaid
+flowchart TD
+  App[AppComponent]
+  App --> Main[MainComponent]
+  Main -->|manual submit| AssetService
+  Main --> CSV[CSVProcessorComponent]
+  CSV -->|REST calls| AssetService
+  CSV --> Results[ProcessingResultsComponent]
+  Main --> Results
+  AssetService -->|/conf/mapping-tables| Esploro
+  AssetService -->|/esploro/v1/assets| Esploro
+```
+
+---
+
+## Data flow (end to end)
+
+CSV load path (end-to-end)
+1) Upload CSV (<=10 MB) in the CSV Upload tab.
+2) Parse and auto-map headers in CSVProcessor:
+  - Required columns: `mmsId`, `remoteUrl`
+  - Optional columns: `fileTitle`, `fileDescription`, `fileType`
+  - Prevent duplicate mappings; validate required values exist per row
+3) Fetch and normalize file/link categories via `GET /conf/mapping-tables/AssetFileAndLinkTypes`.
+4) Validate/convert `fileType` values:
+  - Accept IDs as-is; fuzzy-match names/target codes → IDs; collect unresolved values and prompt for manual mapping
+5) Optionally cache pre-state for unique assets via `GET /esploro/v1/assets/{mmsId}`.
+6) Process rows sequentially (small delay to reduce throttling):
+  - `POST /esploro/v1/assets/{mmsId}/files` with `{ url, title?, description?, type? }`
+  - Record per-row status and any error message
+7) For successful rows, fetch post-state and compare to pre-state; flag `wasUnchanged` when no effective file changes detected
+8) Emit results and artifacts:
+  - Results table with success/error/unchanged counts and Esploro deep links
+  - Download "successful-mms-ids.csv" for creating a Set in Esploro
+9) Next steps in Esploro:
+  - Create an Itemized Set from the downloaded MMS IDs
+  - Run the "Import Research Assets Files" job against the set
+  - Verify files are attached to assets after the job completes
+
+See also: Visual data flow (CSV path) for a sequence diagram below.
+
+Manual entry path
+1) Stage 1 – users add rows. Asset ID and File URL are required; Title/Description/Type/Supplemental are optional (toggleable).
+2) Choose: “Specify Types of Each File” (advance to Stage 2) or “Proceed Without Selecting File Types” (assign defaults and submit).
+3) Stage 2 – pick file type IDs filtered by asset type, or rely on defaults if Stage 2 was skipped.
+4) Group by asset ID; build `temporary.linksToExtract`; `POST /esploro/v1/assets/{assetId}?op=patch&action=add` sequentially.
+
+CSV path
+1) Upload CSV (<=10 MB). Parse headers/rows with quotes/escapes handled.
+2) Auto-suggest column mapping for `mmsId`, `remoteUrl` (required) and optional `fileTitle`, `fileDescription`, `fileType`; prevent duplicates.
+3) Validate fileType values: accept valid IDs; fuzzy match target codes; collect unresolved values for manual selection.
+4) Optionally cache pre-state (`GET /esploro/v1/assets/{mmsId}`).
+5) For each row: validate asset; if URL present, `POST /esploro/v1/assets/{mmsId}/files` with `{ url, title, description, type }`.
+6) Fetch post-state and compare; flag as “unchanged” when appropriate. Emit results and generate MMS IDs CSV for successes.
+
+Key data contracts
+- Manual (AssetFileLink): `{ title, url, description?, type, supplemental }`
+- CSV (ProcessedAsset): `{ mmsId, remoteUrl, fileTitle?, fileDescription?, fileType?, status, errorMessage?, wasUnchanged? }`
+
+---
+
+## Dependencies
+
+- Angular 11, Angular Material – UI and component framework.
+- @exlibris/exl-cloudapp-angular-lib – Cloud Apps SDK (REST, alerts, page context).
+- PapaParse – RFC 4180 CSV parsing.
+- ngx-translate + ICU parser – i18n.
+- RxJS – async flows; forkJoin for batching; firstValueFrom/lastValueFrom helpers.
+
+---
+
+## Coding patterns and practices
+
+- Reactive forms for validation and staged submission.
+- Service layer encapsulates REST calls and transformations.
+- Defensive parsing for variable API response shapes.
+- Fuzzy matching and conversion mapping for file types.
+- Sequential processing with small delays to reduce throttling.
+
+---
+
+## Critical logic hotspots (security/performance/behavior)
+
+1) File type validation and conversion
+   - Mapping table requires IDs; users often supply names. Auto-match names→IDs, track unresolved values, and require manual mapping to prevent subtle API failures.
+2) Pre/post asset state comparison
+   - Cache existing files and compare after processing; flag unchanged assets to surface no-ops (duplicates, policy blocks).
+3) URL validation and trust boundaries
+   - Manual form enforces `^https?://`; CSV relies on mapping and API responses. Consider stronger URL checks or allowlists.
+4) Error handling and user feedback
+   - Clear alerts for client validation and server errors; per-row CSV failure reporting.
+5) Performance and throttling
+   - Sequential CSV processing with 100ms delay; consider bounded concurrency + exponential backoff with caution.
+6) Config API variability
+   - Robust normalization for mapping-table responses across environments.
+
+---
+
+## APIs and payloads in use
+
+- Queue links to extract (manual)
+  - `POST /esploro/v1/assets/{assetId}?op=patch&action=add`
+  - `{ records: [{ temporary: { linksToExtract: [{ 'link.title', 'link.url', 'link.description'?, 'link.type', 'link.supplemental' }] } }] }`
+- Add file (CSV per-row)
+  - `POST /esploro/v1/assets/{mmsId}/files`
+  - `{ url, title, description, type }`
+- Read asset metadata
+  - `GET /esploro/v1/assets/{mmsId}`
+- Configuration
+  - `GET /conf/mapping-tables/AssetFileAndLinkTypes`
+
+---
+
+## Visual data flow (CSV path)
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant CSV as CSVProcessorComponent
+  participant S as AssetService
+  participant E as Esploro APIs
+
+  U->>CSV: Upload CSV
+  CSV->>CSV: Parse + auto-map + validate
+  CSV->>S: getAssetFilesAndLinkTypes()
+  S->>E: GET /conf/mapping-tables/AssetFileAndLinkTypes
+  E-->>S: Mapping table
+  S-->>CSV: Normalized types
+  CSV->>CSV: Convert file type names → IDs (prompt if needed)
+  loop each row
+    CSV->>S: getAssetMetadata(mmsId)
+    S->>E: GET /esploro/v1/assets/{mmsId}
+    E-->>S: Asset (pre-state)
+    CSV->>E: POST /esploro/v1/assets/{mmsId}/files {url,title,desc,type}
+    E-->>CSV: Ack
+  end
+  CSV->>S: getAssetMetadata() for successes
+  S->>E: GET /esploro/v1/assets/{mmsId}
+  E-->>S: Asset (post-state)
+  CSV->>CSV: Compare states, mark unchanged
+  CSV-->>U: Results + MMS IDs CSV + next steps
+```
+
+---
+
+## Validation rules (summary)
+
+- Asset ID: required (manual and CSV).
+- File URL: required (manual and CSV; must start with http/https).
+- File Title: optional.
+- File Description: optional.
+- File Type: required in Manual Stage 2 (or auto-assigned if skipping). Optional in CSV; converted if present.
+- Supplemental: optional (default false).
+
+---
+
+## Gaps, risks, questions
+
+- Documentation: Ensure all references align with CSV-first behavior; trim legacy “researcher loader” mentions.
+- Tests: Add unit tests for parsing, mapping normalization, type matching, and unchanged detection.
+- Security: Consider stronger URL validation and optional allowlists.
+- Performance: Explore safe concurrency with backoff respecting tenant rate limits.
+
 - AssetService (integration/service layer)
   - Adds files via “queue links to extract” payload to `/esploro/v1/assets/{id}?op=patch&action=add`.
   - Retrieves the AssetFileAndLinkTypes mapping table from `/conf` APIs.
@@ -294,109 +398,9 @@ Invalid rows are highlighted and sorted to the top for easy correction, with too
 3) Stage 2 (when selected) – user picks the file type ID for each row, with options filtered by asset type. If Stage 2 is skipped, the file type field is excluded from the payload for step 4 altogether (or uses default if File Type field was toggled on in Stage 1).
 4) MainComponent groups rows by asset ID, builds the `temporary.linksToExtract` payload(s) using only active/visible fields, and issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` sequentially.
 
----
-
-## Core components and relationships
-
-- AppComponent (root shell)
-  - Displays `<cloudapp-alert>` and `<router-outlet>`; no logic beyond app initialization.
-- MainComponent (feature container)
-  - Holds reactive form for single-asset manual submissions.
-  - Loads the AssetFileAndLinkTypes mapping table and derives display hints and default selections from it.
-  - Detects asset type by MMS ID to filter compatible file/link categories.
-  - Hosts CSVProcessorComponent and ProcessingResultsComponent.
-- CSVProcessorComponent (bulk CSV engine)
-  - CSV upload, parsing (RFC 4180 style), column auto-mapping, mapping validation, and enforcement that MMS ID + Remote URL columns exist while other fields remain optional.
-  - File type value validation against mapping table; fuzzy match to convert names to required IDs and track unresolved values until the user maps them manually.
-  - Caches “before” asset file state, calls APIs per row, fetches “after” state, flags unchanged assets.
-  - Emits processed rows and generates a “successful MMS IDs” CSV for downstream Esploro steps.
-- ProcessingResultsComponent (outcome UI)
-  - Renders success/error/unchanged counts and per-row status.
-  - Provides deep links to Esploro Viewer, Advanced Search, Jobs.
-- AssetService (integration/service layer)
-  - Adds files via “queue links to extract” payload to `/esploro/v1/assets/{id}?op=patch&action=add`.
-  - Retrieves the AssetFileAndLinkTypes mapping table from `/conf` APIs.
-  - Retrieves asset metadata to resolve asset type and compare files before/after.
-- AppService (bootstrap helper)
-  - Placeholder for Cloud App InitService usage.
-
-Relationship diagram
-
-```mermaid
-flowchart TD
-  App[AppComponent]
-  App --> Main[MainComponent]
-  Main -->|manual submit| AssetService
-  Main --> CSV[CSVProcessorComponent]
-  CSV -->|REST calls| AssetService
-  CSV --> Results[ProcessingResultsComponent]
-  Main --> Results
-  AssetService -->|/conf/mapping-tables| Esploro
-  AssetService -->|/esploro/v1/assets| Esploro
-```
-
----
-
-## Data flow (end to end)
-
-Manual entry path
-1) Stage 1 – Users can select which optional fields to include via toggle chips at the top of the form. Asset ID and File URL are always required and visible. Optional fields (Title, Description, File Type, Supplemental) can be toggled on/off:
-   - **Toggle On**: Field column appears in all rows with validators applied
-   - **Toggle Off**: Field column hides (data preserved) and excluded from submission
-   - Users add one or more rows, each requiring **Asset ID** and **File URL** as minimum
-
-2) User chooses **Specify Types of Each File** or **Proceed Without Selecting File Types**. The component validates asset IDs via `GET /esploro/v1/assets/{assetIds}` using a batch approach:
-   
-   - **Valid Asset Processing**: For successfully validated rows, the component extracts and stores asset type information and existing file data for each asset. This data is maintained in a "diffing list" that will be used later to compare pre-processing and post-processing states.
-   
-   - **Invalid Asset Tracking**: Asset IDs that fail validation are stored in a separate "retry list" for subsequent validation attempts.
-   
-   - **Duplicate URL+Asset ID Detection**: The component validates that each unique combination of Asset ID and File URL appears only once across all active rows. Duplicate combinations are flagged as invalid and highlighted in red with a tooltip explaining: "Duplicate entry: This asset ID and URL combination already exists. The same file cannot be attached to the same asset multiple times until the current upload completes."
-   
-   - **Deleted Entries Management**: Rows that are deleted by the user (after any fields were populated) are moved to a "deleted list" and displayed in a collapsible section below all active rows. These deleted entries:
-     - Are displayed with greyed-out styling to distinguish them from active rows
-     - Can be restored individually or in bulk back to active entries via restore buttons
-     - Are automatically removed from the deleted list if a new active row is added with identical field values (excluding asset ID)
-     - Remain in the deleted list until the job is submitted (unless restored or auto-removed)
-     - Can be exported as a CSV file at any time via the "Export Deleted Entries as CSV file" button
-     - Can be permanently removed from the deleted list via individual delete buttons
-     - The deleted entries section only appears when the deleted list is not empty
-   
-   - **Row Duplication**: Users can duplicate any active row by clicking a duplicate button, which:
-     - Copies all populated fields from the source row except the Asset ID field
-     - Creates a new row immediately below the duplicated row
-     - Leaves the Asset ID field empty for the user to populate
-     - Maintains all other field values (URL, title, description, type, supplemental)
-     - Only copies values from fields that are currently active/visible
-   
-   - **Dynamic List Management During Stage 1**: 
-     - **Invalid Asset ID Cleanup**: If the user deletes all rows containing a specific invalid asset ID, that asset ID is automatically removed from the retry list
-     - **New Asset ID Addition**: When new rows are added during this stage, their asset IDs are included in the retry list for validation and highlighted in orange with a tooltip: "New asset ID: This asset ID has not been validated yet and will be checked in the next validation cycle."
-     - **Valid Asset ID Removal**: If a valid asset ID is removed from all rows (either by editing the asset ID field or deleting all rows associated with that asset ID), the corresponding entry is removed from the diffing list
-     - **Valid Asset ID Field Changes**: 
-       - If a user edits a valid row's asset ID field to an asset ID that already exists in the diffing list, the row is highlighted in yellow with a tooltip: "Validated asset: This asset ID has already been validated. You can proceed with this entry." No changes are made to the diffing list
-       - If a user edits a valid row's asset ID field to a new asset ID that hasn't been validated, the row is highlighted in orange, sorted to appear just under the invalid rows section, and the new asset ID is added to the retry list with a tooltip: "Pending validation: This asset ID will be validated before submission."
-     - **Deleted Row Tracking**: When a user deletes a row that has any populated fields:
-       - The row is moved to the deleted list (not permanently removed)
-       - The row is displayed in a collapsible "Deleted Entries" section below active rows with greyed-out styling
-       - The deleted row is excluded from validation and submission processes
-       - The deleted row can be restored to active entries at any time
-     - **Automatic Deleted List Cleanup**: When a user adds a new row with field values (excluding asset ID) that exactly match a deleted row, the matching deleted row is automatically removed from the deleted list
-   
-   - **Retry Validation**: Once the user completes their corrections, the retry list is processed via `GET /esploro/v1/assets/{assetIds}`. The successful responses provide asset category/type data and existing files data, which are then appended to the diffing list.
-   
-   - **Final Validation**: The process continues until all rows contain valid asset IDs, unique URL+Asset ID combinations, and all required field data is captured for the next processing steps.
-   
-   - **Pre-Submission Export Options**: Before proceeding to import asset files, users are presented with three export options:
-     - **Export Deleted Entries as CSV file** (checkbox): Download all deleted entries for future reference or recovery
-     - **Export Valid Entries as CSV file** (checkbox): Download all successfully validated entries
-     - **Export Invalid Entries as CSV file** (checkbox): Download all entries that failed validation
-     
-     Users can select any combination of these options before clicking "Proceed to Import Asset Files". The deleted list is only cleared after successful job submission.
-
-Invalid rows are highlighted and sorted to the top for easy correction, with tooltips providing context-specific guidance for each validation state.
-3) Stage 2 (when selected) – user picks the file type ID for each row, with options filtered by asset type. If Stage 2 is skipped, the file type field is excluded from the payload for step 4 altogether (or uses default if File Type field was toggled on in Stage 1).
-4) MainComponent groups rows by asset ID, builds the `temporary.linksToExtract` payload(s) using only active/visible fields, and issues `POST /esploro/v1/assets/{assetId}?op=patch&action=add` sequentially.
+Notes on stages and review
+- Stage 2 gating (Manual): A chip-like “File Types” toggle controls whether Stage 2 is shown. Default OFF → Stage 2 skipped; ON → Stage 2 shown with a callout and a “Next > Specify File Types” action.
+- Stage 3 (all input methods): After creating a set and adding members, present a Review & Confirm screen that shows counts of assets, total files, and unique file URLs (deduplicated). From there, user confirms to run the import job.
 
 ---
 
@@ -1492,7 +1496,7 @@ if (control.touched && control.invalid) {
 - **Validation**: Built-in `required` validator
 
 #### File Title
-- **Required**: Yes
+- **Required**: No (optional)
 - **Format**: Any non-empty string
 - **Max Length**: Not enforced (Esploro may have limits)
 - **Example**: "Supplementary Data Table S1"
@@ -1510,9 +1514,9 @@ if (control.touched && control.invalid) {
 - **Default**: Empty string (omitted from API payload)
 
 #### File Type
-- **Required**: Yes
+- **Required**: Optional in CSV path; required in manual Stage 2 or auto-assigned when skipping Stage 2
 - **Format**: Must match an ID from the `AssetFileAndLinkTypes` mapping table
-- **Validation**: Required + dynamic dropdown filtered by asset type
+- **Validation**: Required + dynamic dropdown filtered by asset type (manual); CSV converts names→IDs and prompts for unresolved values
 - **Example**: `62` (ID for "Supplementary material")
 
 #### Supplemental

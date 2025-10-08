@@ -128,7 +128,7 @@ jobs:
     if: |-
       ${{ needs.dispatch.outputs.command == 'review' }}
     uses: './.github/workflows/gemini-review.yml'
-    permissions:
+    permissions: # ratchet:workflows/gemini-review.yml
       contents: 'read'
       id-token: 'write'
       issues: 'write'
@@ -142,7 +142,7 @@ jobs:
     if: |-
       ${{ needs.dispatch.outputs.command == 'triage' }}
     uses: './.github/workflows/gemini-triage.yml'
-    permissions:
+    permissions: # ratchet:workflows/gemini-triage.yml
       contents: 'read'
       id-token: 'write'
       issues: 'write'
@@ -156,7 +156,7 @@ jobs:
     if: |-
       ${{ needs.dispatch.outputs.command == 'invoke' }}
     uses: './.github/workflows/gemini-invoke.yml'
-    permissions:
+    permissions: # ratchet:workflows/gemini-invoke.yml
       contents: 'read'
       id-token: 'write'
       issues: 'write'

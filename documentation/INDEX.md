@@ -20,8 +20,6 @@ This directory contains comprehensive documentation for the Esploro Asset File L
 
 ### 📖 **Historical Documentation**
 - **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** - Legacy code removal history
-- **[LEGACY_CSV_LOADER_EXPLANATION.md](LEGACY_CSV_LOADER_EXPLANATION.md)** - Old CSV loader docs
-- **[../TRANSFORMATION_SUMMARY.md](../TRANSFORMATION_SUMMARY.md)** - Historical transformation notes
 - **[../Esploro_Asset_API_Usage_Report.md](../Esploro_Asset_API_Usage_Report.md)** - Historical API analysis
 
 ---
@@ -43,12 +41,10 @@ The **current application** is a simple file uploader for Esploro assets. It all
 
 ### Historical Documentation
 
-These documents describe **previous versions** of the application that used CSV-based bulk loading:
+These documents capture context from earlier phases and API usage analysis:
 
 - **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** - Explains what was removed and why
-- **[LEGACY_CSV_LOADER_EXPLANATION.md](LEGACY_CSV_LOADER_EXPLANATION.md)** - Old CSV loader technical docs
-- **[../TRANSFORMATION_SUMMARY.md](../TRANSFORMATION_SUMMARY.md)** - Researcher-to-Asset transformation
-- **[../Esploro_Asset_API_Usage_Report.md](../Esploro_Asset_API_Usage_Report.md)** - API usage analysis for old version
+- **[../Esploro_Asset_API_Usage_Report.md](../Esploro_Asset_API_Usage_Report.md)** - API usage analysis for older versions
 
 ### Reference Materials
 

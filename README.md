@@ -41,6 +41,13 @@ The CSV tab lets you process many assets at once. The workflow enforces a minima
 5. **File type matching:** when a file type column is present, the component first converts exact ID matches, then applies fuzzy matching on target codes. Any values that still lack an ID are listed for manual resolution before processing can continue.
 6. **Asset verification:** just like the manual flow, each distinct MMS ID is validated against Esploro prior to posting files, and the before/after comparison flags assets whose file lists remain unchanged.
 
+## What’s New in the CSV Workflow (Oct 2025)
+
+- Only two fields are mandatory: `mmsId` (asset ID) and `remoteUrl` (file URL). All other fields are optional.
+- The mapper blocks progression if required columns are missing or mapped but empty; missing values are reported with row numbers.
+- If a file-type column is included, names are auto-converted to the required IDs via fuzzy matching; unresolved values must be manually mapped before proceeding.
+- After processing, the app compares the asset’s file list before/after to flag rows that likely resulted in no change (e.g., duplicate URLs).
+
 ## API Reference
 
 - **POST** `/esploro/v1/assets/{assetId}?op=patch&action=add`
@@ -95,19 +102,19 @@ This is a specialized tool for Esploro environments. For contributions or issues
 
 ## Documentation
 
-This project includes comprehensive documentation for developers, administrators, and end users:
+This project includes comprehensive documentation for developers, administrators, and end users (see also `documentation/INDEX.md`):
 
 ### For Developers
-- **[Developer Quick Reference](DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
-- **[Architecture Diagrams](ARCHITECTURE_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
+- **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
+- **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
 - **[Detailed Code Explanation](explaination.md)** - Deep-dive analysis of the codebase
 - **[RxJS Migration Guide](documentation/RXJS_MIGRATION.md)** - Migration from toPromise() to firstValueFrom/lastValueFrom
 - **[CSV Parsing Enhancement](documentation/CSV_PARSING.md)** - PapaParse integration for robust CSV handling
 
 ### For Product Owners & Project Managers
-- **[Complete Summary](COMPLETE_SUMMARY.md)** - Overview of all work, documentation index, and project status
-- **[Transformation Summary](TRANSFORMATION_SUMMARY.md)** - History of the transformation from researcher to asset loader
-- **[Job Submission Enhancement](JOB_SUBMISSION_ENHANCEMENT.md)** - Future automation features roadmap
+- **[Final Status Report](FINAL_STATUS_REPORT.md)** - Overview of all work, documentation index, and project status
+- **[Phase 2 Enhancement Complete](documentation/PHASE_2_ENHANCEMENT_COMPLETE.md)** - Summary of Phase 2 enhancements
+- **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future automation features roadmap
 
 ### For System Administrators
 - **[Cleanup Summary](CLEANUP_SUMMARY.md)** - Log of recent code cleanup and improvements

@@ -8,7 +8,7 @@ import { AssetFileLink } from '../models/asset';
 import { ProcessedAsset, FileType, AssetFileAndLinkType, AssetMetadata } from '../models/types';
 import { lastValueFrom } from '../utilities/rxjs-helpers';
 
-type ManualEntryStage = 'stage1' | 'stage2';
+type ManualEntryStage = 'stage1' | 'stage2' | 'stage3';
 
 interface ManualEntryFormValue {
   assetId: string;
@@ -29,11 +29,17 @@ export class MainComponent implements OnInit {
   stage: ManualEntryStage = 'stage1';
   stageTwoSkipped = false;
   assetValidationInProgress = false;
+  // Controls whether Stage 2 (File Type selection) is presented
+  fileTypesToggle = false; // default OFF per requirements
   fileTypes: FileType[] = [];
   assetFileAndLinkTypes: AssetFileAndLinkType[] = [];  // All file type categories
   submitting = false;
   submissionResult: { type: 'success' | 'error'; message: string } | null = null;
   assetMetadataMap = new Map<string, AssetMetadata>();
+  // Stage 3 review counts
+  reviewAssetsCount = 0;
+  reviewFilesCount = 0;
+  reviewUniqueUrlsCount = 0;
 
   // CSV Processing state
   processedAssets: ProcessedAsset[] = [];
@@ -95,6 +101,36 @@ export class MainComponent implements OnInit {
     });
   }
 
+  /**
+   * Validate Stage 1 and, when valid, proceed to Stage 3 (Review & Confirm)
+   * Used when File Types toggle is OFF (skip Stage 2 entirely)
+   */
+  async proceedToValidationAndReview(): Promise<void> {
+    if (this.assetValidationInProgress || this.submitting) {
+      return;
+    }
+
+    const isValid = await this.validateStageOneEntries();
+    if (!isValid) {
+      return;
+    }
+
+    // Compute Stage 3 review counts
+    const rows = this.entries.controls
+      .map(g => (g as FormGroup).value as ManualEntryFormValue)
+      .map(v => ({ assetId: (v.assetId || '').trim(), url: (v.url || '').trim() }))
+      .filter(v => !!v.assetId && !!v.url);
+
+    const uniqueAssets = new Set(rows.map(r => r.assetId));
+    const uniqueUrls = new Set(rows.map(r => r.url));
+
+    this.reviewAssetsCount = uniqueAssets.size;
+    this.reviewFilesCount = rows.length;
+    this.reviewUniqueUrlsCount = uniqueUrls.size;
+
+    this.stage = 'stage3';
+  }
+
   async proceedWithoutSelectingTypes(): Promise<void> {
     if (this.assetValidationInProgress || this.submitting) {
       return;
@@ -144,6 +180,19 @@ export class MainComponent implements OnInit {
     this.stage = 'stage1';
     this.stageTwoSkipped = false;
     this.applyTypeValidators(false);
+  }
+
+  /** Return from Stage 3 to Stage 1 for edits */
+  backFromReview(): void {
+    if (this.submitting) return;
+    this.stage = 'stage1';
+  }
+
+  /** Placeholder for job run orchestration; will be wired to services in Phase 2 */
+  async runImportJob(): Promise<void> {
+    // In the full implementation: ensure set exists and members added, then
+    // find job → run job → poll instance → present results
+    this.alert.info('Job orchestration will run here (create set, add members, run job, poll).');
   }
 
   trackByIndex(index: number): number {

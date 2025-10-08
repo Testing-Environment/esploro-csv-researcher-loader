@@ -12,12 +12,33 @@
         <form class="file-form" [formGroup]="form" (ngSubmit)="submitWithSelectedTypes()" novalidate>
           <ng-container [ngSwitch]="stage">
             <ng-container *ngSwitchCase="'stage1'">
-              <div class="stage-callout" role="note">
+              <!-- Optional field toggles with File Types gating -->
+              <div class="field-toggles stage1-toggles">
+                <mat-chip-list>
+                  <!-- Required fields are implicit (Asset ID, File URL) -->
+                  <mat-chip selected disabled>
+                    <mat-icon>lock</mat-icon>
+                    {{ 'ManualEntry.Fields.AssetId' | translate }}
+                  </mat-chip>
+                  <mat-chip selected disabled>
+                    <mat-icon>lock</mat-icon>
+                    {{ 'ManualEntry.Fields.FileUrl' | translate }}
+                  </mat-chip>
+
+                  <!-- File Types toggle controls Stage 2 availability -->
+                  <mat-chip [selected]="fileTypesToggle" (click)="fileTypesToggle = !fileTypesToggle">
+                    <mat-icon *ngIf="fileTypesToggle">check_circle</mat-icon>
+                    <mat-icon *ngIf="!fileTypesToggle">add_circle_outline</mat-icon>
+                    {{ 'ManualEntry.Fields.FileType' | translate }}
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+              <div class="stage-callout" role="note" *ngIf="fileTypesToggle">
                 <mat-icon color="primary">info</mat-icon>
                 <div class="stage-callout__content">
                   <h2>{{ 'ManualEntry.Stage1CalloutTitle' | translate }}</h2>
                   <p>{{ 'ManualEntry.Stage1CalloutDescription' | translate }}</p>
-                  <p>{{ 'ManualEntry.Stage1CalloutSkip' | translate }}</p>
+                  <p>{{ 'ManualEntry.Stage1CalloutTypeNext' | translate }}</p>
                 </div>
               </div>
 
@@ -78,11 +99,19 @@
               </div>
 
               <div class="form-actions stage1-actions">
-                <button mat-flat-button color="primary" type="button" (click)="specifyTypesForEachFile()" [disabled]="assetValidationInProgress || submitting">
-                  {{ 'ManualEntry.Actions.SpecifyTypes' | translate }}
+                <!-- When File Types toggle is ON, guide to Stage 2 -->
+                <button *ngIf="fileTypesToggle"
+                        mat-flat-button color="primary" type="button"
+                        (click)="specifyTypesForEachFile()"
+                        [disabled]="assetValidationInProgress || submitting">
+                  {{ 'ManualEntry.Actions.NextSpecifyTypes' | translate }}
                 </button>
-                <button mat-stroked-button type="button" (click)="proceedWithoutSelectingTypes()" [disabled]="assetValidationInProgress || submitting">
-                  {{ 'ManualEntry.Actions.SkipTypeSelection' | translate }}
+                <!-- When File Types toggle is OFF, skip Stage 2 and validate → review -->
+                <button *ngIf="!fileTypesToggle"
+                        mat-flat-button color="primary" type="button"
+                        (click)="proceedToValidationAndReview()"
+                        [disabled]="assetValidationInProgress || submitting">
+                  {{ 'ManualEntry.Actions.NextValidateEntries' | translate }}
                 </button>
               </div>
             </ng-container>
@@ -153,8 +182,40 @@
                 <button mat-stroked-button type="button" (click)="returnToStageOne()" [disabled]="submitting">
                   {{ 'ManualEntry.Actions.BackToDetails' | translate }}
                 </button>
-                <button mat-flat-button color="primary" type="submit" [disabled]="submitting">
-                  {{ 'ManualEntry.Actions.SubmitFiles' | translate }}
+                <button mat-flat-button color="primary" type="button" (click)="proceedToValidationAndReview()" [disabled]="submitting">
+                  {{ 'ManualEntry.Actions.NextValidateEntries' | translate }}
+                </button>
+              </div>
+            </ng-container>
+
+            <!-- Stage 3: Review & Confirm -->
+            <ng-container *ngSwitchCase="'stage3'">
+              <div class="stage-three-header">
+                <h2>{{ 'Review.Title' | translate }}</h2>
+                <p>{{ 'Review.Description' | translate }}</p>
+              </div>
+
+              <section class="review-cards">
+                <mat-card class="review-card">
+                  <h3>{{ 'Review.AssetsCount' | translate }}</h3>
+                  <p class="count">{{ reviewAssetsCount }}</p>
+                </mat-card>
+                <mat-card class="review-card">
+                  <h3>{{ 'Review.FilesCount' | translate }}</h3>
+                  <p class="count">{{ reviewFilesCount }}</p>
+                </mat-card>
+                <mat-card class="review-card">
+                  <h3>{{ 'Review.UniqueUrlsCount' | translate }}</h3>
+                  <p class="count">{{ reviewUniqueUrlsCount }}</p>
+                </mat-card>
+              </section>
+
+              <div class="form-actions stage3-actions">
+                <button mat-stroked-button type="button" (click)="backFromReview()" [disabled]="submitting">
+                  {{ 'Review.Actions.Back' | translate }}
+                </button>
+                <button mat-flat-button color="primary" type="button" (click)="runImportJob()" [disabled]="submitting">
+                  {{ 'Review.Actions.RunJob' | translate }}
                 </button>
               </div>
             </ng-container>
