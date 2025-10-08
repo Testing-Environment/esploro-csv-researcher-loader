@@ -53,3 +53,9 @@ cloudapp/jsconfig.json
 # Ignore environment files with sensitive keys
 /src/environments/environment.ts
 /src/environments/environment.prod.ts
+
+# gemini-cli settings
+.gemini/
+
+# GitHub App credentials
+gha-creds-*.json
