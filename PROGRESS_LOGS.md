@@ -1,273 +1,462 @@
-# Development Progress Logs
+Plan
 
-**Purpose**: Track development sessions, decisions, and progress notes for the Esploro Asset File Loader project.
+Inventory the repo structure and key source files.
+Summarize core modules/components and relationships.
+Explain end-to-end data flows for Manual and CSV paths.
+Document external dependencies and their roles.
+Call out coding patterns, critical logic, and validation rules.
+Patch README links and update the deep-dive guide in explaination.md.
+Note doc gaps and follow-ups.
+actions taken
 
-**Format**: Chronological log of work sessions with AI agents and developers
+Scanned the codebase layout and key files: Angular app entrypoints, CSV processor, main form, service layer, models, and processing results.
+Updated README doc links to valid files and tidied product-owner section.
+Rewrote and consolidated explaination.md to reflect the current implementation and CSV contract (MMS ID + File URL required, others optional), file-type mapping rules, and before/after comparison logic.
+Corrected validation rules in explaination.md (file title optional; file type optional for CSV, required/auto-assigned in manual).
+high-level summary (for onboarding)
 
----
+Structure
 
-## How to Use This File
+Root
+manifest.json: Cloud App manifest (pages, permissions, entity scope).
+package.json: Angular 11 app and scripts (npm start via Cloud Apps tooling).
+README.md: user/developer overview; CSV workflow and troubleshooting.
+documentation/: rich docs, examples, and diagrams.
+verify-sustainability.sh, LICENSE, various summary reports.
+Angular app (cloudapp/src/app)
+app.module.ts: wires Angular Material, Cloud Apps SDK modules, i18n with ICU parser, declares App, Main, CSV Processor, Processing Results.
+app-routing.module.ts: routes root to MainComponent (hash routing enabled).
+app.component.ts: shell, hosts alert and router outlets.
+main/: MainComponent, templates/styles; orchestrates manual flow and hosts CSV/results.
+components/
+csv-processor/: CSVProcessorComponent + HTML/SCSS — upload, mapping, required-field checks, type conversion, batch processing, comparison.
+processing-results/: displays per-row outcomes, unchanged counts, and provides Esploro deep links.
+services/
+asset.service.ts: REST calls (queue links-to-extract, per-row file attach for CSV), mapping-table retrieval, asset metadata fetch, and type filtering.
+models/: shared TS interfaces (ProcessedAsset, AssetFileLink, mapping table entry, etc.).
+utilities/: rxjs helpers (firstValueFrom/lastValueFrom); general utilities file.
+constants/: legacy file-types hinting (authoritative values come from mapping table).
+i18n/: en.json for UI strings with ICU.
+Core components & relationships
 
-### For Each Development Session:
+MainComponent: manual entry two-stage flow, loads mapping table, validates asset IDs in bulk, filters valid file types per asset type, can auto-assign defaults, and submits grouped payloads.
+CSVProcessorComponent: parses CSV via PapaParse; auto-maps headers; enforces required columns mmsId and remoteUrl; validates per-row values for required fields; file-type ID normalization with fuzzy matching on target_code; prompts for manual mapping of unresolved values; caches before state, posts files per row, fetches after state, flags unchanged assets; emits results + MMS ID download.
+AssetService: bridges to Esploro APIs:
+POST /esploro/v1/assets/{id}?op=patch&action=add for manual “queue links to extract”
+POST /esploro/v1/assets/{mmsId}/files for CSV per-row file attach
+GET /esploro/v1/assets/{mmsId} to detect asset type and compare file lists
+GET /conf/mapping-tables/AssetFileAndLinkTypes to retrieve valid IDs/labels and applicability.
+ProcessingResultsComponent: aggregates success/error/unchanged, constructs viewer URLs and admin links.
+Data flow
 
-```markdown
-## [Date] - Session Title
-**Agent/Developer**: Name or identifier
-**Duration**: X hours
-**Branch**: branch-name
+Manual path
 
-### Objectives
-- [ ] Goal 1
-- [ ] Goal 2
+Stage 1: users add rows; assetId and url are required. Title/description/type/supplemental optional.
+Choose path:
+Specify types → bulk-validate assets, go to Stage 2 to select file types (filtered by asset type).
+Proceed without types → validate assets, auto-assign default file types, submit.
+Group entries by assetId; submit via queue links-to-extract payload to patch endpoint.
+Operator creates set and runs “Load files” job in Esploro to ingest.
+CSV path
 
-### Work Completed
--  Item 1
--  Item 2
+Upload CSV (<=10MB). Robust header/row parsing.
+Auto-map headers to fields — must include mmsId and remoteUrl; detect duplicates and block invalid mapping.
+Validate required field values across rows; report missing MMS IDs/URLs with row-number hints.
+If a fileType column exists: treat IDs as authoritative; fuzzy-match target_code otherwise; gather unresolved values for manual mapping.
+Optionally cache pre-state per unique MMS ID.
+For each row: validate asset; if URL present, POST /assets/{mmsId}/files { url, title, description, type }.
+Fetch post-state, compare file lists, and flag unchanged rows (same count and URL missing).
+Emit results and provide a CSV of successful MMS IDs for downstream set creation + job.
+Dependencies
 
-### Decisions Made
-- Decision 1: Rationale
-- Decision 2: Rationale
+Angular 11, Angular Material: UI framework and components.
+@exlibris/exl-cloudapp-angular-lib: REST calls, alerts, page context integration.
+PapaParse: CSV parsing with RFC 4180 handling.
+ngx-translate with ICU parser: i18n.
+RxJS: async streams, forkJoin for batching, first/lastValueFrom helpers.
+Patterns and practices
 
-### Blockers/Issues
-- Issue 1: Status/resolution
-- Issue 2: Status/resolution
+Strong separation of concerns: service encapsulates API shape normalization; components handle UI validation and orchestration.
+Defensive parsing of Esploro API responses due to varying schemas across environments.
+Fuzzy matching for file types; conversion mapping with confidence and manual mapping when needed.
+Sequential request pattern with gentle throttling (100ms) to reduce rate-limit risk.
+Critical logic
 
-### Next Steps
-- Action 1
-- Action 2
+File-type conversion/mapping: mapping table requires IDs; user-provided names are automatically matched; unresolved values must be manually mapped to prevent subtle failures.
+Before/after comparison: detects no-op rows and brings them to operator attention.
+URL validation: manual form enforces http(s); CSV path relies on mapping and downstream API errors — consider optional stricter URL checks/allowlists if needed.
+Robust response normalization: mapping-table and asset metadata response shapes differ; service layer unifies these.
+Validation rules (summary)
+
+Asset ID: required.
+File URL: required, starts with http/https.
+File Title: optional.
+File Description: optional.
+File Type: optional in CSV (auto-converted if provided); required in manual Stage 2 or auto-assigned when skipping Stage 2.
+Supplemental: optional, default false.
+Doc clean-up and updates
+
+Updated README “Documentation” section links to valid files and added Phase 2 summary reference.
+Rewrote explaination.md to a single, authoritative deep-dive reflecting the current CSV contract and flows.
+Note: Several docs in documentation/ discuss earlier phases; where they contradict current CSV contract, prefer the README and explaination.md you just reviewed.
+visual aids
+
+Included updated Mermaid diagrams for component relationship and CSV sequence.
+what’s next
+
+Read [](file:///c%3A/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader/explaination.md#520-520), lines 520 to 560
+
+Read [](file:///c%3A/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader/explaination.md#560-560), lines 560 to 640
+
+Using "Apply Patch"
+
+
 ```
 
----
-
-## Session Log
-
-### 2025-01-10 - Documentation Restructuring
-**Agent**: Claude (Documentation Expert)
-**Duration**: ~1 hour
-**Branch**: copilot/vscode1759663404387
-
-#### Objectives
-- [x] Fix documentation typo (explaination � explanation)
-- [x] Create structured project management documentation
-- [x] Organize conversation history
-- [x] Establish progress tracking system
-
-#### Work Completed
--  Renamed `explaination.md` � `explanation.md` (corrected typo)
--  Updated all references in README.md and documentation/INDEX.md
--  Improved sets-createset-post-api.md with better template placeholders
--  Removed obsolete `pendingChanges.md`
--  Created `ROADMAP.md` - Project roadmap with vision and planned features
--  Created `CHANGELOG.md` - Chronological change history
--  Created `REQUIREMENTS.md` - Current functional requirements
--  Created `PROGRESS_LOGS.md` - This file
--  Created `documentation/archive/` directory
--  Moved "HISTORY OF WISHING LIST.md" � `documentation/archive/CONVERSATION_HISTORY.md`
-
-#### Decisions Made
-- **Archive conversation history**: User wants to preserve conversation history (wishes, requirements evolution) but in organized form
-- **Separate concerns**: Vision (ROADMAP) vs. History (CHANGELOG) vs. Requirements (current state)
-- **Follow OSS conventions**: Use standard documentation files (ROADMAP, CHANGELOG) for professionalism
-- **Two-commit strategy**:
-  1. Typo fix (simple cleanup)
-  2. Documentation restructuring (major organizational change)
-
-#### Blockers/Issues
-- **Previous agent stuck**: The previous agent was in the middle of documentation work but didn't complete it
-  - Left uncommitted changes
-  - Created large conversation history file (121KB) without structure
-  - Empty PROGRESS_LOGS.md file
-- **Resolution**: Completed the work the previous agent started, with improved organization
-
-#### Files Created/Modified
-
-**Commit 1 - Documentation typo fix** (5942236):
-- Modified: README.md, documentation/INDEX.md, sets-createset-post-api.md
-- Added: explanation.md
-- Deleted: explaination.md, pendingChanges.md
-
-**Commit 2 - Documentation restructuring** (pending):
-- Added: ROADMAP.md, CHANGELOG.md, REQUIREMENTS.md
-- Modified: PROGRESS_LOGS.md (this file)
-- Moved: HISTORY OF WISHING LIST.md � documentation/archive/CONVERSATION_HISTORY.md
-- Modified: documentation/INDEX.md (to reference new structure)
-
-#### Next Steps
-- Update documentation/INDEX.md to reference new documentation structure
-- Commit documentation restructuring changes
-- Consider updating README.md to reference new documentation files
-- Future: Populate ROADMAP.md with more details from conversation history
-
----
-
-### 2025-01-10 - Phase 2 Completion: Code Analysis
-**Agent**: Previous Gemini agent
-**Duration**: Unknown
-**Branch**: copilot/vscode1759663404387
-**Commit**: 726bc91
-
-#### Objectives
-- [x] Analyze codebase for Phase 2 implementation
-- [ ] Document suggested code changes (incomplete)
-
-#### Work Completed
--  Created comprehensive `explanation.md` (but named it `explaination.md` - typo)
--  Analyzed entire codebase structure
--  Documented architecture, data flow, APIs, patterns
-- � Left work in uncommitted state
-
-#### Issues
-- Typo in filename created confusion
-- Work left incomplete (files not committed)
-- Created large conversation history file without organization
-
-**Resolution**: Completed by next agent (2025-01-10 session above)
-
----
-
-### 2025-01-10 - Phase 1 Completion: CSV Enhancement
-**Agent**: Development team
-**Duration**: Multiple sessions
-**Branch**: copilot/vscode1759663404387
-**Commit**: a9f5a37
-
-#### Objectives
-- [x] Add CSV input support with flexible column mapping
-- [x] Implement mandatory vs. optional field handling
-- [x] Add fuzzy matching for file type names
-
-#### Work Completed
--  Implemented CSV upload with PapaParse integration
--  Created column mapping UI with intelligent suggestions
--  Added required field validation (mmsId, remoteUrl)
--  Implemented file type fuzzy matching algorithm
--  Created manual resolution UI for unmatched file types
--  Added before/after asset state comparison
--  Implemented processing results display
-
-#### Decisions Made
-- **Use PapaParse**: For RFC 4180 compliance and robust CSV parsing
-- **Mandatory fields**: Only mmsId and remoteUrl required; all others optional
-- **Fuzzy matching confidence thresholds**:
-  - Exact ID match: 1.0
-  - Exact target code: 0.95
-  - Partial match: 0.7
-  - No match: 0.0 (requires manual mapping)
-
-#### Technical Details
-- File location: `cloudapp/src/app/components/csv-processor/csv-processor.component.ts`
-- Lines of code: 910 (noted for future refactoring)
-- Key methods:
-  - `parseCSVFile()` - PapaParse integration
-  - `suggestFieldMapping()` - Intelligent column mapping
-  - `matchFileTypeByTargetCode()` - Fuzzy matching algorithm
-  - `compareAssetStates()` - Before/after verification
-
----
-
-### 2025-01-05 - RxJS Migration and Helper Consolidation
-**Branch**: copilot/fix-5fa98c5d-0390-4ac0-908e-a09eea2c94da
-**Multiple commits**: f9ba7e7, ace5727, 0bff4a9, ce86681
-
-#### Objectives
-- [x] Replace deprecated `toPromise()` with `firstValueFrom`/`lastValueFrom`
-- [x] Create shared RxJS helper utility
-- [x] Remove duplicate implementations
-- [x] Add verification script
-
-#### Work Completed
--  Created `cloudapp/src/app/utilities/rxjs-helpers.ts` (shared utility)
--  Implemented RxJS 6 compatible polyfills
--  Updated main.component.ts (removed 80+ lines of duplicates)
--  Updated csv-processor.component.ts
--  Created sustainability verification script
--  All 7 verification tests passing
-
-#### Decisions Made
-- **Shared utility approach**: Single source of truth for RxJS helpers
-- **RxJS 6 compatibility**: Maintain compatibility with Ex Libris SDK (uses RxJS 6)
-- **Pattern**: Follow RxJS 7+ patterns but implement for RxJS 6
-
-#### Documentation Added
-- FINAL_STATUS_REPORT.md
-- SUSTAINABILITY_SUMMARY.md
-- documentation/RXJS_MIGRATION.md
-
----
-
-### Earlier Sessions (Pre-2025)
-
-*Session logs before 2025 are not available. See git commit history for details.*
-
-Key historical commits:
-- `e733d36` - Initial commit of Gemini workflows
-- `d1596e2` - Add environment.prod.ts and other ignores
-- Earlier work on basic manual entry workflow
-
----
-
-## Session Template (Copy for New Sessions)
-
-```markdown
-### YYYY-MM-DD - Session Title
-**Agent/Developer**: Name
-**Duration**: X hours
-**Branch**: branch-name
-
-#### Objectives
-- [ ] Goal 1
-- [ ] Goal 2
-
-#### Work Completed
--  Item 1
-- � Item 2 (partial/blocked)
-
-#### Decisions Made
-- Decision 1: Rationale
-
-#### Blockers/Issues
-- Issue 1: Status
-
-#### Next Steps
-- Action 1
 ```
 
----
 
-## Guidelines for Logging
+Read [](file:///c%3A/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader/explaination.md#860-860), lines 860 to 940
 
-### What to Log:
--  Development sessions (even if just exploration)
--  Key decisions and rationale
--  Blockers and their resolutions
--  Significant refactoring or architectural changes
--  Documentation updates
--  Bug fixes that required investigation
+Searched text for `AssetService.addFilesToAsset` (`**/explaination.md`), 8 results
 
-### What NOT to Log:
-- L Trivial commits (typo fixes, formatting)
-- L Automated processes (CI/CD runs)
-- L Merge commits without additional work
+Using "Apply Patch"
 
-### Best Practices:
-1. **Log at session end**, not during work
-2. **Be concise**: Focus on decisions and outcomes, not minute details
-3. **Link to commits**: Include commit hashes for reference
-4. **Update objectives**: Mark them as complete or carried forward
-5. **Note blockers**: Even if resolved, document them for future reference
 
----
+```
 
-## Related Documentation
+```
 
-- **[ROADMAP.md](ROADMAP.md)** - What we plan to build
-- **[CHANGELOG.md](CHANGELOG.md)** - What we actually built (user-facing)
-- **[REQUIREMENTS.md](REQUIREMENTS.md)** - What the system must do
-- **[documentation/archive/CONVERSATION_HISTORY.md](documentation/archive/CONVERSATION_HISTORY.md)** - Raw conversation history
 
-**PROGRESS_LOGS.md** (this file) bridges the gap between high-level roadmap and detailed changelog by capturing the development journey.
+Read [](file:///c%3A/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader/package.json)
 
----
+Summarized conversation history
 
-**Last updated**: 2025-01-10
-**Next session**: TBD
+Ran terminal command: cd c:/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader && npx ng build
+
+Ran terminal command: cd c:/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader && npm install
+
+Ran terminal command: cd c:/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader && npx ng build
+
+Ran terminal command: cd c:/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader/cloudapp && npx ng build
+
+Read [](file:///c%3A/Users/faaiz/Repository/assetLoader/esploro-csv-researcher-loader/cloudapp)
+
+Manual entry now runs through the Stage 1 → Stage 2 flow with enforced validations and clearer messaging—here’s what changed.
+
+## actions taken
+- Reworked main.component.ts to introduce explicit stage tracking, Stage 1 validation helpers, asset metadata caching, and grouped submission/skip pathways with resilient error handling.
+- Rebuilt main.component.html to present the Stage 1 callout, required field feedback, Stage 2 summaries, filtered type selectors, and skip/default-type controls.
+- Added styling for the new callout, stage layouts, and invalid asset cues in main.component.scss.
+- Relaxed `AssetService.getAssetMetadata` to surface `null` on 404s, enabling per-asset validation without hard failures.
+- Localized all new Manual Entry strings in en.json and refreshed both README.md and explaination.md so the documentation mirrors the two-stage experience.
+
+## files changed
+- main.component.ts — Stage management, validation workflow, submission orchestration.
+- main.component.html — Updated UI templating for Stage 1 requirements and Stage 2 type assignment.
+- main.component.scss — Styling for callouts, validation highlights, and stage layout adjustments.
+- asset.service.ts — Graceful 404 handling for asset metadata queries.
+- en.json — Manual entry localization keys.
+- README.md — Workflow overview aligned with staged process.
+- explaination.md — Detailed lifecycle write-up for the new flow.
+
+## quality gates
+- Build: **Fail** (Angular CLI build can’t run because this Cloud App project doesn’t include an `angular.json`; the CLI can’t locate a project definition).
+- Lint/Tests: Not run (no scripts provided). If needed, configure Angular CLI or project-specific tooling to enable automated checks.
+
+## requirements coverage
+- Stage 1 mandatory asset ID/File URL validations and warning callout — **Done**
+- Stage 2 type selection with skip + default type assignment — **Done**
+- Documentation and localization updates for the new workflow — **Done**
+
+## notes
+- If future automation is desired, consider adding a minimal Angular workspace wrapper or project-specific build script so builds/tests can be executed via CLI.
+- Next logical step is a quick manual QA pass or unit tests around `validateStageOneEntries` and the default-type fallback to guard against regressions.
+
+Everything else remains untouched, so the CSV pipeline continues to behave as before.
+
+Made changes.
+
+Using "Codebase"
+
+Tackling the Stage 1 manual-entry refinements next. Here’s how I’ll approach it:
+
+1. **Harden the Stage 1 form model (`main.component.ts`)**
+   - Add `Validators.required` to the Stage 1 `assetId` and `url` controls and surface `mat-error` messages in the template.
+   - Keep existing optional validation on the other fields.
+   - Track identifiers so we can flag rows with API validation failures.
+
+2. **Refresh the Stage 1 UI messaging (`main.component.html` + i18n)**
+   - Insert a callout above the Stage 1 grid linking back to new strings in `en.json`.
+   - Rename the primary button to “Specify Types of Each File”.
+   - Add a secondary “Proceed Without Selecting File Types” button wired to a new handler.
+
+3. **Extend Stage 1 logic for validation and skip flow (`main.component.ts` & `asset.service.ts` if needed)**
+   - Update the “Specify Types of Each File” handler to:
+     • Run control validation.
+     • Call a new asset-verification helper (reusing the existing “get asset” workflow).
+     • Reorder/highlight rows with invalid IDs and block progression.
+   - Implement the skip handler to:
+     • Ensure required fields are present.
+     • Fetch each asset (caching pre-file state for later diffing).
+     • Highlight/stop rows with missing assets, otherwise mark Stage 2 as skipped and move directly to submission using default file-type logic.
+
+4. **Documentation & translations**
+   - Update `en.json`, README.md, and explaination.md with the new copy, button names, and Stage 2 bypass explanation.
+
+5. **Validation/regression**
+   - Smoke-test manual Stage 1 > Stage 2 flow and the new skip path.
+   - Sanity-check the CSV workflow to confirm nothing regressed.
+   - Add/refresh unit coverage for the Stage 1 form validation and skip-state handling if the test suite supports it.
+
+Let me know any tweaks before I start editing.
+
+Digging into the CSV workflow updates, here’s the plan I’d follow:
+
+Input contract & validation guardrails
+
+Document the revised CSV contract: only mmsId and remoteUrl required, all other columns optional.
+Update the upload guard to fail fast if either required column is missing or entirely empty. Surface a dedicated alert explaining the requirement.
+Parsing & column mapping refinement
+
+Revisit the column auto-mapper so optional headers no longer block import; allow users to skip mapping for non-required fields.
+Ensure unmapped optional columns default to safe values (e.g., empty strings, undefined, or derived defaults) without raising errors.
+File-type handling changes
+
+When a file-type column is present, continue converting IDs directly; for non-ID values, run existing fuzzy match logic.
+Capture any values that fail matching in a “manual resolution” collection and halt automatic conversion for those rows only (no fallback guesses).
+Expose the unresolved values in the UI (dialog or inline table) so the user can assign codes manually before processing resumes.
+Asset validation flow
+
+Keep the existing pre-flight asset lookup per distinct MMS ID (shared between manual and CSV paths).
+Make sure the validation still runs even when optional columns are absent and that corresponding errors are surfaced per row.
+Processing pipeline adjustments
+
+Refactor the row-normalization step to tolerate missing optional fields while producing consistent payloads for the service layer.
+Ensure the batching logic skips rows awaiting manual file-type resolution, resuming once the user resolves them.
+User experience & messaging
+
+Update CSV tab copy, tooltips, and any modals to reflect the new minimum requirement and optional nature of other columns.
+Introduce clear status messaging (e.g., “X file types require manual selection”) and maintain download/export of unresolved mappings if needed.
+Extend i18n strings for new prompts and alerts.
+Documentation & tests
+
+Refresh README.md, CSV_ENHANCEMENT_README.md, and explaination.md sections describing CSV ingestion.
+Add or update unit/utility tests for column validation, fuzzy matching fallbacks, and unresolved-value handling.
+
+I’ll add a clear “CSV load path (end-to-end)” under the Data flow section of explaination.md so readers can follow the CSV workflow step-by-step.
+
+actions taken
+Updated explaination.md to insert a concise, numbered “CSV load path (end-to-end)” immediately below the “## Data flow (end to end)” header, without altering the existing “Manual entry path” content.
+Covers: required/optional columns, header auto-mapping, mapping-table fetch, fileType conversion (IDs vs names), optional pre-state caching, per-row POST to /assets/{mmsId}/files, unchanged detection via pre/post compare, results artifacts, and Esploro next steps.
+Added a pointer to the existing “Visual data flow (CSV path)” sequence diagram.
+notes
+File changed: explaination.md
+The new CSV section complements the more detailed sequence diagram already present later in the doc.
+
+I’ll propose a crisp, phased refactor plan that builds on what’s already working, adds the multi-step automation, and folds in Bulk URL Update + URL Validation—while keeping mapping-table usage correct and consistent.
+
+current vs planned (what we keep, what we change)
+Already implemented (retain; don’t re-plan)
+
+CSV path
+Required columns enforced: Asset ID (MMS ID) + Remote URL
+Optional columns: Title, Description, File Type (converted from name→ID via AssetFileAndLinkTypes mapping table)
+Auto-mapping of headers, duplicate mapping prevention
+Before/after compare with “unchanged” detection
+Results table and MMS IDs CSV
+Mapping-table usage
+AssetFileAndLinkTypes fetched via the mapping-table API; IDs used for API calls
+Any legacy “code tables” references should be removed or replaced with mapping-table references (continue current approach)
+Manual flow basics
+Two-stage manual flow (Stage 1 details, Stage 2 type selection)
+Ability to proceed without Stage 2 by assigning defaults
+Esploro REST integration patterns and i18n
+Gaps to fill (this plan)
+
+Manual Entry: full multi-row Stage 1 UX (duplicate detection, deleted list, export, dynamic toggles, highlighting, retry validation, etc.) as documented in pendingChanges.md
+CSV tab: add “Download Template CSV” and document edge cases more explicitly in UI
+Automated orchestration: Create set → add members → find job → run job → poll → verify → report
+Bulk URL Update (same URL across many assets) with ID parsing
+URL Validation (HEAD checks) with concurrency control and clear UX
+Documentation consolidation and diagrams for the new workflow
+Note on mapping table: Ensure every reference to “AssetFileTypes code tables” is replaced with “AssetFileAndLinkTypes mapping table via /conf/mapping-tables API.” Remove any lingering code-table language in docs.
+
+phase 1: ui and logic refactoring (manual entry)
+1A) Stage 1 multi-row UX in Manual Entry (File-to-Asset subtab)
+
+Rows: Asset ID (required), URL (required), Title, Description, Supplemental (true/false)
+Add/remove rows; “Validate & Proceed” advances to Stage 2
+Field toggles (chips) to show/hide optional columns; hidden fields preserved but excluded from submission/validation
+Duplicate detection: flag duplicate AssetID+URL combinations inline; block proceed until resolved
+Deleted entries management: soft-delete rows to a collapsible section; restore/export; clear after successful submission
+Batch validation and tracking:
+Validate unique asset IDs via GET /esploro/v1/assets/{id} (batch strategy and caching)
+Maintain diffing list for pre-state files and asset type
+Maintain retry list for invalid assets; highlight newly-added/unvalidated in orange, validated reference in yellow (as specified in pendingChanges.md)
+Pre-submission export options: Deleted/Valid/Invalid entries CSV exports
+1B) Stage 2 (File Type Selection)
+
+Show per-row file type dropdown filtered by asset type (from diffing list + mapping-table)
+If Stage 2 skipped, assign defaults and submit
+Preserve optional field toggles; only visible fields participate in payload
+1C) Manual Entry tabs restructuring
+
+Manual Entry tab becomes a parent with two subtabs:
+File-to-Asset (existing manual flow, enhanced as above)
+File-to-Group (Bulk URL Update; see Phase 4)
+1D) CSV tab UI polish
+
+Add “Download Template CSV” (headers: mmsId, remoteUrl, fileTitle, fileDescription, fileType)
+UI messaging for edge cases:
+Missing required columns: block processing; explain required pair (mmsId, remoteUrl)
+Only required columns present: accept and proceed; mark others as optional
+Unknown extra columns: ignore safely; warn (non-blocking)
+Empty/whitespace rows: skip with per-row note
+Dupes: detect duplicate MMS ID + URL rows and flag
+Deliverables
+
+Updated main.component.ts|html|scss with the behaviors above
+Shared utility for CSV template generation (download)
+Tests (unit) for duplicate detection, deleted list lifecycle, toggle behavior, export generation
+phase 2: service layer and automation orchestrator
+2A) New/extended services
+
+AssetService (existing): keep add files, mapping-table, and get asset metadata; add optional batch helpers where reasonable
+SetsService (new) or extend AssetService with separation:
+createSet(payload) → POST /conf/sets
+updateSetMembers(setId, memberIds) → POST /conf/sets/{setId}/members
+JobsService (new):
+getJobDetails(jobId) → GET /conf/jobs/{jobId}
+findJobByName(jobName, pagination) → GET /conf/jobs?limit=…&offset=…
+runJob(jobId, setId) → POST /conf/jobs/{jobId}/instances
+getJobInstance(jobId, instanceId) → GET /conf/jobs/{jobId}/instances/{instanceId}
+2B) Orchestration workflow (triggered after a successful manual/CSV queue step, or as a top-to-bottom automation mode)
+
+Validate assets: get type and pre-state; report missing assets
+Create set: create temporary set; ensure ID returned
+Add members: POST all valid asset IDs; reconcile failures
+Find Import Job ID:
+First try known ID (e.g., M50762) via getJobDetails() and verify name matches “Import Research Assets Files”
+Fallback: findJobByName() with pagination until match found
+Run job: runJob(jobId, setId); capture instanceId
+Poll instance: getJobInstance(jobId, instanceId) with exponential backoff + timeout + user-cancel
+Terminal states: COMPLETED_SUCCESS, COMPLETED_FAILED, CANCELLED, ERROR; treat unknown as failed-safe
+Result processing:
+Parse counters (asset_succeeded, asset_failed, file_uploaded, etc.)
+Cross-check with intended counts
+For discrepancies/failures, optionally fetch asset(s) and compare post-state vs cached pre-state for specifics
+Reporting: Summarize in ProcessingResultsComponent with counts, per-asset outcomes, links to job logs and assets
+2C) Error handling and resilience
+
+Standardize error shapes from SDK and REST
+Handle permission errors (403), missing resources (404), rate limits (429), and transient network errors with bounded retries
+Ensure orphan cleanup if set created but members fail (show “retry add members” option)
+Make orchestration an explicit user action with clear progress and cancellation
+Deliverables
+
+New services with strong typing (DTOs for Jobs, Sets, Instances)
+Orchestrator class or facade (keeps components thin)
+Unit tests: job discovery fallback, polling logic, instance terminal states, add members reconciliation
+phase 3: docs and diagrams
+README.md
+Update Manual Entry two-stage, multi-row flow and CSV template button
+Brief section on automation: what it does, prerequisites, and how to run
+explaination.md
+Update Data Flow and sequence diagrams to include: Validate → Create Set → Add Members → Find Job → Run → Monitor → Verify
+Update APIs & payloads section with /conf/sets, /conf/jobs endpoints
+Reiterate that AssetFileAndLinkTypes is sourced exclusively from mapping-table API
+INDEX.md
+Link to new automation section; remove references to “code tables”
+Remove/replace any “AssetFileTypes code tables” mentions with “AssetFileAndLinkTypes mapping table”
+phase 4: new features
+4A) Bulk URL Update (Manual Entry → File-to-Group subtab)
+
+Purpose: attach the same URL (or a small list of URLs) to many assets
+UI
+Textarea for mixed paste; parser auto-extracts asset IDs (regex for 16–17 digit IDs), plus input sanitization
+One or more URL fields (start with one URL; allow adding up to N URLs if needed)
+Optional Title/Description/Supplemental (applied to all); optional Type (Stage 2 or default assignment)
+Validate unique AssetID+URL combinations within this subtab
+Flow
+Validate asset IDs (batch), fetch types for filtering, and proceed to either:
+Stage 2 for type selection across all, or
+Quick path with default types and immediate queue
+Feed into the same queue flow as File-to-Asset or CSV per-row submission
+Optionally chain into orchestration (create set + run job) for a complete push-button flow
+4B) URL Validation (Manual + CSV + File-to-Group)
+
+Strategy
+Attempt HEAD requests to Remote URL(s) with concurrency limit (e.g., 5–10)
+Fall back to GET with range/timeout if HEAD not allowed
+Handle CORS restrictions gracefully (mark status “opaque” when blocked but still allow submit if user opts in)
+UX
+Add “Validate URLs” pre-check action; show status code, elapsed time, failures inline
+Aggregate pass/fail summary and gating option (“block submission on failed URLs” toggle)
+Integration
+For CSV and File-to-Group, run URL validation as an optional pre-processing step
+Persist per-row validation outcomes to inform submission gating and reporting
+Notes and constraints
+
+In Cloud Apps, external HEAD/GET may be CORS-limited; design for best-effort validation
+Provide tenant-level setting or per-run toggle to enable/disable URL validation
+Deliverables
+
+Shared URL validation service with concurrency, timeouts, and aggregated results
+UI hooks on all three paths: Manual File-to-Asset, File-to-Group, and CSV
+Unit tests: success, timeouts, CORS opaque responses, partial failures
+phase 5: quality, testing, and rollout
+Unit tests
+Mapping-table normalization, type filtering by asset type
+Duplicate detection, deleted list lifecycle, exports
+Orchestration polling and fallback job discovery
+URL validation scenarios
+Integration tests (mocked SDK)
+Set creation + members + job run happy-path
+Error paths: permissions, missing job, partial member adds
+Performance and rate limiting
+Keep sequential by default; bounded concurrency only where safe
+Backoff on 429s
+Feature flags
+Gate orchestration behind an “Automation” toggle/config to allow staged rollout
+Accessibility and i18n
+All new strings in en.json
+Tooltip guidance for row states and validation
+Cleanup
+Remove old references to “code tables”; keep constants/file-types.ts only if used as a non-authoritative hint (else delete)
+Migration
+Preserve existing CSV behavior and manual capabilities
+Provide a small “What’s New” in README
+api contracts (concise)
+Assets (Esploro)
+POST /esploro/v1/assets/{assetId}?op=patch&action=add (manual queue links)
+POST /esploro/v1/assets/{mmsId}/files (CSV/row add)
+GET /esploro/v1/assets/{mmsId} (pre/post compare)
+Mapping tables
+GET /conf/mapping-tables/AssetFileAndLinkTypes
+Sets and jobs (Alma/Esploro conf)
+POST /conf/sets
+POST /conf/sets/{setId}/members
+GET /conf/jobs/{jobId}
+GET /conf/jobs (paged) → find by name
+POST /conf/jobs/{jobId}/instances
+GET /conf/jobs/{jobId}/instances/{instanceId}
+csv edge-case policy (explicit)
+Required headers: mmsId, remoteUrl → block if missing
+Only required headers present → valid
+Extra headers → ignored with non-blocking notice
+Empty/whitespace rows → skipped with note
+Duplicate MMS ID + URL rows → flagged and skipped until resolved
+fileType present → accept ID or fuzzy-match name/targetCode → ID; unresolved requires manual resolution or removal
+Per-row URL validation (optional) → present outcomes inline
+consolidation from pendingChanges.md
+Implement diffing list, retry list, and dynamic validation states (yellow/orange) in Stage 1
+Implement deleted entries management + CSV exports (deleted, valid, invalid)
+Implement dynamic field selection via toggle chips; show/hide columns; preserve data; exclude from validation/submission when hidden
+success criteria
+Users can complete manual or CSV uploads with fewer errors; optional URL pre-checks reduce failed jobs
+“One button” automation: create set → add members → run job → monitor → report
+Bulk URL Update flow enables quick propagation of common URLs
+Documentation and diagrams accurately reflect mapping-table usage and automated workflow
+No regression in existing CSV behavior
+If you want, I can next draft the services’ TypeScript interfaces and a minimal orchestrator skeleton to make the coding smoother, and update the README/explaination diagrams accordingly.
