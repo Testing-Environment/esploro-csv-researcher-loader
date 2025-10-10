@@ -8,6 +8,12 @@ This directory contains comprehensive documentation for the Esploro Asset File L
 - **[../README.md](../README.md)** - User-facing documentation and getting started guide
 - **[../explanation.md](../explanation.md)** - Comprehensive codebase analysis and technical documentation
 
+### 📋 **Project Management**
+- **[../ROADMAP.md](../ROADMAP.md)** - Project roadmap, future vision, and planned features
+- **[../REQUIREMENTS.md](../REQUIREMENTS.md)** - Current functional requirements and specifications
+- **[../CHANGELOG.md](../CHANGELOG.md)** - Chronological change history and version releases
+- **[../PROGRESS_LOGS.md](../PROGRESS_LOGS.md)** - Development session tracking and progress notes
+
 ### 👨‍💻 **For Developers**
 - **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** - Quick start guide, setup, common tasks
 - **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)** - Architecture diagrams and data flow (10 diagrams)
@@ -21,6 +27,7 @@ This directory contains comprehensive documentation for the Esploro Asset File L
 ### 📖 **Historical Documentation**
 - **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** - Legacy code removal history
 - **[../Esploro_Asset_API_Usage_Report.md](../Esploro_Asset_API_Usage_Report.md)** - Historical API analysis
+- **[archive/CONVERSATION_HISTORY.md](archive/CONVERSATION_HISTORY.md)** - Raw conversation history and requirements evolution
 
 ---
 
@@ -32,12 +39,18 @@ The **current application** is a simple file uploader for Esploro assets. It all
 
 #### Essential Reading (Current)
 1. **[../README.md](../README.md)** - Start here for user information
-2. **[../explanation.md](../explanation.md)** - Complete technical documentation
-3. **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** - Developer guide
+2. **[../REQUIREMENTS.md](../REQUIREMENTS.md)** - What the system does (current)
+3. **[../explanation.md](../explanation.md)** - Complete technical documentation
+4. **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** - Developer guide
+
+#### Project Planning (Current)
+- **[../ROADMAP.md](../ROADMAP.md)** - What we plan to build (future)
+- **[../CHANGELOG.md](../CHANGELOG.md)** - What we've built (history)
+- **[../PROGRESS_LOGS.md](../PROGRESS_LOGS.md)** - Development journey (sessions)
 
 #### Supplementary (Current)
 - **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)** - Architecture visualization
-- **[JOB_SUBMISSION_ENHANCEMENT.md](JOB_SUBMISSION_ENHANCEMENT.md)** - Future features
+- **[JOB_SUBMISSION_ENHANCEMENT.md](JOB_SUBMISSION_ENHANCEMENT.md)** - Future features (detailed proposal)
 
 ### Historical Documentation
 
@@ -45,6 +58,7 @@ These documents capture context from earlier phases and API usage analysis:
 
 - **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** - Explains what was removed and why
 - **[../Esploro_Asset_API_Usage_Report.md](../Esploro_Asset_API_Usage_Report.md)** - API usage analysis for older versions
+- **[archive/CONVERSATION_HISTORY.md](archive/CONVERSATION_HISTORY.md)** - Raw conversation history showing requirements evolution
 
 ### Reference Materials
 
@@ -153,15 +167,23 @@ When making changes to the application:
    - Update **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** if APIs change
    - Update **[../explanation.md](../explanation.md)** for architectural changes
    - Update **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)** if data flow changes
+   - Update **[../REQUIREMENTS.md](../REQUIREMENTS.md)** if requirements change
 
 2. **Feature Additions**:
    - Document in **[../README.md](../README.md)** for user-facing features
    - Add technical details to **[../explanation.md](../explanation.md)**
    - Update diagrams in **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)**
+   - Add to **[../CHANGELOG.md](../CHANGELOG.md)** (Unreleased section)
 
 3. **Enhancements Implemented**:
-   - Update or remove **[JOB_SUBMISSION_ENHANCEMENT.md](JOB_SUBMISSION_ENHANCEMENT.md)**
+   - Move from **[../ROADMAP.md](../ROADMAP.md)** "Planned" to "Completed"
    - Document new patterns in **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)**
+   - Log session in **[../PROGRESS_LOGS.md](../PROGRESS_LOGS.md)**
+
+4. **Version Releases**:
+   - Update **[../CHANGELOG.md](../CHANGELOG.md)** (move Unreleased to versioned section)
+   - Tag release in Git
+   - Update **[../ROADMAP.md](../ROADMAP.md)** with new completed items
 
 ### Documentation Standards
 
@@ -193,7 +215,13 @@ When making changes to the application:
 ### For Historical Research
 - Check **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** for recent changes
 - Review **[LEGACY_CSV_LOADER_EXPLANATION.md](LEGACY_CSV_LOADER_EXPLANATION.md)** for old functionality
-- See **[../TRANSFORMATION_SUMMARY.md](../TRANSFORMATION_SUMMARY.md)** for transformation details
+- See **[../CHANGELOG.md](../CHANGELOG.md)** for version history
+- Review **[archive/CONVERSATION_HISTORY.md](archive/CONVERSATION_HISTORY.md)** for requirements evolution
+
+### For Project Planning
+- Review **[../ROADMAP.md](../ROADMAP.md)** for future plans and vision
+- Check **[../REQUIREMENTS.md](../REQUIREMENTS.md)** for current specifications
+- See **[../PROGRESS_LOGS.md](../PROGRESS_LOGS.md)** for recent development activity
 
 ---
 
@@ -219,6 +247,13 @@ When making changes to the application:
 ## Document History
 
 ### January 2025
+- ✅ **2025-01-10**: Restructured project documentation
+  - Created ROADMAP.md (project vision and planned features)
+  - Created CHANGELOG.md (version history and releases)
+  - Created REQUIREMENTS.md (current functional specifications)
+  - Created PROGRESS_LOGS.md (development session tracking)
+  - Moved conversation history to archive/CONVERSATION_HISTORY.md
+  - Updated INDEX.md to reference new structure
 - Created comprehensive documentation suite
 - Removed legacy researcher code
 - Updated all current documentation
