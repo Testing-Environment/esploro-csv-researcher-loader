@@ -9,8 +9,8 @@ Example Body:
 ```json
 {
   "link": "",
-  "name": "Testing",
-  "description": "02.26.13",
+  "name": "CloudApp-FilesLoaderSet-YYYYMMDD-HH:MM:SS",
+  "description": "List of loaded research asset via the Cloud App Files Loader",
   "type": {
     "value": "ITEMIZED
   },
@@ -28,11 +28,11 @@ Example Body:
     "value": ""
   },
   "members": {
-    "total_record_count": "1,
+    "total_record_count": "",
     "member": [
       {
         "link": "",
-        "id": "991291935000561
+        "id": ""
       }
     ]
   },
@@ -41,6 +41,7 @@ Example Body:
   }
 }
 ```
+
 
 Response:
 ```json

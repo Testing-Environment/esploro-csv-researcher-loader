@@ -6,7 +6,7 @@ This directory contains comprehensive documentation for the Esploro Asset File L
 
 ### 🚀 **Start Here**
 - **[../README.md](../README.md)** - User-facing documentation and getting started guide
-- **[../explaination.md](../explaination.md)** - Comprehensive codebase analysis (50,000+ chars)
+- **[../explanation.md](../explanation.md)** - Comprehensive codebase analysis and technical documentation
 
 ### 👨‍💻 **For Developers**
 - **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** - Quick start guide, setup, common tasks
@@ -32,7 +32,7 @@ The **current application** is a simple file uploader for Esploro assets. It all
 
 #### Essential Reading (Current)
 1. **[../README.md](../README.md)** - Start here for user information
-2. **[../explaination.md](../explaination.md)** - Complete technical documentation
+2. **[../explanation.md](../explanation.md)** - Complete technical documentation
 3. **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** - Developer guide
 
 #### Supplementary (Current)
@@ -151,12 +151,12 @@ When making changes to the application:
 
 1. **Code Changes**:
    - Update **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)** if APIs change
-   - Update **[../explaination.md](../explaination.md)** for architectural changes
+   - Update **[../explanation.md](../explanation.md)** for architectural changes
    - Update **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)** if data flow changes
 
 2. **Feature Additions**:
    - Document in **[../README.md](../README.md)** for user-facing features
-   - Add technical details to **[../explaination.md](../explaination.md)**
+   - Add technical details to **[../explanation.md](../explanation.md)**
    - Update diagrams in **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)**
 
 3. **Enhancements Implemented**:
@@ -182,11 +182,11 @@ When making changes to the application:
 
 ### For Developers
 - Start with **[DEVELOPER_QUICK_REFERENCE.md](DEVELOPER_QUICK_REFERENCE.md)**
-- Review **[../explaination.md](../explaination.md)** for deep understanding
+- Review **[../explanation.md](../explanation.md)** for deep understanding
 - Check **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)** for architecture
 
 ### For Architects
-- Review **[../explaination.md](../explaination.md)** for complete analysis
+- Review **[../explanation.md](../explanation.md)** for complete analysis
 - Check **[VISUAL_DIAGRAMS.md](VISUAL_DIAGRAMS.md)** for system design
 - Review **[JOB_SUBMISSION_ENHANCEMENT.md](JOB_SUBMISSION_ENHANCEMENT.md)** for future direction
 
