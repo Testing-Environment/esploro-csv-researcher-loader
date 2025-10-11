@@ -37,6 +37,49 @@ export class AssetService {
     private logger: LoggerService
   ) { }
 
+  /**
+   * Extract detailed error information from RestError object
+   * Parses status, statusText, message, errorCode, and trackingId
+   */
+  private parseRestError(error: any, taskName: string): string {
+    let message = `${taskName} failed. Please try again.`;
+
+    try {
+      // Check if it's a RestError with status information
+      if (error?.status && error?.statusText) {
+        const status = error.status;
+        const statusText = error.statusText;
+        const errorMessage = error.message || 'No additional details available.';
+
+        // Extract nested error details if present
+        let additionalDetails = '';
+        if (error?.error?.errorList?.error?.[0]) {
+          const apiError = error.error.errorList.error[0];
+          if (apiError.errorCode) {
+            additionalDetails = ` Error Code: ${apiError.errorCode}.`;
+          }
+          if (apiError.errorMessage && apiError.errorMessage.trim()) {
+            additionalDetails += ` ${apiError.errorMessage}.`;
+          }
+          if (apiError.trackingId && apiError.trackingId !== 'unknown') {
+            additionalDetails += ` Tracking ID: ${apiError.trackingId}.`;
+          }
+        }
+
+        // Build formatted message
+        message = `Job ${taskName} failed - ${statusText}. Status: ${status} - ${errorMessage}.${additionalDetails} You may need to manually run or perform ${taskName}.`;
+      } else if (error?.message) {
+        // Fallback to simple error message
+        message = `${taskName} failed: ${error.message}. You may need to manually run or perform ${taskName}.`;
+      }
+    } catch (parseError) {
+      // If parsing fails, use default message
+      this.logger.error('Error parsing RestError', parseError);
+    }
+
+    return message;
+  }
+
   addFilesToAsset(assetId: string, files: AssetFileLink[]): Observable<AddFilesToAssetResponse> {
     const payload = {
       records: [
@@ -67,8 +110,9 @@ export class AssetService {
     }).pipe(
       tap(response => this.logger.apiCall('POST /esploro/v1/assets/{id}', 'response', { assetId, response })),
       catchError(error => {
+        const errorMessage = this.parseRestError(error, 'Add Files to Asset');
         this.logger.error('Add files to asset failed', error);
-        return throwError(error);
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -245,9 +289,9 @@ export class AssetService {
       tap(response => this.logger.apiCall('POST /conf/sets', 'response', { setId: (response as SetResponse).id })),
       map(response => response as SetResponse),
       catchError(error => {
+        const errorMessage = this.parseRestError(error, 'Set Creation');
         this.logger.error('Create set failed', error);
         console.error('Error creating set:', error);
-        const errorMessage = error?.message || error?.error?.errorList?.error?.[0]?.errorMessage || 'Failed to create set';
         return throwError(() => new Error(errorMessage));
       })
     );
@@ -292,11 +336,9 @@ export class AssetService {
       })),
       map(response => response as AddSetMembersResponse),
       catchError(error => {
+        const errorMessage = this.parseRestError(error, 'Add Members to Set');
         this.logger.error('Update set members failed', error);
         console.error(`Error adding members to set ${setId}:`, error);
-        const errorMessage = error?.message
-          || error?.error?.errorList?.error?.[0]?.errorMessage
-          || 'Failed to add members to set';
         return throwError(() => new Error(errorMessage));
       })
     );
@@ -350,11 +392,9 @@ export class AssetService {
       })),
       map(response => response as JobExecutionResponse),
       catchError(error => {
+        const errorMessage = this.parseRestError(error, 'Job Execution');
         this.logger.error('Run job failed', error);
         console.error(`Error running job ${jobId} for set ${setId}:`, error);
-        const errorMessage = error?.message
-          || error?.error?.errorList?.error?.[0]?.errorMessage
-          || 'Failed to run job';
         return throwError(() => new Error(errorMessage));
       })
     );

@@ -123,10 +123,33 @@ export class LoggerService {
    * Log errors with stack trace
    */
   error(context: string, error: any): void {
-    if (!this.isEnabled) return;
-
+    // Always log errors, even if debug logging is disabled
     const timestamp = this.getTimestamp();
-    console.error(`❌ ERROR [${timestamp}] ${context}`, error);
+    
+    console.group(`❌ ERROR [${timestamp}] ${context}`);
+    
+    // Log the error object
+    if (error) {
+      console.error('Error Object:', error);
+      
+      // Log specific error properties if they exist (RestError format)
+      if (error.status !== undefined) {
+        console.error('Status:', error.status);
+      }
+      if (error.statusText) {
+        console.error('Status Text:', error.statusText);
+      }
+      if (error.message) {
+        console.error('Message:', error.message);
+      }
+      
+      // Log nested error details from Ex Libris API
+      if (error.error?.errorList?.error) {
+        console.error('API Error Details:', error.error.errorList.error);
+      }
+    }
+    
+    console.groupEnd();
   }
 
   /**
