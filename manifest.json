@@ -9,7 +9,9 @@
       "settings": "/#/settings",
       "help": "https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)/Working_with_the_Esploro_Research_Hub/040_Working_with_Assets"
    },
-   "entities": ["RESEARCH_ASSET"],
+   "entities": [
+      "RESEARCH_ASSET"
+   ],
    "contentSecurity": {
       "sandbox": {
          "modals": true,
@@ -18,7 +20,7 @@
    },
    "icon": {
       "type": "url",
-   "value": "/assets/assetFileLoader.png"
+      "value": "/assets/assetFileLoader.png"
    },
    "fullscreen": {
       "allow": true,
