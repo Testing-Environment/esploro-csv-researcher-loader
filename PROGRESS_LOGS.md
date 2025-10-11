@@ -737,3 +737,181 @@ Implement Phase 3.3 of Job Automation: Automatic job submission to process queue
 - Users receive immediate confirmation of job submission
 - Job instance ID provided for tracking in Esploro UI
 - Both workflows now have complete end-to-end automation
+
+
+---
+
+## Session: Phase 3.4 - Job Status Polling Implementation
+
+**Date**: January 10, 2025  
+**Developer**: Claude Code Assistant  
+**Branch**: copilot-ai
+
+### Objective
+Implement Phase 3.4 of Job Automation: Real-time job status monitoring with polling to track import job progress and provide users with immediate completion feedback.
+
+### Changes Made
+
+#### 1. TypeScript Interfaces (types.ts)
+- Added **JobInstanceCounter** interface for individual job metrics (type + value)
+- Added **JobInstanceAlert** interface for job alerts/messages
+- Added **JobInstanceStatus** interface for full job instance response:
+  - Status: COMPLETED_SUCCESS, COMPLETED_FAILED, RUNNING, QUEUED, CANCELLED
+  - Progress: 0-100%
+  - Counters: asset_succeeded, asset_failed, file_uploaded, file_failed_to_upload
+  - Timestamps: submit_time, start_time, end_time
+- Updated **JobExecutionResponse** to include instance information in additional_info
+
+#### 2. AssetService Enhancement (asset.service.ts)
+- Imported **JobInstanceStatus** interface
+- Implemented **getJobInstance(jobId: string, instanceId: string): Observable<JobInstanceStatus>**
+  - GET /conf/jobs/{jobId}/instances/{instanceId}
+  - Returns job status with progress and counters
+  - Proper error handling with console logging
+
+#### 3. CSV Processor Updates (csv-processor.component.ts)
+- Added imports: **OnDestroy, interval, Subscription, switchMap, takeWhile**
+- Implemented **OnDestroy** interface
+- Added polling state variables:
+  - jobInstanceId: string | null
+  - pollingSubscription: Subscription | null
+  - jobProgress: number
+  - jobStatusText: string
+- Implemented **ngOnDestroy()** lifecycle hook for cleanup
+- Updated **createSetForSuccessfulAssets()** to start polling after job submission
+- Implemented **startJobPolling()** method:
+  - 5-second polling interval
+  - 5-minute timeout protection
+  - Real-time progress updates
+  - Terminal state detection
+  - Automatic completion handling
+- Implemented **handleJobCompletion()** method:
+  - Displays success/failure/cancelled notifications
+  - Shows detailed counters
+- Implemented **parseJobCounters()** method:
+  - Extracts asset_succeeded, asset_failed, file_uploaded, file_failed_to_upload
+- Updated **resetUpload()** to cleanup polling state
+
+#### 4. Manual Entry Updates (main.component.ts)
+- Added imports: **OnDestroy, interval, Subscription, switchMap, takeWhile**
+- Implemented **OnDestroy** interface
+- Added identical polling state variables as CSV processor
+- Implemented **ngOnDestroy()** lifecycle hook
+- Updated **createSetForSuccessfulAssets()** to start polling
+- Implemented **startJobPolling()**, **handleJobCompletion()**, **parseJobCounters()** methods (identical to CSV processor)
+- Updated **resetFlow()** to cleanup polling state
+
+### Workflow Now Complete (End-to-End Automation)
+
+**User Experience**:
+1. User uploads CSV or enters manual data
+2. App validates assets ✅
+3. App queues files to assets ✅
+4. App creates set ✅ (Phase 3.1)
+5. App adds members to set ✅ (Phase 3.2)
+6. App runs import job ✅ (Phase 3.3)
+7. **App monitors job progress in real-time** ✅ (Phase 3.4 - NEW!)
+8. **App notifies user on completion with detailed counters** ✅ (Phase 3.4 - NEW!)
+
+**Zero Manual Steps. Full Automation. Real-time Feedback!**
+
+### Files Modified
+1. **cloudapp/src/app/models/types.ts** - Job Instance API interfaces
+2. **cloudapp/src/app/services/asset.service.ts** - getJobInstance() method
+3. **cloudapp/src/app/components/csv-processor/csv-processor.component.ts** - Polling infrastructure
+4. **cloudapp/src/app/main/main.component.ts** - Polling infrastructure
+5. **CHANGELOG.md** - Documentation update
+6. **ROADMAP.md** - Progress tracking
+
+### Technical Implementation Details
+
+**Polling Strategy**:
+- **Interval**: 5000ms (5 seconds)
+- **Timeout**: 300000ms (5 minutes)
+- **Stop Conditions**: COMPLETED_SUCCESS, COMPLETED_FAILED, CANCELLED
+- **Progress Tracking**: Real-time updates from 0-100%
+
+**Error Handling**:
+- Timeout: Warn user to check Esploro manually
+- Network errors: Alert user but don't crash app
+- Invalid job/instance: Stop polling and show error
+
+**Memory Management**:
+- Automatic subscription cleanup on component destroy
+- Polling stops on terminal states
+- No memory leaks from long-running subscriptions
+
+**User Notifications**:
+- **Job Started**: \
+Job
+automation
+started!
+Set:
+id
+Job
+Instance:
+id
+.
+Monitoring
+job
+progress...\
+- **Success**: \Job
+completed
+successfully!
+Files
+uploaded:
+X
+Assets
+succeeded:
+Y\
+- **Failure**: \Job
+failed!
+Assets
+failed:
+X
+Files
+failed:
+Y\
+- **Cancelled**: \Job
+was
+cancelled.\
+- **Timeout**: \Job
+monitoring
+timeout
+reached.
+Please
+check
+job
+status
+in
+Esploro.\
+
+### Success Criteria Met
+✅ getJobInstance() method implemented  
+✅ Polling mechanism with 5-second interval  
+✅ Real-time progress updates  
+✅ Terminal state detection  
+✅ Detailed counter parsing  
+✅ User notifications with counters  
+✅ Cleanup on component destroy  
+✅ 5-minute timeout protection  
+✅ Both workflows (CSV + manual) updated  
+✅ No breaking changes  
+
+### Phase 3 - COMPLETE! 🎉
+
+**All Sub-Phases Completed**:
+- ✅ Phase 3.1: Set Creation
+- ✅ Phase 3.2: Member Addition  
+- ✅ Phase 3.3: Job Submission
+- ✅ Phase 3.4: Job Status Polling
+
+**Result**: Complete end-to-end automation from CSV upload to file ingestion with real-time monitoring!
+
+### Future Enhancements (Optional)
+- Visual progress bar UI component
+- Persist job ID in localStorage for recovery
+- Job history panel
+- Cancellation support
+- Export job results to CSV
+

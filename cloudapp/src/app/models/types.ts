@@ -203,6 +203,50 @@ export interface JobExecutionResponse {
   additional_info?: {
     value: string;  // e.g., "Job no. 9563654220000561 triggered on ..."
     link?: string;  // Link to job instance
+    instance?: {
+      value: string;  // Instance ID
+      desc: string;
+    };
+  };
+  link?: string;
+}
+
+/**
+ * Job Instance Counter - Tracks specific metrics for job execution
+ */
+export interface JobInstanceCounter {
+  type: { value: string; desc: string };
+  value: string;
+}
+
+/**
+ * Job Instance Alert - Alerts or messages from job execution
+ */
+export interface JobInstanceAlert {
+  value: string;
+  desc: string;
+}
+
+/**
+ * Job Instance Status - Full job instance response with progress and counters
+ */
+export interface JobInstanceStatus {
+  id: string;
+  name: string;
+  progress: number;  // 0-100
+  status: {
+    value: 'COMPLETED_SUCCESS' | 'COMPLETED_FAILED' | 'RUNNING' | 'QUEUED' | 'CANCELLED';
+    desc: string;
+  };
+  submit_time?: string;
+  start_time?: string;
+  end_time?: string;
+  counter?: JobInstanceCounter[];
+  alert?: JobInstanceAlert[];
+  job_info?: {
+    id: string;
+    name: string;
+    link?: string;
   };
   link?: string;
 }

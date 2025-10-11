@@ -88,7 +88,7 @@ Implement fully automated workflow to eliminate manual set creation and job exec
 - ✅ **Completed**: Create set via `POST /conf/sets` (Phase 3.1 - January 2025)
 - ✅ **Completed**: Add members to set via `POST /conf/sets/{setId}?op=add_members` (Phase 3.2 - January 2025)
 - ✅ **Completed**: Run job via `POST /conf/jobs/{jobId}?op=run` using hardcoded M50762 (Phase 3.3 - January 2025)
-- 📋 **Future**: Poll job status via `GET /conf/jobs/{jobId}/instances/{instanceId}` (Phase 3.4)
+- ✅ **Completed**: Poll job status via `GET /conf/jobs/{jobId}/instances/{instanceId}` (Phase 3.4 - January 2025)
 - 📋 **Future**: Verify results by comparing before/after asset states (Phase 3.5)
 
 #### API Methods to Add
@@ -98,7 +98,7 @@ Implement fully automated workflow to eliminate manual set creation and job exec
 ✅ generateSetName(): string // COMPLETED Phase 3.1
 ✅ updateSetMembers(setId: string, memberIds: string[]): Observable<AddSetMembersResponse> // COMPLETED Phase 3.2
 ✅ runJob(setId: string, jobId?: string): Observable<JobExecutionResponse> // COMPLETED Phase 3.3
-getJobInstance(jobId: string, instanceId: string): Observable<JobStatus> // Future Phase 3.4
+✅ getJobInstance(jobId: string, instanceId: string): Observable<JobInstanceStatus> // COMPLETED Phase 3.4
 ```
 
 #### Workflow Steps
@@ -107,15 +107,15 @@ getJobInstance(jobId: string, instanceId: string): Observable<JobStatus> // Futu
 3. ✅ **Create temporary set** (COMPLETED - Phase 3.1)
 4. ✅ **Add validated assets to set** (COMPLETED - Phase 3.2)
 5. ✅ **Submit job for the set** (COMPLETED - Phase 3.3 - uses hardcoded M50762)
-6. **Poll until job completes** (Future - Phase 3.4)
-7. **Parse job counters and verify** (Future - Phase 3.5)
-8. **Display comprehensive results** (Future - enhance existing)
+6. ✅ **Poll until job completes** (COMPLETED - Phase 3.4)
+7. ✅ **Parse job counters and display results** (COMPLETED - Phase 3.4)
+8. **Enhanced result visualization** (Future - optional enhancement)
 
 #### Success Criteria
-- User clicks "Submit" → files are fully ingested without manual intervention
-- Job progress displayed in real-time (polling with progress bar)
-- Final report shows: files uploaded, assets succeeded, assets failed
-- Error handling at each API step with user-friendly messages
+- ✅ User clicks "Submit" → files are fully ingested without manual intervention
+- ✅ Job progress displayed in real-time (polling with 5-second intervals)
+- ✅ Final report shows: files uploaded, assets succeeded, assets failed
+- ✅ Error handling at each API step with user-friendly messages
 
 **Dependencies**:
 - Esploro API documentation for `/conf/sets` and `/conf/jobs` endpoints

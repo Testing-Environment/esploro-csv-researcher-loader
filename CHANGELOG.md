@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 3.4: Job Status Polling - Real-time Job Monitoring**
+  - `getJobInstance()` API method in AssetService for job status monitoring
+  - Real-time job status polling with 5-second intervals
+  - Job progress tracking (0-100%)
+  - Automatic polling termination on job completion
+  - TypeScript interfaces for Job Instance API (`JobInstanceCounter`, `JobInstanceAlert`, `JobInstanceStatus`)
+  - Job completion notifications with detailed counters (assets succeeded/failed, files uploaded/failed)
+  - 5-minute polling timeout with user notification
+  - Terminal state detection (COMPLETED_SUCCESS, COMPLETED_FAILED, CANCELLED)
+  - Automatic cleanup of polling subscriptions on component destroy
+  - Polling infrastructure in both CSV and manual entry workflows
+
 - **Phase 3.1, 3.2 & 3.3: Job Automation - Complete Workflow Automation**
   - `createSet()` API method in AssetService for automated set creation
   - `generateSetName()` helper method for unique timestamped set names (format: `CloudApp-FilesLoaderSet-YYYY-MM-DD-HH-MM-SS`)

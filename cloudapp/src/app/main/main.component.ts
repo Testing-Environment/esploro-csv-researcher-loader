@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, from, throwError } from 'rxjs';
-import { catchError, concatMap, map, toArray } from 'rxjs/operators';
+import { forkJoin, from, throwError, interval, Subscription } from 'rxjs';
+import { catchError, concatMap, map, toArray, switchMap, takeWhile } from 'rxjs/operators';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetService } from '../services/asset.service';
 import { AssetFileLink } from '../models/asset';
@@ -24,7 +24,7 @@ interface ManualEntryFormValue {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   form: FormGroup;
   stage: ManualEntryStage = 'stage1';
   stageTwoSkipped = false;
@@ -49,6 +49,10 @@ export class MainComponent implements OnInit {
 
   // Job automation state (Phase 3)
   createdSetId: string | null = null;
+  jobInstanceId: string | null = null;
+  pollingSubscription: Subscription | null = null;
+  jobProgress: number = 0;
+  jobStatusText: string = '';
 
   private readonly urlPattern = /^https?:\/\//i;
 
@@ -64,6 +68,12 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAssetFilesAndLinkTypes();
+  }
+
+  ngOnDestroy() {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
   }
 
   get entries(): FormArray {
@@ -416,11 +426,15 @@ export class MainComponent implements OnInit {
         this.assetService.runJob(setResponse.id)
       );
 
-      const jobInstanceId = jobResponse.additional_info?.link?.split('/').pop() || '';
+      const jobInstanceId = jobResponse.additional_info?.instance?.value || '';
+      this.jobInstanceId = jobInstanceId;
       console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
 
+      // Phase 3.4: Start polling job status
+      this.startJobPolling(jobResponse.id, jobInstanceId);
+
       this.alert.success(
-        `Job automation completed! Set: ${setResponse.id}, Job Instance: ${jobInstanceId}. The import job is now running.`
+        `Job automation started! Set: ${setResponse.id}, Job Instance: ${jobInstanceId}. Monitoring job progress...`
       );
 
     } catch (error: any) {
@@ -627,11 +641,95 @@ export class MainComponent implements OnInit {
     });
   }
 
+  /**
+   * Start polling job status with 5-second interval
+   */
+  private startJobPolling(jobId: string, instanceId: string): void {
+    const pollInterval = 5000; // 5 seconds
+    const maxDuration = 300000; // 5 minutes timeout
+    const startTime = Date.now();
+
+    this.pollingSubscription = interval(pollInterval)
+      .pipe(
+        switchMap(() => this.assetService.getJobInstance(jobId, instanceId)),
+        takeWhile(status => {
+          // Check timeout
+          if (Date.now() - startTime > maxDuration) {
+            this.alert.warn('Job monitoring timeout reached. Please check job status in Esploro.');
+            return false;
+          }
+
+          // Update progress
+          this.jobProgress = status.progress;
+          this.jobStatusText = status.status.desc;
+
+          // Check if job is still running
+          const isRunning = ['QUEUED', 'RUNNING'].includes(status.status.value);
+          if (!isRunning) {
+            this.handleJobCompletion(status);
+          }
+          return isRunning;
+        }, true)
+      )
+      .subscribe(
+        status => {
+          console.log('Job status update:', status);
+        },
+        error => {
+          console.error('Job polling error:', error);
+          this.alert.error('Failed to monitor job status. Job may still be running in Esploro.');
+        }
+      );
+  }
+
+  /**
+   * Handle job completion and display results
+   */
+  private handleJobCompletion(status: any): void {
+    const counters = this.parseJobCounters(status.counter || []);
+    
+    if (status.status.value === 'COMPLETED_SUCCESS') {
+      this.alert.success(
+        `Job completed successfully! Files uploaded: ${counters.fileUploaded}, Assets succeeded: ${counters.assetSucceeded}`
+      );
+    } else if (status.status.value === 'COMPLETED_FAILED') {
+      this.alert.error(
+        `Job failed! Assets failed: ${counters.assetFailed}, Files failed: ${counters.fileFailed}`
+      );
+    } else if (status.status.value === 'CANCELLED') {
+      this.alert.warn('Job was cancelled.');
+    }
+  }
+
+  /**
+   * Parse job counters from API response
+   */
+  private parseJobCounters(counters: any[]): any {
+    const findCounter = (type: string) => {
+      const counter = counters.find(c => c.type?.value === type);
+      return counter ? counter.value : '0';
+    };
+
+    return {
+      assetSucceeded: findCounter('asset_succeeded'),
+      assetFailed: findCounter('asset_failed'),
+      fileUploaded: findCounter('file_uploaded'),
+      fileFailed: findCounter('file_failed_to_upload')
+    };
+  }
+
   private resetFlow(): void {
     this.stage = 'stage1';
     this.stageTwoSkipped = false;
     this.assetMetadataMap.clear();
     this.createdSetId = null;
+    this.jobInstanceId = null;
+    this.jobProgress = 0;
+    this.jobStatusText = '';
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = null;
+    }
 
     while (this.entries.length) {
       this.entries.removeAt(0);

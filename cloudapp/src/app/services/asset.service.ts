@@ -12,7 +12,8 @@ import {
   AddSetMembersPayload,
   AddSetMembersResponse,
   RunJobPayload,
-  JobExecutionResponse
+  JobExecutionResponse,
+  JobInstanceStatus
 } from '../models/types';
 
 export interface AddFilesToAssetResponse {
@@ -324,6 +325,25 @@ export class AssetService {
           || error?.error?.errorList?.error?.[0]?.errorMessage
           || 'Failed to run job';
         return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  /**
+   * Get job instance status for monitoring
+   * @param jobId Job ID (e.g., 'M50762')
+   * @param instanceId Job instance ID from runJob response
+   * @returns Observable of job instance status with progress and counters
+   */
+  getJobInstance(jobId: string, instanceId: string): Observable<JobInstanceStatus> {
+    return this.restService.call({
+      url: `/conf/jobs/${jobId}/instances/${instanceId}`,
+      method: HttpMethod.GET
+    }).pipe(
+      map(response => response as JobInstanceStatus),
+      catchError(error => {
+        console.error(`Error fetching job instance ${instanceId}:`, error);
+        return throwError(() => new Error('Failed to fetch job status'));
       })
     );
   }
