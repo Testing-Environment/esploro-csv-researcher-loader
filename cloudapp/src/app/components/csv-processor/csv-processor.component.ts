@@ -14,7 +14,9 @@ import {
   FileTypeConversion,
   FileTypeValidationState,
   CachedAssetState,
-  AssetMetadata
+  AssetMetadata,
+  AssetVerificationResult,
+  BatchVerificationSummary
 } from '../../models/types';
 import { AssetService } from '../../services/asset.service';
 import { firstValueFrom, lastValueFrom } from '../../utilities/rxjs-helpers';
@@ -76,6 +78,11 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
   pollingSubscription: Subscription | null = null;
   jobProgress: number = 0;
   jobStatusText: string = '';
+
+  // Verification state (Phase 3.5)
+  verificationResults: AssetVerificationResult[] = [];
+  batchVerificationSummary: BatchVerificationSummary | null = null;
+  processedAssetsCache: ProcessedAsset[] = [];
 
   // UI state
   isDragActive = false;
@@ -655,6 +662,9 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
     // Process assets
     try {
       const processedAssets = await this.processAssets(transformedData);
+      
+      // Store processed assets for verification after job completion
+      this.processedAssetsCache = processedAssets;
 
       // Compare asset states after processing
       await this.compareAssetStates(processedAssets);
@@ -942,15 +952,24 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handle job completion and display results
+   * Handle job completion and trigger verification (Phase 3.5)
    */
-  private handleJobCompletion(status: any): void {
+  private async handleJobCompletion(status: any): Promise<void> {
     const counters = this.parseJobCounters(status.counter || []);
     
     if (status.status.value === 'COMPLETED_SUCCESS') {
-      this.alertService.success(
-        `Job completed successfully! Files uploaded: ${counters.fileUploaded}, Assets succeeded: ${counters.assetSucceeded}`
-      );
+      // Job completed successfully - now verify results
+      this.alertService.info('Job completed! Verifying file attachments...');
+      
+      // Trigger verification for processed assets
+      if (this.processedAssetsCache.length > 0) {
+        await this.verifyAssetResults(this.processedAssetsCache);
+      } else {
+        this.alertService.success(
+          `Job completed successfully! Files uploaded: ${counters.fileUploaded}, Assets succeeded: ${counters.assetSucceeded}`
+        );
+      }
+      
     } else if (status.status.value === 'COMPLETED_FAILED') {
       this.alertService.error(
         `Job failed! Assets failed: ${counters.assetFailed}, Files failed: ${counters.fileFailed}`
@@ -977,6 +996,198 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Perform comprehensive asset verification after job completion (Phase 3.5)
+   */
+  private async verifyAssetResults(processedAssets: ProcessedAsset[]): Promise<void> {
+    if (this.assetCacheMap.size === 0) {
+      console.warn('No cached asset states available for verification');
+      return;
+    }
+
+    const successfulAssets = processedAssets.filter(a => a.status === 'success');
+    if (successfulAssets.length === 0) {
+      return;
+    }
+
+    this.alertService.info('Verifying file attachments...');
+
+    // Perform verification for each asset
+    const verificationRequests = successfulAssets.map(asset => {
+      const cachedState = this.assetCacheMap.get(asset.mmsId);
+      if (!cachedState) {
+        return of(null);
+      }
+
+      return this.assetService.verifyAssetFiles(
+        asset.mmsId,
+        cachedState,
+        asset.remoteUrl || ''
+      ).pipe(
+        catchError(error => {
+          console.error(`Verification failed for ${asset.mmsId}:`, error);
+          return of(null);
+        })
+      );
+    });
+
+    try {
+      const results = await lastValueFrom(forkJoin(verificationRequests)) as (AssetVerificationResult | null)[];
+
+      // Filter out null results and store
+      this.verificationResults = results.filter(r => r !== null) as AssetVerificationResult[];
+
+      // Update processedAssets with verification results
+      this.verificationResults.forEach(verificationResult => {
+        const asset = processedAssets.find(a => a.mmsId === verificationResult.mmsId);
+        if (asset) {
+          asset.verificationResult = verificationResult;
+          
+          // Update status based on verification
+          if (verificationResult.status === 'unchanged') {
+            asset.status = 'unchanged';
+            asset.wasUnchanged = true;
+          } else if (verificationResult.status === 'verified_failed') {
+            asset.status = 'error';
+            asset.errorMessage = verificationResult.verificationSummary;
+          }
+        }
+      });
+
+      // Generate batch summary
+      this.batchVerificationSummary = this.generateBatchSummary(this.verificationResults);
+
+      // Display verification results
+      this.displayVerificationSummary(this.batchVerificationSummary);
+
+    } catch (error) {
+      console.error('Batch verification error:', error);
+      this.alertService.warn('Could not verify all file attachments. Check individual asset results.');
+    }
+  }
+
+  /**
+   * Generate batch verification summary (Phase 3.5)
+   */
+  private generateBatchSummary(results: AssetVerificationResult[]): BatchVerificationSummary {
+    const totalAssets = results.length;
+    const verifiedSuccess = results.filter(r => r.status === 'verified_success').length;
+    const verifiedPartial = results.filter(r => r.status === 'verified_partial').length;
+    const verifiedFailed = results.filter(r => r.status === 'verified_failed').length;
+    const unchanged = results.filter(r => r.status === 'unchanged').length;
+    const errors = results.filter(r => r.status === 'error').length;
+
+    const totalFilesExpected = results.reduce((sum, r) => sum + r.filesExpected, 0);
+    const totalFilesAdded = results.reduce((sum, r) => sum + r.filesAdded, 0);
+
+    const successRate = totalAssets > 0 
+      ? ((verifiedSuccess + verifiedPartial) / totalAssets) * 100 
+      : 0;
+
+    // Collect all warnings
+    const warnings = results.flatMap(r => r.warnings);
+    const uniqueWarnings = Array.from(new Set(warnings));
+
+    // Generate recommendations
+    const recommendations: string[] = [];
+    if (verifiedFailed > 0) {
+      recommendations.push(`${verifiedFailed} asset(s) failed verification. Check Esploro for file processing status.`);
+    }
+    if (verifiedPartial > 0) {
+      recommendations.push(`${verifiedPartial} asset(s) have partial matches. Verify correct files were attached.`);
+    }
+    if (unchanged > 0) {
+      recommendations.push(`${unchanged} asset(s) were unchanged. Files may have been already attached.`);
+    }
+
+    return {
+      totalAssets,
+      verifiedSuccess,
+      verifiedPartial,
+      verifiedFailed,
+      unchanged,
+      errors,
+      totalFilesExpected,
+      totalFilesAdded,
+      successRate,
+      warnings: uniqueWarnings,
+      recommendations
+    };
+  }
+
+  /**
+   * Display verification summary to user (Phase 3.5)
+   */
+  private displayVerificationSummary(summary: BatchVerificationSummary): void {
+    const successRate = summary.successRate.toFixed(1);
+    
+    if (summary.verifiedSuccess === summary.totalAssets) {
+      this.alertService.success(
+        `✅ All files verified! ${summary.verifiedSuccess}/${summary.totalAssets} assets successfully processed (${successRate}% success rate)`
+      );
+    } else if (summary.verifiedSuccess + summary.verifiedPartial === summary.totalAssets) {
+      this.alertService.warn(
+        `⚠️ Verification complete with warnings. ${summary.verifiedSuccess} verified, ${summary.verifiedPartial} partial matches (${successRate}% success rate)`
+      );
+    } else {
+      this.alertService.error(
+        `⚠️ Verification issues detected. ${summary.verifiedSuccess} verified, ${summary.verifiedFailed} failed, ${summary.unchanged} unchanged (${successRate}% success rate)`
+      );
+    }
+
+    // Log recommendations
+    if (summary.recommendations.length > 0) {
+      console.log('Verification recommendations:', summary.recommendations);
+    }
+  }
+
+  /**
+   * Generate downloadable verification report (Phase 3.5)
+   */
+  downloadVerificationReport(): void {
+    if (!this.verificationResults || this.verificationResults.length === 0) {
+      this.alertService.warn('No verification results available to download.');
+      return;
+    }
+
+    const headers = [
+      'MMS ID',
+      'Status',
+      'Files Before',
+      'Files After',
+      'Files Added',
+      'Files Expected',
+      'Verification Summary',
+      'Warnings'
+    ];
+
+    const rows = this.verificationResults.map(result => [
+      result.mmsId,
+      result.status,
+      result.filesBeforeCount.toString(),
+      result.filesAfterCount.toString(),
+      result.filesAdded.toString(),
+      result.filesExpected.toString(),
+      result.verificationSummary,
+      result.warnings.join('; ')
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `verification-report-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+    
+    this.alertService.success('Verification report downloaded successfully.');
+  }
+
   resetUpload() {
     this.csvData = null;
     this.columnMappingData = [];
@@ -997,6 +1208,9 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
     this.jobInstanceId = null;
     this.jobProgress = 0;
     this.jobStatusText = '';
+    this.verificationResults = [];
+    this.batchVerificationSummary = null;
+    this.processedAssetsCache = [];
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
       this.pollingSubscription = null;

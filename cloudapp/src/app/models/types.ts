@@ -85,6 +85,55 @@ export interface FileTypeValidationState {
   autoConvertible: boolean;  // True if all values can be auto-converted
 }
 
+/**
+ * File verification result for Phase 3.5
+ */
+export interface FileVerificationResult {
+  url: string;
+  title?: string;
+  wasFound: boolean;
+  matchType: 'exact' | 'partial' | 'none';
+  existingFile?: {
+    id: string;
+    title?: string;
+    type?: string;
+    status?: string;
+  };
+  verificationDetails: string;
+}
+
+/**
+ * Asset verification result for Phase 3.5
+ */
+export interface AssetVerificationResult {
+  mmsId: string;
+  status: 'verified_success' | 'verified_partial' | 'verified_failed' | 'unchanged' | 'error';
+  filesBeforeCount: number;
+  filesAfterCount: number;
+  filesAdded: number;
+  filesExpected: number;
+  fileVerifications: FileVerificationResult[];
+  verificationSummary: string;
+  warnings: string[];
+}
+
+/**
+ * Batch verification summary for Phase 3.5
+ */
+export interface BatchVerificationSummary {
+  totalAssets: number;
+  verifiedSuccess: number;
+  verifiedPartial: number;
+  verifiedFailed: number;
+  unchanged: number;
+  errors: number;
+  totalFilesExpected: number;
+  totalFilesAdded: number;
+  successRate: number;
+  warnings: string[];
+  recommendations: string[];
+}
+
 export interface ProcessedAsset {
   mmsId: string;
   remoteUrl?: string;
@@ -94,6 +143,7 @@ export interface ProcessedAsset {
   status: 'success' | 'error' | 'pending' | 'unchanged';  // Added 'unchanged' status
   errorMessage?: string;
   wasUnchanged?: boolean;  // Flag for post-import comparison
+  verificationResult?: AssetVerificationResult;  // Phase 3.5 verification
 }
 
 export interface ColumnMapping {

@@ -13,7 +13,10 @@ import {
   AddSetMembersResponse,
   RunJobPayload,
   JobExecutionResponse,
-  JobInstanceStatus
+  JobInstanceStatus,
+  FileVerificationResult,
+  AssetVerificationResult,
+  CachedAssetState
 } from '../models/types';
 
 export interface AddFilesToAssetResponse {
@@ -346,5 +349,217 @@ export class AssetService {
         return throwError(() => new Error('Failed to fetch job status'));
       })
     );
+  }
+
+  /**
+   * Verify file attachments for a specific asset (Phase 3.5)
+   * Compares cached before state with current after state
+   * @param mmsId Asset MMS ID
+   * @param cachedState Cached asset state before processing
+   * @param expectedUrl URL that was queued for attachment
+   * @returns Observable of asset verification result
+   */
+  verifyAssetFiles(
+    mmsId: string,
+    cachedState: CachedAssetState,
+    expectedUrl: string
+  ): Observable<AssetVerificationResult> {
+    return this.getAssetMetadata(mmsId).pipe(
+      map(metadata => {
+        const filesAfter = metadata.files || [];
+        const filesBefore = cachedState.filesBefore;
+
+        // Detailed file verification
+        const verificationResult = this.performFileVerification(
+          expectedUrl,
+          filesBefore,
+          filesAfter
+        );
+
+        const filesAdded = filesAfter.length - filesBefore.length;
+        const filesExpected = expectedUrl ? 1 : 0;
+
+        // Determine verification status
+        let status: AssetVerificationResult['status'];
+        if (verificationResult.wasFound && filesAdded >= filesExpected) {
+          status = 'verified_success';
+        } else if (verificationResult.matchType === 'partial') {
+          status = 'verified_partial';
+        } else if (filesAdded === 0) {
+          status = 'unchanged';
+        } else {
+          status = 'verified_failed';
+        }
+
+        return {
+          mmsId,
+          status,
+          filesBeforeCount: filesBefore.length,
+          filesAfterCount: filesAfter.length,
+          filesAdded,
+          filesExpected,
+          fileVerifications: [verificationResult],
+          verificationSummary: this.buildVerificationSummary(verificationResult, filesAdded, filesExpected),
+          warnings: this.generateVerificationWarnings(verificationResult, filesAdded, filesExpected)
+        };
+      }),
+      catchError(error => {
+        console.error(`Verification failed for ${mmsId}:`, error);
+        return of({
+          mmsId,
+          status: 'error' as const,
+          filesBeforeCount: cachedState.filesBefore.length,
+          filesAfterCount: cachedState.filesBefore.length,
+          filesAdded: 0,
+          filesExpected: 1,
+          fileVerifications: [],
+          verificationSummary: `Verification failed: ${error.message}`,
+          warnings: [`Unable to verify: ${error.message}`]
+        });
+      })
+    );
+  }
+
+  /**
+   * Perform detailed file verification
+   * @private
+   */
+  private performFileVerification(
+    expectedUrl: string,
+    filesBefore: AssetFile[],
+    filesAfter: AssetFile[]
+  ): FileVerificationResult {
+    // Exact URL match
+    const exactMatch = filesAfter.find(f => f.url === expectedUrl);
+    if (exactMatch) {
+      return {
+        url: expectedUrl,
+        title: exactMatch.title,
+        wasFound: true,
+        matchType: 'exact',
+        existingFile: {
+          id: exactMatch.id || '',
+          title: exactMatch.title,
+          type: exactMatch.type,
+          status: 'attached'
+        },
+        verificationDetails: 'File found with exact URL match'
+      };
+    }
+
+    // Check if URL exists in before state (was already attached)
+    const existedBefore = filesBefore.find(f => f.url === expectedUrl);
+    if (existedBefore) {
+      return {
+        url: expectedUrl,
+        wasFound: true,
+        matchType: 'exact',
+        existingFile: {
+          id: existedBefore.id || '',
+          title: existedBefore.title,
+          type: existedBefore.type,
+          status: 'pre-existing'
+        },
+        verificationDetails: 'File was already attached before import (unchanged)'
+      };
+    }
+
+    // Partial match by filename
+    const urlFilename = this.extractFilenameFromUrl(expectedUrl);
+    const partialMatch = filesAfter.find(f => {
+      const fileFilename = this.extractFilenameFromUrl(f.url || '');
+      return fileFilename && urlFilename && fileFilename.toLowerCase() === urlFilename.toLowerCase();
+    });
+
+    if (partialMatch) {
+      return {
+        url: expectedUrl,
+        title: partialMatch.title,
+        wasFound: true,
+        matchType: 'partial',
+        existingFile: {
+          id: partialMatch.id || '',
+          title: partialMatch.title,
+          type: partialMatch.type,
+          status: 'partial-match'
+        },
+        verificationDetails: 'File found with matching filename but different URL'
+      };
+    }
+
+    // No match found
+    return {
+      url: expectedUrl,
+      wasFound: false,
+      matchType: 'none',
+      verificationDetails: 'File not found in asset after import'
+    };
+  }
+
+  /**
+   * Extract filename from URL
+   * @private
+   */
+  private extractFilenameFromUrl(url: string): string | null {
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname;
+      const segments = pathname.split('/');
+      return segments[segments.length - 1] || null;
+    } catch {
+      // If URL parsing fails, try simple extraction
+      const segments = url.split('/');
+      return segments[segments.length - 1] || null;
+    }
+  }
+
+  /**
+   * Build human-readable verification summary
+   * @private
+   */
+  private buildVerificationSummary(
+    verification: FileVerificationResult,
+    filesAdded: number,
+    filesExpected: number
+  ): string {
+    if (verification.wasFound && verification.matchType === 'exact') {
+      return `✅ File successfully attached (${filesAdded}/${filesExpected} files added)`;
+    } else if (verification.matchType === 'partial') {
+      return `⚠️ File found with different URL (${filesAdded}/${filesExpected} files added)`;
+    } else if (filesAdded === 0) {
+      return `⚪ No changes detected (file may have been already attached)`;
+    } else {
+      return `❌ File attachment could not be verified (${filesAdded}/${filesExpected} files added)`;
+    }
+  }
+
+  /**
+   * Generate verification warnings
+   * @private
+   */
+  private generateVerificationWarnings(
+    verification: FileVerificationResult,
+    filesAdded: number,
+    filesExpected: number
+  ): string[] {
+    const warnings: string[] = [];
+
+    if (!verification.wasFound && filesAdded > 0) {
+      warnings.push('File was queued but URL not found in asset files. It may be processing or failed during ingestion.');
+    }
+
+    if (verification.matchType === 'partial') {
+      warnings.push('File found with different URL than expected. Verify correct file was attached.');
+    }
+
+    if (filesAdded > filesExpected) {
+      warnings.push(`More files added than expected (${filesAdded} vs ${filesExpected}). Additional files may have been attached.`);
+    }
+
+    if (filesAdded < filesExpected && filesAdded > 0) {
+      warnings.push('Fewer files added than expected. Some files may have failed to attach.');
+    }
+
+    return warnings;
   }
 }
