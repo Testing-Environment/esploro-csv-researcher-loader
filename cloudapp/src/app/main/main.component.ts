@@ -495,8 +495,11 @@ export class MainComponent implements OnInit, OnDestroy {
             this.assetService.addFilesToAsset(assetId, files).pipe(
               map(() => ({ assetId, count: files.length, files })),
               catchError(error => {
+                // Enhanced error message with API details (already parsed by AssetService)
                 const message = error?.message
                   || `Failed to queue files for asset ${assetId}. Please review the details and try again.`;
+                
+                this.logger.error('File addition failed for asset', { assetId, files, error });
                 return throwError(() => ({ message }));
               })
             )
@@ -547,14 +550,19 @@ export class MainComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.logger.jobProcessing('Starting job automation', { assetCount: assetIds.length });
+    const setName = this.assetService.generateSetName();
+    const jobName = 'Import Research Assets Files';
+
+    this.logger.jobProcessing('Starting job automation', { assetCount: assetIds.length, setName });
 
     try {
-      const setName = this.assetService.generateSetName();
-      const setDescription = 'Automated set created by Cloud App Files Loader';
+      // Step 1: Pre-processing notification
+      this.alert.info(`Asset pre-processing successful. Creating an itemized set called "${setName}"...`);
 
       // Phase 3.1: Create the set
+      const setDescription = 'Automated set created by Cloud App Files Loader';
       this.logger.jobProcessing('Creating set', { name: setName, description: setDescription });
+      
       const setResponse = await firstValueFrom(
         this.assetService.createSet(setName, setDescription)
       );
@@ -563,8 +571,14 @@ export class MainComponent implements OnInit, OnDestroy {
       this.logger.jobProcessing('Set created', { setId: setResponse.id });
       console.log(`Set created successfully: ${setResponse.id}`);
 
+      // Notification: Set created successfully
+      this.alert.success(
+        `Itemized set "${setName}" successfully created with set ID: ${this.createdSetId}. Adding assets to set...`
+      );
+
       // Phase 3.2: Add members to the set
       this.logger.jobProcessing('Adding members to set', { setId: setResponse.id, memberCount: assetIds.length });
+      
       const addMembersResponse = await firstValueFrom(
         this.assetService.updateSetMembers(setResponse.id, assetIds)
       );
@@ -573,8 +587,14 @@ export class MainComponent implements OnInit, OnDestroy {
       this.logger.jobProcessing('Members added to set', { setId: setResponse.id, memberCount });
       console.log(`Added ${memberCount} member(s) to set ${setResponse.id}`);
 
+      // Notification: Members added successfully
+      this.alert.success(
+        `Itemized set "${setName}" successfully updated with all ${assetIds.length} asset(s). Running the job "${jobName}"...`
+      );
+
       // Phase 3.3: Run the import job
-      this.logger.jobProcessing('Submitting import job', { setId: setResponse.id });
+      this.logger.jobProcessing('Submitting import job', { setId: setResponse.id, jobName });
+      
       const jobResponse = await firstValueFrom(
         this.assetService.runJob(setResponse.id)
       );
@@ -584,21 +604,30 @@ export class MainComponent implements OnInit, OnDestroy {
       this.logger.jobProcessing('Job submitted', { jobId: jobResponse.id, instanceId: jobInstanceId });
       console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
 
+      // Notification: Job initiated successfully
+      this.alert.success(
+        `Job is successfully initiated with instance ID: ${this.jobInstanceId}. Processing assets and fetching files...`
+      );
+
       // Phase 3.4: Start polling job status
       this.logger.jobProcessing('Starting job polling', { jobId: jobResponse.id, instanceId: jobInstanceId });
       this.startJobPolling(jobResponse.id, jobInstanceId);
 
-      this.alert.success(
-        `Job automation started! Set: ${setResponse.id}, Job Instance: ${jobInstanceId}. Monitoring job progress...`
-      );
-
     } catch (error: any) {
+      // Enhanced error handling with detailed information
+      const errorMessage = error?.message || 'Failed to automate job submission';
+      
       this.logger.error('Job automation failed', error);
       console.error('Error in job automation:', error);
-      const errorMessage = error?.message || 'Failed to automate job submission';
-      this.alert.error(`Job automation failed: ${errorMessage}. You may need to manually run the import job.`);
-      // Don't fail the entire process if automation fails
-      // User can still manually run the job using the created set
+
+      this.alert.error(errorMessage);
+
+      // Provide recovery guidance based on where the failure occurred
+      if (!this.createdSetId) {
+        this.alert.warn('The set was not created. You may need to manually create a set and add the assets.');
+      } else if (!this.jobInstanceId) {
+        this.alert.warn(`Set "${setName}" (ID: ${this.createdSetId}) was created but job submission failed. You may need to manually run the job.`);
+      }
     }
   }
 
