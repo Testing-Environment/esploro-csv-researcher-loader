@@ -8,17 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Phase 3.1 & 3.2: Job Automation - Set Creation and Member Addition**
+- **Phase 3.1, 3.2 & 3.3: Job Automation - Complete Workflow Automation**
   - `createSet()` API method in AssetService for automated set creation
   - `generateSetName()` helper method for unique timestamped set names (format: `CloudApp-FilesLoaderSet-YYYY-MM-DD-HH-MM-SS`)
   - `updateSetMembers()` API method in AssetService for adding assets to sets
+  - `runJob()` API method in AssetService for submitting import jobs (default job ID: M50762)
   - Automatic set creation after successful file processing in CSV workflow
   - Automatic set creation after successful file processing in manual entry workflow
   - Automatic member addition to created sets with all successful assets
+  - Automatic job submission to process queued files (eliminates all manual steps)
   - TypeScript interfaces for Set API (`SetPayload`, `SetResponse`, `SetMember`, `AddSetMembersPayload`, `AddSetMembersResponse`)
-  - User notification with set ID and member count upon successful creation
-  - Error handling for set creation and member addition failures (non-blocking - allows manual set creation)
+  - TypeScript interfaces for Job API (`JobParameter`, `RunJobPayload`, `JobExecutionResponse`)
+  - User notification with set ID, member count, and job instance ID upon successful automation
+  - Error handling for set creation, member addition, and job submission failures (non-blocking - allows manual fallback)
   - `fail_on_invalid_id=false` parameter for resilient member addition (continues adding valid IDs even if some are invalid)
+  - Configurable job ID parameter (defaults to M50762, can be customized per institution)
 
 ### Changed
 - Restructured project documentation for better organization

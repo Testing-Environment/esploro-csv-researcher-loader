@@ -87,10 +87,9 @@ Implement fully automated workflow to eliminate manual set creation and job exec
 - ✅ Already Implemented: Asset validation via `getAsset()`
 - ✅ **Completed**: Create set via `POST /conf/sets` (Phase 3.1 - January 2025)
 - ✅ **Completed**: Add members to set via `POST /conf/sets/{setId}?op=add_members` (Phase 3.2 - January 2025)
-- 📋 **Implement**: Find job ID (try hardcoded M50762, fallback to search)
-- 📋 **Implement**: Run job via `POST /conf/jobs/{jobId}/instances`
-- 📋 **Implement**: Poll job status via `GET /conf/jobs/{jobId}/instances/{instanceId}`
-- 📋 **Implement**: Verify results by comparing before/after asset states
+- ✅ **Completed**: Run job via `POST /conf/jobs/{jobId}?op=run` using hardcoded M50762 (Phase 3.3 - January 2025)
+- 📋 **Future**: Poll job status via `GET /conf/jobs/{jobId}/instances/{instanceId}` (Phase 3.4)
+- 📋 **Future**: Verify results by comparing before/after asset states (Phase 3.5)
 
 #### API Methods to Add
 ```typescript
@@ -98,10 +97,8 @@ Implement fully automated workflow to eliminate manual set creation and job exec
 ✅ createSet(name: string, description: string): Observable<SetResponse> // COMPLETED Phase 3.1
 ✅ generateSetName(): string // COMPLETED Phase 3.1
 ✅ updateSetMembers(setId: string, memberIds: string[]): Observable<AddSetMembersResponse> // COMPLETED Phase 3.2
-getJobDetails(jobId: string): Observable<JobDetails>
-findJobByName(jobName: string): Observable<string> // Returns job ID
-runJob(jobId: string, setId: string): Observable<JobInstanceResponse>
-getJobInstance(jobId: string, instanceId: string): Observable<JobStatus>
+✅ runJob(setId: string, jobId?: string): Observable<JobExecutionResponse> // COMPLETED Phase 3.3
+getJobInstance(jobId: string, instanceId: string): Observable<JobStatus> // Future Phase 3.4
 ```
 
 #### Workflow Steps
@@ -109,11 +106,10 @@ getJobInstance(jobId: string, instanceId: string): Observable<JobStatus>
 2. **Queue files to assets** (existing - `addFilesToAsset()`)
 3. ✅ **Create temporary set** (COMPLETED - Phase 3.1)
 4. ✅ **Add validated assets to set** (COMPLETED - Phase 3.2)
-5. **Find "Import Research Assets Files" job** (new)
-6. **Submit job for the set** (new)
-7. **Poll until job completes** (new)
-8. **Parse job counters and verify** (new)
-9. **Display comprehensive results** (enhance existing)
+5. ✅ **Submit job for the set** (COMPLETED - Phase 3.3 - uses hardcoded M50762)
+6. **Poll until job completes** (Future - Phase 3.4)
+7. **Parse job counters and verify** (Future - Phase 3.5)
+8. **Display comprehensive results** (Future - enhance existing)
 
 #### Success Criteria
 - User clicks "Submit" → files are fully ingested without manual intervention

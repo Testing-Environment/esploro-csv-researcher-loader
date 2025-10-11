@@ -382,8 +382,8 @@ export class MainComponent implements OnInit {
   }
 
   /**
-   * Create set for job automation (Phase 3.1 & 3.2)
-   * Creates an Esploro set and adds all successfully processed assets as members
+   * Create set for job automation (Phase 3.1, 3.2 & 3.3)
+   * Creates an Esploro set, adds members, and runs the import job
    */
   private async createSetForSuccessfulAssets(assetIds: string[]): Promise<void> {
     if (assetIds.length === 0) {
@@ -411,16 +411,24 @@ export class MainComponent implements OnInit {
       const memberCount = addMembersResponse.number_of_members?.value ?? assetIds.length;
       console.log(`Added ${memberCount} member(s) to set ${setResponse.id}`);
 
+      // Phase 3.3: Run the import job
+      const jobResponse = await firstValueFrom(
+        this.assetService.runJob(setResponse.id)
+      );
+
+      const jobInstanceId = jobResponse.additional_info?.link?.split('/').pop() || '';
+      console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
+
       this.alert.success(
-        `Set created successfully: ${setResponse.id} with ${memberCount} asset${memberCount === 1 ? '' : 's'}`
+        `Job automation completed! Set: ${setResponse.id}, Job Instance: ${jobInstanceId}. The import job is now running.`
       );
 
     } catch (error: any) {
-      console.error('Error creating set or adding members:', error);
-      const errorMessage = error?.message || 'Failed to create set or add members';
-      this.alert.error(`Set automation failed: ${errorMessage}`);
-      // Don't fail the entire process if set creation fails
-      // User can still manually create a set
+      console.error('Error in job automation:', error);
+      const errorMessage = error?.message || 'Failed to automate job submission';
+      this.alert.error(`Job automation failed: ${errorMessage}. You may need to manually run the import job.`);
+      // Don't fail the entire process if automation fails
+      // User can still manually run the job using the created set
     }
   }
 

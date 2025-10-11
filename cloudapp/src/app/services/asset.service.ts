@@ -10,7 +10,9 @@ import {
   SetPayload,
   SetResponse,
   AddSetMembersPayload,
-  AddSetMembersResponse
+  AddSetMembersResponse,
+  RunJobPayload,
+  JobExecutionResponse
 } from '../models/types';
 
 export interface AddFilesToAssetResponse {
@@ -270,6 +272,57 @@ export class AssetService {
         const errorMessage = error?.message
           || error?.error?.errorList?.error?.[0]?.errorMessage
           || 'Failed to add members to set';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  /**
+   * Run the "Import Research Assets Files" job for a given set
+   * POST /conf/jobs/{jobId}?op=run
+   *
+   * Submits the import job to process queued files for assets in the specified set.
+   * Uses hardcoded job ID M50762 (or M50173 depending on institution).
+   *
+   * @param setId - The ID of the set containing assets to process
+   * @param jobId - The job ID (default: 'M50762')
+   * @returns Observable of the job execution response with instance ID
+   */
+  runJob(setId: string, jobId: string = 'M50762'): Observable<JobExecutionResponse> {
+    if (!setId) {
+      return throwError(() => new Error('Set ID is required'));
+    }
+
+    const jobName = 'Import Research Assets Files - via API - CloudApp';
+
+    const payload: RunJobPayload = {
+      parameter: [
+        {
+          name: { value: 'set_id' },
+          value: setId
+        },
+        {
+          name: { value: 'job_name' },
+          value: jobName
+        }
+      ]
+    };
+
+    return this.restService.call({
+      url: `/conf/jobs/${jobId}?op=run`,
+      method: HttpMethod.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      requestBody: payload
+    }).pipe(
+      map(response => response as JobExecutionResponse),
+      catchError(error => {
+        console.error(`Error running job ${jobId} for set ${setId}:`, error);
+        const errorMessage = error?.message
+          || error?.error?.errorList?.error?.[0]?.errorMessage
+          || 'Failed to run job';
         return throwError(() => new Error(errorMessage));
       })
     );

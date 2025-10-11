@@ -173,3 +173,36 @@ export interface AddSetMembersResponse extends SetResponse {
     member: SetMember[];
   };
 }
+
+/**
+ * Job parameter for POST /conf/jobs/{jobId}?op=run
+ */
+export interface JobParameter {
+  name: { value: string };
+  value: string;
+}
+
+/**
+ * Run job payload for POST /conf/jobs/{jobId}?op=run
+ */
+export interface RunJobPayload {
+  parameter: JobParameter[];
+}
+
+/**
+ * Job execution response from POST /conf/jobs/{jobId}?op=run
+ */
+export interface JobExecutionResponse {
+  id: string;
+  name: string;
+  description?: string;
+  type?: { value: string; desc?: string };
+  category?: { value: string; desc?: string };
+  content?: { value: string; desc?: string };
+  parameter?: JobParameter[];
+  additional_info?: {
+    value: string;  // e.g., "Job no. 9563654220000561 triggered on ..."
+    link?: string;  // Link to job instance
+  };
+  link?: string;
+}
