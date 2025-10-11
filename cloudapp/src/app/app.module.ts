@@ -11,7 +11,7 @@ import { TranslateModule, TranslateLoader, TranslateParser } from '@ngx-translat
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainComponent } from './main/main.component';
-import { CSVProcessorComponent } from './components/csv-processor/csv-processor.component';
+import { CsvProcessorComponent } from './components/csv-processor/csv-processor.component';
 import { ProcessingResultsComponent } from './components/processing-results/processing-results.component';
 import { EnhancedMaterialModule } from './enhanced-material.module';
 
@@ -33,7 +33,7 @@ export function getTranslateModuleWithICU() {
   declarations: [
     AppComponent,
     MainComponent,
-    CSVProcessorComponent,
+    CsvProcessorComponent,
     ProcessingResultsComponent
   ],
   imports: [

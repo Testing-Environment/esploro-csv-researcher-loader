@@ -1084,9 +1084,9 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
       ? ((verifiedSuccess + verifiedPartial) / totalAssets) * 100 
       : 0;
 
-    // Collect all warnings
-    const warnings = results.flatMap(r => r.warnings);
-    const uniqueWarnings = Array.from(new Set(warnings));
+    // Collect all warnings (using reduce instead of flatMap for ES2015 compatibility)
+    const warnings = results.reduce((acc, r) => acc.concat(r.warnings), [] as string[]);
+    const uniqueWarnings: string[] = Array.from(new Set(warnings));
 
     // Generate recommendations
     const recommendations: string[] = [];
