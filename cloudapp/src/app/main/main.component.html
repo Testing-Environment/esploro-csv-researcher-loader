@@ -167,7 +167,7 @@
                   <mat-form-field appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.FileType' | translate }}</mat-label>
                     <mat-select formControlName="type" [disabled]="submitting">
-                      <mat-option *ngFor="let type of getFilteredFileTypes(entryGroup as FormGroup)" [value]="type.id">
+                      <mat-option *ngFor="let type of getFilteredFileTypes($any(entryGroup))" [value]="type.id">                 
                         {{ type.targetCode }}<span *ngIf="type.id"> (ID: {{ type.id }})</span>
                       </mat-option>
                     </mat-select>
