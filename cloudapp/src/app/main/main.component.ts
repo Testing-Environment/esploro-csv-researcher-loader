@@ -31,6 +31,9 @@ export class MainComponent implements OnInit, OnDestroy {
   assetValidationInProgress = false;
   // Controls whether Stage 2 (File Type selection) is presented
   fileTypesToggle = false; // default OFF per requirements
+  showFileName = false;        // Controls File URL field visibility
+  showFileDescription = false; // Controls File Description field visibility
+  showIsSupplemental = false;  // Controls Is Supplemental checkbox visibility
   fileTypes: FileType[] = [];
   assetFileAndLinkTypes: AssetFileAndLinkType[] = [];  // All file type categories
   submitting = false;
@@ -136,24 +139,27 @@ export class MainComponent implements OnInit, OnDestroy {
 
     const skippedStageTwo = !this.fileTypesToggle;
 
-    if (skippedStageTwo) {
-      const allAssigned = this.entries.controls.every((group: FormGroup) => this.assignDefaultType(group));
-      if (!allAssigned) {
-        this.alert.error('Unable to determine a default file type for one or more entries. Please specify file types manually.');
-        return;
-      }
-      this.applyTypeValidators(false);
-    } else {
-      // Ensure type selection is complete (similar to submitWithSelectedTypes)
-      const hasTypeErrors = this.entries.controls.some(group => {
-        const control = (group as FormGroup).get('type');
-        control?.markAsTouched();
-        return control?.invalid;
-      });
+    // Only validate file types if the toggle is ON
+    if (this.fileTypesToggle) {
+      if (skippedStageTwo) {
+        const allAssigned = this.entries.controls.every((group: FormGroup) => this.assignDefaultType(group));
+        if (!allAssigned) {
+          this.alert.error('Unable to determine a default file type for one or more entries. Please specify file types manually.');
+          return;
+        }
+        this.applyTypeValidators(false);
+      } else {
+        // Ensure type selection is complete (similar to submitWithSelectedTypes)
+        const hasTypeErrors = this.entries.controls.some(group => {
+          const control = (group as FormGroup).get('type');
+          control?.markAsTouched();
+          return control?.invalid;
+        });
 
-      if (hasTypeErrors) {
-        this.alert.error('Please choose a file type for each entry before continuing.');
-        return;
+        if (hasTypeErrors) {
+          this.alert.error('Please choose a file type for each entry before continuing.');
+          return;
+        }
       }
     }
 
@@ -334,6 +340,34 @@ export class MainComponent implements OnInit, OnDestroy {
   onDownloadReady(downloadUrl: string) {
     this.mmsIdDownloadUrl = downloadUrl;
     this.showWorkflowInstructions = true;
+  }
+
+  /**
+   * Build payload for file upload, excluding fields whose toggles are OFF
+   */
+  private buildFilePayload(entry: any): any {
+    const payload: any = {
+      mmsId: entry.assetId  // Always required
+    };
+
+    // Only include if toggle is ON
+    if (this.showFileName && entry.url) {
+      payload.url = entry.url;
+    }
+
+    if (this.fileTypesToggle && entry.type) {
+      payload.type = entry.type;
+    }
+
+    if (this.showFileDescription && entry.description) {
+      payload.description = entry.description;
+    }
+
+    if (this.showIsSupplemental) {
+      payload.supplemental = entry.supplemental || false;
+    }
+
+    return payload;
   }
 
   private async executeSubmission(skippedStageTwo: boolean): Promise<void> {

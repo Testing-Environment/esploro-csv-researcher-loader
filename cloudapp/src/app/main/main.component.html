@@ -31,6 +31,27 @@
                     <mat-icon *ngIf="!fileTypesToggle">add_circle_outline</mat-icon>
                     {{ 'ManualEntry.Fields.FileType' | translate }}
                   </mat-chip>
+
+                  <!-- NEW: File Name toggle -->
+                  <mat-chip [selected]="showFileName" (click)="showFileName = !showFileName">
+                    <mat-icon *ngIf="showFileName">check_circle</mat-icon>
+                    <mat-icon *ngIf="!showFileName">add_circle_outline</mat-icon>
+                    {{ 'ManualEntry.Fields.FileTitle' | translate }}
+                  </mat-chip>
+
+                  <!-- NEW: File Description toggle -->
+                  <mat-chip [selected]="showFileDescription" (click)="showFileDescription = !showFileDescription">
+                    <mat-icon *ngIf="showFileDescription">check_circle</mat-icon>
+                    <mat-icon *ngIf="!showFileDescription">add_circle_outline</mat-icon>
+                    {{ 'ManualEntry.Fields.Description' | translate }}
+                  </mat-chip>
+
+                  <!-- NEW: Is Supplemental toggle -->
+                  <mat-chip [selected]="showIsSupplemental" (click)="showIsSupplemental = !showIsSupplemental">
+                    <mat-icon *ngIf="showIsSupplemental">check_circle</mat-icon>
+                    <mat-icon *ngIf="!showIsSupplemental">add_circle_outline</mat-icon>
+                    {{ 'ManualEntry.Fields.Supplemental' | translate }}
+                  </mat-chip>
                 </mat-chip-list>
               </div>
               <div class="stage-callout" role="note" *ngIf="fileTypesToggle">
@@ -69,7 +90,7 @@
                     <mat-error *ngIf="entryGroup.get('assetId')?.hasError('invalidAsset')">{{ 'ManualEntry.Errors.AssetIdInvalid' | translate }}</mat-error>
                   </mat-form-field>
 
-                  <mat-form-field appearance="outline" class="full-width">
+                  <mat-form-field *ngIf="showFileName" appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.FileTitle' | translate }}</mat-label>
                     <input matInput formControlName="title" placeholder="{{ 'ManualEntry.Placeholders.FileTitle' | translate }}" />
                   </mat-form-field>
@@ -82,12 +103,12 @@
                     <mat-error *ngIf="entryGroup.get('url')?.hasError('pattern')">{{ 'ManualEntry.Errors.UrlFormat' | translate }}</mat-error>
                   </mat-form-field>
 
-                  <mat-form-field appearance="outline" class="full-width">
+                  <mat-form-field *ngIf="showFileDescription" appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.Description' | translate }}</mat-label>
                     <textarea matInput formControlName="description" rows="2" placeholder="{{ 'ManualEntry.Placeholders.Description' | translate }}"></textarea>
                   </mat-form-field>
 
-                  <mat-checkbox formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
+                  <mat-checkbox *ngIf="showIsSupplemental" formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
                 </mat-card>
               </section>
 
@@ -154,27 +175,26 @@
                     </div>
                   </div>
 
-                  <mat-form-field appearance="outline" class="full-width">
+                  <mat-form-field *ngIf="showFileName" appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.FileTitle' | translate }}</mat-label>
                     <input matInput formControlName="title" placeholder="{{ 'ManualEntry.Placeholders.FileTitle' | translate }}" />
                   </mat-form-field>
 
-                  <mat-form-field appearance="outline" class="full-width">
+                  <mat-form-field *ngIf="showFileDescription" appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.Description' | translate }}</mat-label>
                     <textarea matInput formControlName="description" rows="2" placeholder="{{ 'ManualEntry.Placeholders.Description' | translate }}"></textarea>
                   </mat-form-field>
 
-                  <mat-form-field appearance="outline" class="full-width">
+                  <mat-form-field *ngIf="fileTypesToggle" appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.FileType' | translate }}</mat-label>
                     <mat-select formControlName="type" [disabled]="submitting">
-                      <mat-option *ngFor="let type of getFilteredFileTypes($any(entryGroup))" [value]="type.id">                 
+                      <mat-option *ngFor="let type of getFilteredFileTypes($any(entryGroup))" [value]="type.id">
                         {{ type.targetCode }}<span *ngIf="type.id"> (ID: {{ type.id }})</span>
                       </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="entryGroup.get('type')?.hasError('required')">{{ 'ManualEntry.Errors.FileTypeRequired' | translate }}</mat-error>
                   </mat-form-field>
 
-                  <mat-checkbox formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
+                  <mat-checkbox *ngIf="showIsSupplemental" formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
                 </mat-card>
               </section>
 
