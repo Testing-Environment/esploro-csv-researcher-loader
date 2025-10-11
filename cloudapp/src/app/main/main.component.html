@@ -21,6 +21,23 @@
                 </div>
               </div>
 
+              <div class="field-toggle-row">
+                <mat-slide-toggle
+                  color="primary"
+                  [checked]="fileTypeFieldEnabled"
+                  (change)="onFileTypeToggleChange($event.checked)">
+                  {{ 'ManualEntry.Toggles.FileTypeField' | translate }}
+                </mat-slide-toggle>
+              </div>
+
+              <div class="toggle-callout" *ngIf="fileTypeFieldEnabled">
+                <mat-icon color="primary">assignment</mat-icon>
+                <div class="toggle-callout__content">
+                  <h3>{{ 'ManualEntry.Messages.FileTypeToggleOnCalloutTitle' | translate }}</h3>
+                  <p>{{ 'ManualEntry.Messages.FileTypeToggleOnCallout' | translate }}</p>
+                </div>
+              </div>
+
               <section class="file-type-hint" *ngIf="fileTypes.length">
                 <h2>{{ 'ManualEntry.FileTypesTitle' | translate }}</h2>
                 <p class="hint-text">{{ 'ManualEntry.FileTypesHint' | translate }}</p>
@@ -33,12 +50,109 @@
               </section>
 
               <section formArrayName="entries" class="files-section">
-                <mat-card class="file-card" *ngFor="let entryGroup of entries.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i" [ngClass]="{ 'invalid-asset': isAssetInvalid(i) }">
+                <mat-card
+                  class="file-card"
+                  *ngFor="let entryGroup of entries.controls; let i = index; trackBy: trackByIndex"
+                  [formGroupName]="i"
+                  [ngClass]="[getRowStateClass(entryGroup), isAssetInvalid(i) ? 'invalid-asset' : '']">
                   <div class="file-card__header">
-                    <h2>{{ 'ManualEntry.Stage1FileHeading' | translate:{ index: i + 1 } }}</h2>
-                    <button mat-icon-button type="button" color="warn" (click)="removeEntry(i)" *ngIf="entries.length > 1">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                    <div class="file-card__heading">
+                      <h2>{{ 'ManualEntry.Stage1FileHeading' | translate:{ index: i + 1 } }}</h2>
+                      <span
+                        class="row-state-chip"
+                        [ngClass]="getRowStateClass(entryGroup)"
+                        [matTooltip]="getRowStateTooltipKey(entryGroup) | translate"
+                        matTooltipShowDelay="150">
+                        <mat-icon>{{ getRowStateIcon(entryGroup) }}</mat-icon>
+                        <span>{{ getRowStateLabelKey(entryGroup) | translate }}</span>
+                      </span>
+                    </div>
+                    <div class="file-card__actions">
+                      <button
+                        mat-icon-button
+                        type="button"
+                        (click)="duplicateEntry(i)"
+                        [disabled]="assetValidationInProgress || submitting"
+                        [matTooltip]="'ManualEntry.Actions.Duplicate' | translate"
+                        [attr.aria-label]="'ManualEntry.Actions.Duplicate' | translate">
+                        <mat-icon>content_copy</mat-icon>
+                      </button>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        color="warn"
+                        (click)="removeEntry(i)"
+                        *ngIf="entries.length > 1"
+                        [disabled]="assetValidationInProgress || submitting"
+                        [matTooltip]="'ManualEntry.Actions.Remove' | translate"
+                        [attr.aria-label]="'ManualEntry.Actions.Remove' | translate">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+
+                  <ng-container *ngIf="getAssetMetadataForEntry(entryGroup) as metadata">
+                    <div class="asset-metadata">
+                      <div class="asset-metadata__header">
+                        <mat-icon>inventory_2</mat-icon>
+                        <div>
+                          <div class="asset-metadata__title">
+                            {{ metadata.title || ('ManualEntry.Labels.AssetTitleFallback' | translate) }}
+                          </div>
+                          <div class="asset-metadata__type" *ngIf="metadata.assetType">
+                            {{ 'ManualEntry.Labels.AssetType' | translate:{ type: metadata.assetType } }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <ng-container *ngIf="metadata.files?.length as fileCount; else noExistingFiles">
+                        <div class="asset-metadata__files">
+                          <div class="existing-file" *ngFor="let existing of metadata.files | slice:0:existingFilePreviewLimit">
+                            <mat-icon>attach_file</mat-icon>
+                            <div>
+                              <div class="existing-file__title">
+                                {{ existing.title || ('ManualEntry.Labels.UntitledFile' | translate) }}
+                              </div>
+                              <a
+                                *ngIf="existing.url; else existingUrlMissing"
+                                class="existing-file__url"
+                                [href]="existing.url"
+                                target="_blank"
+                                rel="noopener"
+                                matTooltip="{{ existing.url }}">
+                                {{ existing.url }}
+                              </a>
+                              <ng-template #existingUrlMissing>
+                                <span class="existing-file__url existing-file__url--missing">
+                                  {{ 'ManualEntry.Labels.AssetUrlMissing' | translate }}
+                                </span>
+                              </ng-template>
+                            </div>
+                          </div>
+                          <div class="existing-file existing-file--more" *ngIf="getExistingFileOverflowCount(metadata) > 0">
+                            <mat-icon>more_horiz</mat-icon>
+                            <span>{{ 'ManualEntry.Labels.MoreFiles' | translate:{ count: getExistingFileOverflowCount(metadata) } }}</span>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-template #noExistingFiles>
+                        <p class="asset-metadata__empty">{{ 'ManualEntry.Messages.NoExistingFiles' | translate }}</p>
+                      </ng-template>
+
+                      <div class="status-hint status-hint--warning" *ngIf="isUrlAlreadyOnAsset(entryGroup, metadata)">
+                        <mat-icon>link_off</mat-icon>
+                        <span>{{ 'ManualEntry.Messages.UrlAlreadyAttached' | translate }}</span>
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  <div class="status-hint status-hint--info" *ngIf="isRowState(entryGroup, 'pendingNew')">
+                    <mat-icon>lightbulb</mat-icon>
+                    <span>{{ 'ManualEntry.Messages.PendingNewAsset' | translate }}</span>
+                  </div>
+                  <div class="status-hint status-hint--info" *ngIf="isRowState(entryGroup, 'validatedExisting')">
+                    <mat-icon>inventory</mat-icon>
+                    <span>{{ 'ManualEntry.Messages.ValidatedExisting' | translate }}</span>
                   </div>
 
                   <mat-form-field appearance="outline" class="full-width">
@@ -46,6 +160,7 @@
                     <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
                     <mat-error *ngIf="entryGroup.get('assetId')?.hasError('required')">{{ 'ManualEntry.Errors.AssetIdRequired' | translate }}</mat-error>
                     <mat-error *ngIf="entryGroup.get('assetId')?.hasError('invalidAsset')">{{ 'ManualEntry.Errors.AssetIdInvalid' | translate }}</mat-error>
+                    <mat-error *ngIf="entryGroup.get('assetId')?.hasError('duplicateAssetUrl')">{{ 'ManualEntry.Errors.AssetUrlDuplicate' | translate }}</mat-error>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="full-width">
@@ -59,6 +174,7 @@
                     <mat-hint>{{ 'ManualEntry.Hints.FileUrl' | translate }}</mat-hint>
                     <mat-error *ngIf="entryGroup.get('url')?.hasError('required')">{{ 'ManualEntry.Errors.UrlRequired' | translate }}</mat-error>
                     <mat-error *ngIf="entryGroup.get('url')?.hasError('pattern')">{{ 'ManualEntry.Errors.UrlFormat' | translate }}</mat-error>
+                    <mat-error *ngIf="entryGroup.get('url')?.hasError('duplicateAssetUrl')">{{ 'ManualEntry.Errors.AssetUrlDuplicate' | translate }}</mat-error>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="full-width">
@@ -78,12 +194,19 @@
               </div>
 
               <div class="form-actions stage1-actions">
-                <button mat-flat-button color="primary" type="button" (click)="specifyTypesForEachFile()" [disabled]="assetValidationInProgress || submitting">
-                  {{ 'ManualEntry.Actions.SpecifyTypes' | translate }}
-                </button>
-                <button mat-stroked-button type="button" (click)="proceedWithoutSelectingTypes()" [disabled]="assetValidationInProgress || submitting">
-                  {{ 'ManualEntry.Actions.SkipTypeSelection' | translate }}
-                </button>
+                <ng-container *ngIf="fileTypeFieldEnabled; else submitWithoutTypes">
+                  <button mat-flat-button color="primary" type="button" (click)="specifyTypesForEachFile()" [disabled]="assetValidationInProgress || submitting">
+                    {{ 'ManualEntry.Actions.SpecifyTypes' | translate }}
+                  </button>
+                  <button mat-stroked-button type="button" (click)="proceedWithoutSelectingTypes()" [disabled]="assetValidationInProgress || submitting">
+                    {{ 'ManualEntry.Actions.SkipTypeSelection' | translate }}
+                  </button>
+                </ng-container>
+                <ng-template #submitWithoutTypes>
+                  <button mat-flat-button color="primary" type="button" (click)="proceedWithoutSelectingTypes()" [disabled]="assetValidationInProgress || submitting">
+                    {{ 'ManualEntry.Actions.SubmitWithoutFileTypes' | translate }}
+                  </button>
+                </ng-template>
               </div>
             </ng-container>
 
@@ -138,7 +261,7 @@
                   <mat-form-field appearance="outline" class="full-width">
                     <mat-label>{{ 'ManualEntry.Fields.FileType' | translate }}</mat-label>
                     <mat-select formControlName="type" [disabled]="submitting">
-                      <mat-option *ngFor="let type of getFilteredFileTypes(entryGroup as FormGroup)" [value]="type.id">
+                      <mat-option *ngFor="let type of getFilteredFileTypes(entryGroup)" [value]="type.id">
                         {{ type.targetCode }}<span *ngIf="type.id"> (ID: {{ type.id }})</span>
                       </mat-option>
                     </mat-select>
@@ -159,6 +282,89 @@
               </div>
             </ng-container>
           </ng-container>
+
+          <section class="export-options" *ngIf="entries.length">
+            <h3>{{ 'ManualEntry.ExportOptions.Title' | translate }}</h3>
+            <p class="export-options__description">{{ 'ManualEntry.ExportOptions.Description' | translate }}</p>
+            <div class="export-options__grid">
+              <div class="export-option">
+                <mat-checkbox [(ngModel)]="exportValidOnSubmit" [ngModelOptions]="{ standalone: true }">
+                  {{ 'ManualEntry.ExportOptions.ExportValidOnSubmit' | translate }}
+                </mat-checkbox>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="exportValidEntries()"
+                  [disabled]="submitting || assetValidationInProgress">
+                  <mat-icon>download</mat-icon>
+                  <span>{{ 'ManualEntry.Actions.ExportValidNow' | translate }}</span>
+                </button>
+              </div>
+              <div class="export-option">
+                <mat-checkbox [(ngModel)]="exportInvalidOnSubmit" [ngModelOptions]="{ standalone: true }">
+                  {{ 'ManualEntry.ExportOptions.ExportInvalidOnSubmit' | translate }}
+                </mat-checkbox>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="exportInvalidEntries()"
+                  [disabled]="submitting || assetValidationInProgress">
+                  <mat-icon>download</mat-icon>
+                  <span>{{ 'ManualEntry.Actions.ExportInvalidNow' | translate }}</span>
+                </button>
+              </div>
+              <div class="export-option">
+                <mat-checkbox [(ngModel)]="exportDeletedOnSubmit" [ngModelOptions]="{ standalone: true }">
+                  {{ 'ManualEntry.ExportOptions.ExportDeletedOnSubmit' | translate }}
+                </mat-checkbox>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="exportDeletedEntries()"
+                  [disabled]="!deletedEntries.length || submitting || assetValidationInProgress">
+                  <mat-icon>download</mat-icon>
+                  <span>{{ 'ManualEntry.Actions.ExportDeletedNow' | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="deleted-entries" *ngIf="deletedEntries.length">
+            <h3>{{ 'ManualEntry.DeletedEntries.Title' | translate:{ count: deletedEntries.length } }}</h3>
+            <p class="deleted-entries__description">{{ 'ManualEntry.DeletedEntries.Description' | translate }}</p>
+            <mat-card class="deleted-entry" *ngFor="let entry of deletedEntries; let idx = index">
+              <div class="deleted-entry__details">
+                <div>
+                  <span class="label">{{ 'ManualEntry.Fields.AssetId' | translate }}</span>
+                  <span class="value">{{ getEntryFieldValue(entry.formGroup, 'assetId') || ('ManualEntry.Labels.AssetIdMissing' | translate) }}</span>
+                </div>
+                <div>
+                  <span class="label">{{ 'ManualEntry.Fields.FileTitle' | translate }}</span>
+                  <span class="value">{{ getEntryFieldValue(entry.formGroup, 'title') || ('ManualEntry.Labels.UntitledFile' | translate) }}</span>
+                </div>
+                <div>
+                  <span class="label">{{ 'ManualEntry.Fields.FileUrl' | translate }}</span>
+                  <span class="value value--url">{{ getEntryFieldValue(entry.formGroup, 'url') }}</span>
+                </div>
+                <div>
+                  <span class="label">{{ 'ManualEntry.DeletedEntries.RemovedAt' | translate }}</span>
+                  <span class="value">{{ entry.deletedAt | date:'medium' }}</span>
+                </div>
+                <div *ngIf="entry.reason">
+                  <span class="label">{{ 'ManualEntry.DeletedEntries.Reason' | translate }}</span>
+                  <span class="value">{{ entry.reason }}</span>
+                </div>
+              </div>
+              <div class="deleted-entry__actions">
+                <button mat-stroked-button color="primary" type="button" (click)="restoreDeletedEntry(idx)">
+                  {{ 'ManualEntry.Actions.Restore' | translate }}
+                </button>
+                <button mat-button color="warn" type="button" (click)="permanentlyDeleteEntry(idx)">
+                  {{ 'ManualEntry.Actions.DeleteForever' | translate }}
+                </button>
+              </div>
+            </mat-card>
+          </section>
 
           <mat-progress-bar *ngIf="submitting || assetValidationInProgress" mode="indeterminate"></mat-progress-bar>
 

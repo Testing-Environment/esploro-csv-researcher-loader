@@ -135,6 +135,22 @@
 		"Stage2Title": "Stage 2: Specify file types",
 		"Stage2Description": "Select the appropriate file type for each entry. These IDs are required by the Esploro API.",
 		"Stage2FileHeading": "File {index} – type selection",
+		"RowStates": {
+			"Pending": "Pending details",
+			"PendingNew": "Pending validation",
+			"ValidatedExisting": "Asset verified",
+			"Valid": "Ready",
+			"Invalid": "Needs attention",
+			"Duplicate": "Duplicate entry"
+		},
+		"RowStateDescriptions": {
+			"Pending": "Enter an asset ID and URL to validate this row.",
+			"PendingNew": "Validate this asset ID to confirm it exists in Esploro.",
+			"ValidatedExisting": "Asset metadata was loaded from Esploro for review.",
+			"Valid": "All required fields are present and validated.",
+			"Invalid": "The asset ID couldn't be validated. Correct it before continuing.",
+			"Duplicate": "This asset ID and URL combination appears multiple times. Make each row unique before continuing."
+		},
 		"Fields": {
 			"AssetId": "Asset ID",
 			"AssetTitle": "Asset title",
@@ -151,18 +167,53 @@
 		"Hints": {
 			"FileUrl": "Provide the fully qualified URL that Esploro can fetch."
 		},
+		"Messages": {
+			"PendingNewAsset": "This looks like a new asset ID. Validate it to confirm it exists before submitting.",
+			"ValidatedExisting": "Asset metadata loaded from Esploro—review the existing files below before adding new ones.",
+			"UrlAlreadyAttached": "This URL already exists on the asset. Esploro may ignore it during the job run.",
+			"NoExistingFiles": "No files are currently attached to this asset."
+		},
+		"Labels": {
+			"AssetType": "Asset type: {type}",
+			"AssetTitleFallback": "Asset title unavailable",
+			"UntitledFile": "Untitled file",
+			"MoreFiles": "+{count} {count, plural, =1 {more file} other {more files}}",
+			"AssetIdMissing": "Asset ID missing",
+			"AssetUrlMissing": "URL unavailable"
+		},
 		"Actions": {
 			"AddAnother": "Add another file",
 			"SpecifyTypes": "Specify Types of Each File",
 			"SkipTypeSelection": "Proceed Without Selecting File Types",
 			"BackToDetails": "Back to Details",
-			"SubmitFiles": "Submit Files"
+			"SubmitFiles": "Submit Files",
+			"Duplicate": "Duplicate row",
+			"Remove": "Remove row",
+			"Restore": "Restore row",
+			"DeleteForever": "Remove forever",
+			"ExportValidNow": "Download validated rows",
+			"ExportInvalidNow": "Download rows needing attention",
+			"ExportDeletedNow": "Download deleted rows"
+		},
+		"ExportOptions": {
+			"Title": "Export options",
+			"Description": "Choose which groups of rows to export automatically after a successful submission.",
+			"ExportValidOnSubmit": "Export validated rows on submission",
+			"ExportInvalidOnSubmit": "Export rows that still need attention",
+			"ExportDeletedOnSubmit": "Export deleted rows when submitting"
+		},
+		"DeletedEntries": {
+			"Title": "{count, plural, =1 {1 row removed from the form} other {{count} rows removed from the form}}",
+			"Description": "These rows were removed from the form. Restore them if needed or remove them permanently.",
+			"RemovedAt": "Removed",
+			"Reason": "Reason"
 		},
 		"Errors": {
 			"AssetIdRequired": "Asset ID is required.",
 			"AssetIdInvalid": "Asset ID not found in Esploro.",
 			"UrlRequired": "File URL is required.",
 			"UrlFormat": "Enter a valid http(s) URL.",
+			"AssetUrlDuplicate": "Duplicate entry: This asset ID and URL combination is already listed above.",
 			"FileTypeRequired": "Select a file type."
 		}
 	},

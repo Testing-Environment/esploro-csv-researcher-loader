@@ -5,18 +5,22 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ClipboardModule } from '@angular/cdk/clipboard';
-
-const modules = [
-  MatTabsModule,
-  MatStepperModule,
-  MatProgressBarModule,
-  MatTooltipModule,
-  ClipboardModule
-];
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
-  imports: modules,
-  exports: modules
+  imports: [
+    MatTabsModule,
+    MatStepperModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatSlideToggleModule
+  ],
+  exports: [
+    MatTabsModule,
+    MatStepperModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatSlideToggleModule
+  ]
 })
 export class EnhancedMaterialModule { }
