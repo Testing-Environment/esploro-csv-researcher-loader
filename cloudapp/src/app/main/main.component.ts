@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, from, throwError, interval, Subscription, of } from 'rxjs';
 import { catchError, concatMap, map, toArray, switchMap, takeWhile } from 'rxjs/operators';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetService } from '../services/asset.service';
 import { LoggerService } from '../services/logger.service';
 import { AssetFileLink } from '../models/asset';
@@ -64,13 +64,18 @@ export class MainComponent implements OnInit, OnDestroy {
   processedAssetsCache: ProcessedAsset[] = [];
   assetCacheMap: Map<string, CachedAssetState> = new Map();
 
+  // Layout detection
+  private isExpandedView = false;
+  private layoutSubscription: Subscription | null = null;
+
   private readonly urlPattern = /^https?:\/\//i;
 
   constructor(
     private fb: FormBuilder,
     private assetService: AssetService,
     private alert: AlertService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private eventsService: CloudAppEventsService
   ) {
     this.form = this.fb.group({
       entries: this.fb.array([this.createEntryGroup()])
@@ -87,6 +92,23 @@ export class MainComponent implements OnInit, OnDestroy {
         supplemental: this.showIsSupplemental
       }
     });
+
+    // Subscribe to layout changes
+    this.layoutSubscription = this.eventsService.getPageMetadata().subscribe(pageInfo => {
+      const previousLayout = this.isExpandedView;
+      // Check if the app is in expanded view (full width)
+      // Note: PageInfo may not have a layout property, so we'll use a workaround
+      // For now, default to expanded view = true (we can adjust based on actual API)
+      this.isExpandedView = true; // TODO: Detect actual layout when API is available
+      
+      if (previousLayout !== this.isExpandedView) {
+        this.logger.userAction('Layout changed', {
+          from: previousLayout ? 'expanded' : 'collapsed',
+          to: this.isExpandedView ? 'expanded' : 'collapsed'
+        });
+      }
+    });
+
     this.loadAssetFilesAndLinkTypes();
   }
 
@@ -97,6 +119,9 @@ export class MainComponent implements OnInit, OnDestroy {
     });
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
+    }
+    if (this.layoutSubscription) {
+      this.layoutSubscription.unsubscribe();
     }
   }
 
@@ -150,6 +175,39 @@ export class MainComponent implements OnInit, OnDestroy {
       newValue: this.showIsSupplemental,
       stage: this.stage
     });
+  }
+
+  /**
+   * Calculate number of visible form fields based on toggle states
+   */
+  get visibleFieldCount(): number {
+    let count = 2; // Asset ID and File URL are always visible
+    
+    if (this.showFileName) count++;     // File Title field
+    if (this.fileTypesToggle) count++;  // File Type field (in stage 1, shown when toggle ON)
+    if (this.showFileDescription) count++;
+    if (this.showIsSupplemental) count++;
+    
+    return count;
+  }
+
+  /**
+   * Determine if form should stack horizontally
+   * - Expanded view: always horizontal
+   * - Collapsed view: horizontal only if 3 or fewer visible fields
+   */
+  get shouldStackHorizontally(): boolean {
+    return this.isExpandedView || this.visibleFieldCount <= 3;
+  }
+
+  /**
+   * Get CSS class for current layout mode
+   */
+  getFormLayoutClass(): string {
+    if (this.shouldStackHorizontally) {
+      return this.isExpandedView ? 'form-layout-expanded' : 'form-layout-collapsed';
+    }
+    return 'form-layout-vertical';
   }
 
   async specifyTypesForEachFile(): Promise<void> {

@@ -75,41 +75,64 @@
               </section>
 
               <section formArrayName="entries" class="files-section">
-                <mat-card class="file-card" *ngFor="let entryGroup of entries.controls; let i = index; trackBy: trackByIndex" [formGroupName]="i" [ngClass]="{ 'invalid-asset': isAssetInvalid(i) }">
-                  <div class="file-card__header">
-                    <h2>{{ 'ManualEntry.Stage1FileHeading' | translate:{ index: i + 1 } }}</h2>
-                    <button mat-icon-button type="button" color="warn" (click)="removeEntry(i)" *ngIf="entries.length > 1">
+                <div class="file-entry-row" 
+                     *ngFor="let entryGroup of entries.controls; let i = index; trackBy: trackByIndex" 
+                     [formGroupName]="i"
+                     [ngClass]="getFormLayoutClass()">
+                  
+                  <!-- Row Header (File #) -->
+                  <div class="entry-header">
+                    <span class="entry-number">{{ 'ManualEntry.Stage1FileHeading' | translate:{ index: i + 1 } }}</span>
+                  </div>
+
+                  <!-- Form Fields Container -->
+                  <div class="entry-fields">
+                    <!-- Asset ID (Always Visible) -->
+                    <mat-form-field class="entry-field" appearance="outline">
+                      <mat-label>{{ 'ManualEntry.Fields.AssetId' | translate }}</mat-label>
+                      <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
+                      <mat-error *ngIf="entryGroup.get('assetId')?.hasError('required')">{{ 'ManualEntry.Errors.AssetIdRequired' | translate }}</mat-error>
+                      <mat-error *ngIf="entryGroup.get('assetId')?.hasError('invalidAsset')">{{ 'ManualEntry.Errors.AssetIdInvalid' | translate }}</mat-error>
+                    </mat-form-field>
+
+                    <!-- File URL (Always Visible) -->
+                    <mat-form-field class="entry-field" appearance="outline">
+                      <mat-label>{{ 'ManualEntry.Fields.FileUrl' | translate }}</mat-label>
+                      <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
+                      <mat-error *ngIf="entryGroup.get('url')?.hasError('required')">{{ 'ManualEntry.Errors.UrlRequired' | translate }}</mat-error>
+                      <mat-error *ngIf="entryGroup.get('url')?.hasError('pattern')">{{ 'ManualEntry.Errors.UrlFormat' | translate }}</mat-error>
+                    </mat-form-field>
+
+                    <!-- File Title (Conditional) -->
+                    <mat-form-field *ngIf="showFileName" class="entry-field" appearance="outline">
+                      <mat-label>{{ 'ManualEntry.Fields.FileTitle' | translate }}</mat-label>
+                      <input matInput formControlName="title" placeholder="{{ 'ManualEntry.Placeholders.FileTitle' | translate }}" />
+                    </mat-form-field>
+
+                    <!-- File Description (Conditional) -->
+                    <mat-form-field *ngIf="showFileDescription" class="entry-field" appearance="outline">
+                      <mat-label>{{ 'ManualEntry.Fields.Description' | translate }}</mat-label>
+                      <textarea matInput formControlName="description" rows="2" placeholder="{{ 'ManualEntry.Placeholders.Description' | translate }}"></textarea>
+                    </mat-form-field>
+
+                    <!-- Is Supplemental (Conditional) -->
+                    <div *ngIf="showIsSupplemental" class="entry-field supplemental-field">
+                      <mat-checkbox formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
+                    </div>
+                  </div>
+
+                  <!-- Actions (Delete Button) -->
+                  <div class="entry-actions">
+                    <button mat-icon-button 
+                            type="button"
+                            color="warn" 
+                            (click)="removeEntry(i)"
+                            *ngIf="entries.length > 1"
+                            [attr.aria-label]="'Delete file entry ' + (i + 1)">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
-
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>{{ 'ManualEntry.Fields.AssetId' | translate }}</mat-label>
-                    <input matInput formControlName="assetId" placeholder="e.g. 12345678900001234" />
-                    <mat-error *ngIf="entryGroup.get('assetId')?.hasError('required')">{{ 'ManualEntry.Errors.AssetIdRequired' | translate }}</mat-error>
-                    <mat-error *ngIf="entryGroup.get('assetId')?.hasError('invalidAsset')">{{ 'ManualEntry.Errors.AssetIdInvalid' | translate }}</mat-error>
-                  </mat-form-field>
-
-                  <mat-form-field *ngIf="showFileName" appearance="outline" class="full-width">
-                    <mat-label>{{ 'ManualEntry.Fields.FileTitle' | translate }}</mat-label>
-                    <input matInput formControlName="title" placeholder="{{ 'ManualEntry.Placeholders.FileTitle' | translate }}" />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>{{ 'ManualEntry.Fields.FileUrl' | translate }}</mat-label>
-                    <input matInput formControlName="url" placeholder="https://example.com/file.pdf" />
-                    <mat-hint>{{ 'ManualEntry.Hints.FileUrl' | translate }}</mat-hint>
-                    <mat-error *ngIf="entryGroup.get('url')?.hasError('required')">{{ 'ManualEntry.Errors.UrlRequired' | translate }}</mat-error>
-                    <mat-error *ngIf="entryGroup.get('url')?.hasError('pattern')">{{ 'ManualEntry.Errors.UrlFormat' | translate }}</mat-error>
-                  </mat-form-field>
-
-                  <mat-form-field *ngIf="showFileDescription" appearance="outline" class="full-width">
-                    <mat-label>{{ 'ManualEntry.Fields.Description' | translate }}</mat-label>
-                    <textarea matInput formControlName="description" rows="2" placeholder="{{ 'ManualEntry.Placeholders.Description' | translate }}"></textarea>
-                  </mat-form-field>
-
-                  <mat-checkbox *ngIf="showIsSupplemental" formControlName="supplemental">{{ 'ManualEntry.Fields.Supplemental' | translate }}</mat-checkbox>
-                </mat-card>
+                </div>
               </section>
 
               <div class="add-file-row">
