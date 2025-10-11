@@ -378,13 +378,16 @@ export class MainComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const hasMissingTypes = Array.from(payloadByAsset.values()).some(files =>
-      files.some(file => !file.type)
-    );
+    // Only validate file types if the toggle is ON
+    if (this.fileTypesToggle) {
+      const hasMissingTypes = Array.from(payloadByAsset.values()).some(files =>
+        files.some(file => !file.type)
+      );
 
-    if (hasMissingTypes) {
-      this.alert.error('One or more entries are missing file types. Please specify them before submitting.');
-      return;
+      if (hasMissingTypes) {
+        this.alert.error('One or more entries are missing file types. Please specify them before submitting.');
+        return;
+      }
     }
 
     this.submitting = true;
