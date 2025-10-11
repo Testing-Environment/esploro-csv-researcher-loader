@@ -15,13 +15,13 @@ export type LogCategory =
  * Individual categories can be toggled independently
  */
 export const LoggerConfig = {
-  enableDebugLogging: false,  // Master toggle - set to true to enable logging
+  enableDebugLogging: true,  // Master toggle - set to true to enable logging
   logCategories: {
-    lifecycle: true,      // Component init/destroy
-    navigation: true,     // Stage transitions, route changes
+    lifecycle: false,      // Component init/destroy
+    navigation: false,     // Stage transitions, route changes
     dataFlow: true,       // Form values, state changes
     apiCalls: true,       // HTTP requests/responses
-    userActions: true,    // Button clicks, toggle changes
+    userActions: false,    // Button clicks, toggle changes
     validation: true,     // Form validation, error states
     jobProcessing: true   // Job automation, polling, verification
   }
