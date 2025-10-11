@@ -47,6 +47,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 0;
+
+  ::ng-deep {
+    .mat-card {
+      padding: 0;
+    }
+  }
 }
 
 .invalid-asset {
@@ -108,6 +115,12 @@
 
 .stage-two {
   gap: 24px;
+
+  .file-card {
+    ::ng-deep .mat-card {
+      padding: 16px;
+    }
+  }
 }
 
 .file-type-hint {
@@ -377,5 +390,12 @@
   mat-checkbox {
     display: flex;
     align-items: center;
+  }
+}
+
+/* --- Global mat-card padding override --- */
+::ng-deep {
+  mat-card.review-card {
+    padding: 16px;
   }
 }

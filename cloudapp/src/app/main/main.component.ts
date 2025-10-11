@@ -67,6 +67,7 @@ export class MainComponent implements OnInit, OnDestroy {
   // Layout detection
   private isExpandedView = false;
   private layoutSubscription: Subscription | null = null;
+  private hasShownExpandedModeNotification = false;
 
   private readonly urlPattern = /^https?:\/\//i;
 
@@ -131,6 +132,17 @@ export class MainComponent implements OnInit, OnDestroy {
 
   addEntry(): void {
     this.entries.push(this.createEntryGroup());
+    
+    // Show expanded mode notification on first click
+    if (!this.hasShownExpandedModeNotification) {
+      this.hasShownExpandedModeNotification = true;
+      this.alert.info(
+        'For a better experience with multiple files, consider using the expanded view mode. ' +
+        'Click the expand icon in the top-right corner of the app.',
+        { autoClose: false }
+      );
+      this.logger.userAction('Expanded mode notification shown', { trigger: 'addEntry' });
+    }
   }
 
   removeEntry(index: number): void {
@@ -474,6 +486,17 @@ export class MainComponent implements OnInit, OnDestroy {
   onBatchProcessed(assets: ProcessedAsset[]) {
     this.processedAssets = assets;
     this.showResults = true;
+    
+    // Show expanded mode notification for better viewing experience
+    if (!this.hasShownExpandedModeNotification) {
+      this.hasShownExpandedModeNotification = true;
+      this.alert.info(
+        'For a better experience viewing results, consider using the expanded view mode. ' +
+        'Click the expand icon in the top-right corner of the app.',
+        { autoClose: false }
+      );
+      this.logger.userAction('Expanded mode notification shown', { trigger: 'csvUpload' });
+    }
   }
 
   onDownloadReady(downloadUrl: string) {
