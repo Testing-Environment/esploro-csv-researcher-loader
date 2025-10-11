@@ -7,10 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Phase 3.1 & 3.2: Job Automation - Set Creation and Member Addition**
+  - `createSet()` API method in AssetService for automated set creation
+  - `generateSetName()` helper method for unique timestamped set names (format: `CloudApp-FilesLoaderSet-YYYY-MM-DD-HH-MM-SS`)
+  - `updateSetMembers()` API method in AssetService for adding assets to sets
+  - Automatic set creation after successful file processing in CSV workflow
+  - Automatic set creation after successful file processing in manual entry workflow
+  - Automatic member addition to created sets with all successful assets
+  - TypeScript interfaces for Set API (`SetPayload`, `SetResponse`, `SetMember`, `AddSetMembersPayload`, `AddSetMembersResponse`)
+  - User notification with set ID and member count upon successful creation
+  - Error handling for set creation and member addition failures (non-blocking - allows manual set creation)
+  - `fail_on_invalid_id=false` parameter for resilient member addition (continues adding valid IDs even if some are invalid)
+
 ### Changed
 - Restructured project documentation for better organization
 - Renamed `explaination.md` → `explanation.md` (fixed typo)
 - Moved conversation history to `documentation/archive/CONVERSATION_HISTORY.md`
+- CSV processor now creates sets automatically after successful processing
+- Manual entry workflow now creates sets automatically after successful submission
 
 ### Added
 - `ROADMAP.md` - Project roadmap and future vision

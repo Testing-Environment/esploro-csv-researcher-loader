@@ -85,8 +85,8 @@ Implement fully automated workflow to eliminate manual set creation and job exec
 
 #### Core Requirements
 - ✅ Already Implemented: Asset validation via `getAsset()`
-- 📋 **Implement**: Create set via `POST /conf/sets`
-- 📋 **Implement**: Add members to set via `POST /conf/sets/{setId}/members`
+- ✅ **Completed**: Create set via `POST /conf/sets` (Phase 3.1 - January 2025)
+- ✅ **Completed**: Add members to set via `POST /conf/sets/{setId}?op=add_members` (Phase 3.2 - January 2025)
 - 📋 **Implement**: Find job ID (try hardcoded M50762, fallback to search)
 - 📋 **Implement**: Run job via `POST /conf/jobs/{jobId}/instances`
 - 📋 **Implement**: Poll job status via `GET /conf/jobs/{jobId}/instances/{instanceId}`
@@ -95,8 +95,9 @@ Implement fully automated workflow to eliminate manual set creation and job exec
 #### API Methods to Add
 ```typescript
 // In asset.service.ts or new job.service.ts
-createSet(payload: SetPayload): Observable<SetResponse>
-updateSetMembers(setId: string, memberIds: string[]): Observable<MemberResponse>
+✅ createSet(name: string, description: string): Observable<SetResponse> // COMPLETED Phase 3.1
+✅ generateSetName(): string // COMPLETED Phase 3.1
+✅ updateSetMembers(setId: string, memberIds: string[]): Observable<AddSetMembersResponse> // COMPLETED Phase 3.2
 getJobDetails(jobId: string): Observable<JobDetails>
 findJobByName(jobName: string): Observable<string> // Returns job ID
 runJob(jobId: string, setId: string): Observable<JobInstanceResponse>
@@ -106,8 +107,8 @@ getJobInstance(jobId: string, instanceId: string): Observable<JobStatus>
 #### Workflow Steps
 1. Validate all assets (existing)
 2. **Queue files to assets** (existing - `addFilesToAsset()`)
-3. **Create temporary set** (new)
-4. **Add validated assets to set** (new)
+3. ✅ **Create temporary set** (COMPLETED - Phase 3.1)
+4. ✅ **Add validated assets to set** (COMPLETED - Phase 3.2)
 5. **Find "Import Research Assets Files" job** (new)
 6. **Submit job for the set** (new)
 7. **Poll until job completes** (new)

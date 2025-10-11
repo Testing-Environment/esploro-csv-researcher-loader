@@ -3,7 +3,15 @@ import { Observable, of, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetFileLink } from '../models/asset';
-import { AssetFileAndLinkType, AssetMetadata, AssetFile } from '../models/types';
+import {
+  AssetFileAndLinkType,
+  AssetMetadata,
+  AssetFile,
+  SetPayload,
+  SetResponse,
+  AddSetMembersPayload,
+  AddSetMembersResponse
+} from '../models/types';
 
 export interface AddFilesToAssetResponse {
   records?: any[];
@@ -171,5 +179,99 @@ export class AssetService {
       const applicableTypes = sourceCode2.split(',').map(t => t.trim());
       return applicableTypes.some(type => type === normalizedAssetType);
     });
+  }
+
+  /**
+   * Generate unique set name with timestamp
+   * Format: CloudApp-FilesLoaderSet-YYYY-MM-DD-HH-MM-SS
+   */
+  generateSetName(): string {
+    const now = new Date();
+    const timestamp = now.toISOString()
+      .replace('T', '-')
+      .replace(/:/g, '-')
+      .substring(0, 19);
+    return `CloudApp-FilesLoaderSet-${timestamp}`;
+  }
+
+  /**
+   * Create a set for job automation
+   * POST /conf/sets
+   *
+   * Creates an itemized set of research assets for use in job submission.
+   * The set is created empty initially; members are added via updateSetMembers().
+   */
+  createSet(name: string, description: string): Observable<SetResponse> {
+    const payload: SetPayload = {
+      name,
+      description,
+      type: { value: 'ITEMIZED' },
+      content: { value: 'IER' },  // IER = Research assets
+      private: { value: 'false' },
+      status: { value: 'ACTIVE' },
+      members: {
+        total_record_count: '0',
+        member: []
+      }
+    };
+
+    return this.restService.call({
+      url: '/conf/sets',
+      method: HttpMethod.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      requestBody: payload
+    }).pipe(
+      map(response => response as SetResponse),
+      catchError(error => {
+        console.error('Error creating set:', error);
+        const errorMessage = error?.message || error?.error?.errorList?.error?.[0]?.errorMessage || 'Failed to create set';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  /**
+   * Add members to an existing set
+   * POST /conf/sets/{setId}?op=add_members&fail_on_invalid_id=false
+   *
+   * Adds asset MMS IDs as members to the specified set.
+   * Uses fail_on_invalid_id=false to continue adding valid IDs even if some are invalid.
+   *
+   * @param setId - The ID of the set to add members to
+   * @param memberIds - Array of asset MMS IDs to add as members
+   * @returns Observable of the updated set with member count
+   */
+  updateSetMembers(setId: string, memberIds: string[]): Observable<AddSetMembersResponse> {
+    if (!setId || !memberIds || memberIds.length === 0) {
+      return throwError(() => new Error('Set ID and member IDs are required'));
+    }
+
+    const payload: AddSetMembersPayload = {
+      members: {
+        member: memberIds.map(id => ({ id }))
+      }
+    };
+
+    return this.restService.call({
+      url: `/conf/sets/${setId}?op=add_members&fail_on_invalid_id=false`,
+      method: HttpMethod.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      requestBody: payload
+    }).pipe(
+      map(response => response as AddSetMembersResponse),
+      catchError(error => {
+        console.error(`Error adding members to set ${setId}:`, error);
+        const errorMessage = error?.message
+          || error?.error?.errorList?.error?.[0]?.errorMessage
+          || 'Failed to add members to set';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 }

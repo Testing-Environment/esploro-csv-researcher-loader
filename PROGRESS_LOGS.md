@@ -459,4 +459,196 @@ Users can complete manual or CSV uploads with fewer errors; optional URL pre-che
 Bulk URL Update flow enables quick propagation of common URLs
 Documentation and diagrams accurately reflect mapping-table usage and automated workflow
 No regression in existing CSV behavior
-If you want, I can next draft the services’ TypeScript interfaces and a minimal orchestrator skeleton to make the coding smoother, and update the README/explaination diagrams accordingly.
+If you want, I can next draft the services' TypeScript interfaces and a minimal orchestrator skeleton to make the coding smoother, and update the README/explaination diagrams accordingly.
+
+---
+
+## Session: Phase 3.1 - Job Automation Set Creation Implementation
+
+**Date**: January 10, 2025
+**Developer**: Claude Code Assistant
+**Branch**: copilot/vscode1759663404387
+
+### Objective
+Implement Phase 3.1 of Job Automation: Automatic set creation after successful file processing to eliminate manual set creation step.
+
+### Changes Made
+
+#### 1. TypeScript Interfaces ([types.ts](cloudapp/src/app/models/types.ts#L117-L148))
+- Added `SetPayload` interface for POST /conf/sets requests
+- Added `SetResponse` interface for set creation API responses
+- Interfaces support all required fields: name, description, type, content, private, status, members
+
+#### 2. AssetService Enhancements ([asset.service.ts](cloudapp/src/app/services/asset.service.ts#L176-L213))
+- Implemented `generateSetName()` method
+  - Generates unique timestamped names: `CloudApp-FilesLoaderSet-YYYY-MM-DD-HH-MM-SS`
+  - Ensures set name uniqueness across multiple runs
+- Implemented `createSet(name: string, description: string): Observable<SetResponse>`
+  - Creates itemized research asset sets via POST /conf/sets
+  - Proper error handling with user-friendly messages
+  - Returns set ID for future use in member addition
+
+#### 3. CSV Processor Integration ([csv-processor.component.ts](cloudapp/src/app/components/csv-processor/csv-processor.component.ts))
+- Added `createdSetId` state variable to track created sets
+- Implemented `createSetForSuccessfulAssets()` method (lines 781-817)
+  - Automatically creates set after successful file processing
+  - Only creates set if at least one asset processed successfully
+  - Non-blocking error handling (processing continues if set creation fails)
+  - User notification with set ID upon success
+- Integrated set creation into `executeBatchProcessing()` workflow (line 653)
+- Reset `createdSetId` in cleanup methods
+
+#### 4. Manual Entry Integration ([main.component.ts](cloudapp/src/app/main/main.component.ts))
+- Added `createdSetId` state variable (line 51)
+- Added `firstValueFrom` import for RxJS 6 compatibility (line 9)
+- Implemented `createSetForSuccessfulAssets()` method (lines 384-416)
+  - Creates set with successful asset IDs after file queuing
+  - Matches CSV workflow behavior for consistency
+  - Error handling preserves existing functionality
+- Integrated set creation into `executeSubmission()` (lines 363-365)
+- Reset `createdSetId` in `resetFlow()` (line 617)
+
+### Technical Details
+
+**API Endpoint**: POST /conf/sets
+**Request Payload**:
+```typescript
+{
+  name: "CloudApp-FilesLoaderSet-2025-01-10-12-34-56",
+  description: "Automated set created by Cloud App Files Loader",
+  type: { value: "ITEMIZED" },
+  content: { value: "IER" },  // IER = Research assets
+  private: { value: "false" },
+  status: { value: "ACTIVE" },
+  members: { total_record_count: "0", member: [] }
+}
+```
+
+**Response Structure**:
+```typescript
+{
+  id: "9563654780000561",
+  name: "CloudApp-FilesLoaderSet-...",
+  description: "...",
+  type: { value: "ITEMIZED", desc: "Itemized" },
+  content: { value: "IER", desc: "Research assets" },
+  // ... additional metadata
+}
+```
+
+### Testing Strategy
+- TypeScript compilation: No errors (Ex Libris SDK project structure)
+- Manual testing required:
+  - CSV upload with successful assets → verify set created
+  - Manual entry with successful submissions → verify set created
+  - Mixed success/failure scenarios → verify set only contains successful assets
+  - Error scenarios (API failures) → verify graceful degradation
+
+### Error Handling
+- Set creation failures are non-blocking
+- Error messages displayed to user
+- Processing continues even if set creation fails
+- Users can still manually create sets using downloaded MMS IDs
+
+### Documentation Updates
+- [CHANGELOG.md](CHANGELOG.md#L10-L18): Added Phase 3.1 changes to Unreleased section
+- [ROADMAP.md](ROADMAP.md#L88-L110): Marked set creation as completed, updated workflow steps
+- Both CSV and manual workflows documented as having automatic set creation
+
+### Files Modified
+1. `cloudapp/src/app/models/types.ts` - New interfaces
+2. `cloudapp/src/app/services/asset.service.ts` - New methods
+3. `cloudapp/src/app/components/csv-processor/csv-processor.component.ts` - Set creation integration
+4. `cloudapp/src/app/main/main.component.ts` - Set creation integration
+5. `CHANGELOG.md` - Documentation update
+6. `ROADMAP.md` - Progress tracking
+
+### Next Steps (Phase 3.2)
+- Implement `updateSetMembers()` to add validated assets to the created set
+- API: POST /conf/sets/{setId}/members
+- Integration: Call after set creation with list of successful MMS IDs
+- Error handling: Reconcile partial member addition failures
+
+### Success Criteria Met
+✅ `createSet()` method implemented in AssetService
+✅ TypeScript interfaces defined for SetPayload and SetResponse
+✅ Set name generator creates unique, timestamped names
+✅ CSV workflow calls createSet after successful file processing
+✅ Manual workflow calls createSet after successful file processing
+✅ Error handling displays user-friendly messages
+✅ Set ID stored for use in next phase (add members)
+✅ Success message shows set ID to user
+✅ Code follows existing patterns (RxJS helpers, error handling)
+✅ No TypeScript compilation errors
+✅ No breaking changes to existing functionality
+
+### Notes
+- Set creation is currently empty (0 members)
+- Next phase will add members to the set
+- Set ID is tracked but not yet used for member addition
+- Both workflows (CSV and manual) now have feature parity for set creation
+
+
+---
+
+## Session: Phase 3.2 - Job Automation Member Addition Implementation
+
+**Date**: January 10, 2025
+**Developer**: Claude Code Assistant
+**Branch**: copilot/vscode1759663404387
+
+### Objective
+Implement Phase 3.2 of Job Automation: Add members to created sets to prepare them for job submission.
+
+### Changes Made
+
+#### 1. TypeScript Interfaces (types.ts)
+- Added SetMember interface for set member entries
+- Added AddSetMembersPayload interface for POST /conf/sets/{setId}?op=add_members requests
+- Added AddSetMembersResponse interface extending SetResponse with members array
+
+#### 2. AssetService Enhancement (asset.service.ts)
+- Implemented updateSetMembers(setId: string, memberIds: string[]): Observable<AddSetMembersResponse>
+  - Adds asset MMS IDs as members to specified set
+  - Uses fail_on_invalid_id=false for resilient member addition
+  - Proper error handling with user-friendly messages
+  - Returns updated set with member count
+
+#### 3. CSV Processor Integration (csv-processor.component.ts)
+- Updated createSetForSuccessfulAssets() method
+  - Now creates set AND adds members in sequence
+  - Phase 3.1: Create the set
+  - Phase 3.2: Add members to the set
+  - Displays member count in success notification
+  - Non-blocking error handling for both operations
+
+#### 4. Manual Entry Integration (main.component.ts)
+- Updated createSetForSuccessfulAssets() method
+  - Matches CSV workflow behavior
+  - Creates set then adds all successful asset IDs as members
+  - Error handling preserves existing functionality
+  - User notification includes member count
+
+### Files Modified
+1. cloudapp/src/app/models/types.ts - New member interfaces
+2. cloudapp/src/app/services/asset.service.ts - New updateSetMembers() method
+3. cloudapp/src/app/components/csv-processor/csv-processor.component.ts - Member addition integration
+4. cloudapp/src/app/main/main.component.ts - Member addition integration
+5. CHANGELOG.md - Documentation update
+6. ROADMAP.md - Progress tracking
+
+### Next Steps (Phase 3.3)
+- Implement job discovery methods to find Import Research Assets Files job
+- API: GET /conf/jobs/{jobId} for direct lookup
+- API: GET /conf/jobs for search by name
+- Try known job ID first, fallback to search
+
+### Success Criteria Met
+✅ updateSetMembers() method implemented in AssetService
+✅ TypeScript interfaces defined for member API
+✅ CSV workflow adds members to created sets
+✅ Manual workflow adds members to created sets
+✅ Error handling for partial member addition
+✅ User notification includes member count
+✅ Code follows existing patterns
+✅ No breaking changes

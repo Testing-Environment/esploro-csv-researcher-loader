@@ -113,3 +113,63 @@ export interface ValidationResult {
   errors: string[];
   fileTypeValidation?: FileTypeValidationState;
 }
+
+/**
+ * Set creation payload for POST /conf/sets
+ */
+export interface SetPayload {
+  name: string;
+  description: string;
+  type: { value: string };
+  content: { value: string };
+  private: { value: string };
+  status: { value: string };
+  members?: {
+    total_record_count: string;
+    member: Array<{ id: string; link?: string }>;
+  };
+}
+
+/**
+ * Set creation response from POST /conf/sets
+ */
+export interface SetResponse {
+  id: string;
+  name: string;
+  description?: string;
+  type?: { value: string; desc?: string };
+  content?: { value: string; desc?: string };
+  private?: { value: string; desc?: string };
+  status?: { value: string; desc?: string };
+  link?: string;
+  created_by?: { value: string; desc?: string };
+  created_date?: string;
+  number_of_members?: { value: number; link?: string };
+}
+
+/**
+ * Set member entry
+ */
+export interface SetMember {
+  id: string;
+  link?: string;
+}
+
+/**
+ * Add members payload for POST /conf/sets/{setId}?op=add_members
+ */
+export interface AddSetMembersPayload {
+  members: {
+    member: SetMember[];
+  };
+}
+
+/**
+ * Response from adding members to a set
+ * Returns the full set object with updated member count
+ */
+export interface AddSetMembersResponse extends SetResponse {
+  members?: {
+    member: SetMember[];
+  };
+}

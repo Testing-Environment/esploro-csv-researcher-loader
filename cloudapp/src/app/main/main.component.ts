@@ -6,7 +6,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetService } from '../services/asset.service';
 import { AssetFileLink } from '../models/asset';
 import { ProcessedAsset, FileType, AssetFileAndLinkType, AssetMetadata } from '../models/types';
-import { lastValueFrom } from '../utilities/rxjs-helpers';
+import { firstValueFrom, lastValueFrom } from '../utilities/rxjs-helpers';
 
 type ManualEntryStage = 'stage1' | 'stage2' | 'stage3';
 
@@ -46,6 +46,9 @@ export class MainComponent implements OnInit {
   mmsIdDownloadUrl: string = '';
   showResults = false;
   showWorkflowInstructions = false;
+
+  // Job automation state (Phase 3)
+  createdSetId: string | null = null;
 
   private readonly urlPattern = /^https?:\/\//i;
 
@@ -356,6 +359,11 @@ export class MainComponent implements OnInit {
 
       const totalFiles = results.reduce((sum, item) => sum + item.count, 0);
       const uniqueAssets = results.length;
+
+      // Phase 3: Create set with successful assets
+      const assetIds = results.map(r => r.assetId);
+      await this.createSetForSuccessfulAssets(assetIds);
+
       const message = skippedStageTwo
         ? `Successfully queued ${totalFiles} file${totalFiles === 1 ? '' : 's'} across ${uniqueAssets} asset${uniqueAssets === 1 ? '' : 's'} using default file type selections.`
         : `Successfully queued ${totalFiles} file${totalFiles === 1 ? '' : 's'} across ${uniqueAssets} asset${uniqueAssets === 1 ? '' : 's'}.`;
@@ -370,6 +378,49 @@ export class MainComponent implements OnInit {
       this.submissionResult = { type: 'error', message };
     } finally {
       this.submitting = false;
+    }
+  }
+
+  /**
+   * Create set for job automation (Phase 3.1 & 3.2)
+   * Creates an Esploro set and adds all successfully processed assets as members
+   */
+  private async createSetForSuccessfulAssets(assetIds: string[]): Promise<void> {
+    if (assetIds.length === 0) {
+      console.log('No successful assets to add to set');
+      return;
+    }
+
+    try {
+      const setName = this.assetService.generateSetName();
+      const setDescription = 'Automated set created by Cloud App Files Loader';
+
+      // Phase 3.1: Create the set
+      const setResponse = await firstValueFrom(
+        this.assetService.createSet(setName, setDescription)
+      );
+
+      this.createdSetId = setResponse.id;
+      console.log(`Set created successfully: ${setResponse.id}`);
+
+      // Phase 3.2: Add members to the set
+      const addMembersResponse = await firstValueFrom(
+        this.assetService.updateSetMembers(setResponse.id, assetIds)
+      );
+
+      const memberCount = addMembersResponse.number_of_members?.value ?? assetIds.length;
+      console.log(`Added ${memberCount} member(s) to set ${setResponse.id}`);
+
+      this.alert.success(
+        `Set created successfully: ${setResponse.id} with ${memberCount} asset${memberCount === 1 ? '' : 's'}`
+      );
+
+    } catch (error: any) {
+      console.error('Error creating set or adding members:', error);
+      const errorMessage = error?.message || 'Failed to create set or add members';
+      this.alert.error(`Set automation failed: ${errorMessage}`);
+      // Don't fail the entire process if set creation fails
+      // User can still manually create a set
     }
   }
 
@@ -572,6 +623,7 @@ export class MainComponent implements OnInit {
     this.stage = 'stage1';
     this.stageTwoSkipped = false;
     this.assetMetadataMap.clear();
+    this.createdSetId = null;
 
     while (this.entries.length) {
       this.entries.removeAt(0);

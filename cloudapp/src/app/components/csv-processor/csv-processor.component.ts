@@ -70,6 +70,9 @@ export class CSVProcessorComponent implements OnInit {
   assetCacheMap: Map<string, CachedAssetState> = new Map();
   private pendingFieldMapping: { [key: string]: string } | null = null;
 
+  // Job automation state (Phase 3)
+  createdSetId: string | null = null;
+
   // UI state
   isDragActive = false;
 
@@ -646,6 +649,9 @@ export class CSVProcessorComponent implements OnInit {
       // Compare asset states after processing
       await this.compareAssetStates(processedAssets);
 
+      // Phase 3: Create set with successful assets
+      await this.createSetForSuccessfulAssets(processedAssets);
+
       // Generate MMS ID download file
       const downloadUrl = this.generateMmsIdDownload(processedAssets);
 
@@ -773,6 +779,53 @@ export class CSVProcessorComponent implements OnInit {
   }
 
   /**
+   * Create set for job automation (Phase 3.1 & 3.2)
+   * Creates an Esploro set and adds all successfully processed assets as members
+   */
+  private async createSetForSuccessfulAssets(processedAssets: ProcessedAsset[]): Promise<void> {
+    const successfulMmsIds = processedAssets
+      .filter(a => a.status === 'success')
+      .map(a => a.mmsId);
+
+    if (successfulMmsIds.length === 0) {
+      console.log('No successful assets to add to set');
+      return;
+    }
+
+    try {
+      const setName = this.assetService.generateSetName();
+      const setDescription = 'Automated set created by Cloud App Files Loader';
+
+      // Phase 3.1: Create the set
+      const setResponse = await firstValueFrom(
+        this.assetService.createSet(setName, setDescription)
+      );
+
+      this.createdSetId = setResponse.id;
+      console.log(`Set created successfully: ${setResponse.id}`);
+
+      // Phase 3.2: Add members to the set
+      const addMembersResponse = await firstValueFrom(
+        this.assetService.updateSetMembers(setResponse.id, successfulMmsIds)
+      );
+
+      const memberCount = addMembersResponse.number_of_members?.value ?? successfulMmsIds.length;
+      console.log(`Added ${memberCount} member(s) to set ${setResponse.id}`);
+
+      this.alertService.success(
+        `Set created successfully: ${setResponse.id} with ${memberCount} asset${memberCount === 1 ? '' : 's'}`
+      );
+
+    } catch (error: any) {
+      console.error('Error creating set or adding members:', error);
+      const errorMessage = error?.message || 'Failed to create set or add members';
+      this.alertService.error(`Set automation failed: ${errorMessage}`);
+      // Don't fail the entire process if set creation fails
+      // User can still manually create a set using the MMS IDs download
+    }
+  }
+
+  /**
    * Validate asset exists using Esploro API
    */
   private async validateAsset(mmsId: string): Promise<void> {
@@ -841,6 +894,7 @@ export class CSVProcessorComponent implements OnInit {
     this.assetCacheMap.clear();
     this.pendingFieldMapping = null;
     this.unresolvedFileTypeValues = [];
+    this.createdSetId = null;
   }
 
   private refreshUnresolvedFileTypeValues(conversions: FileTypeConversion[]) {
