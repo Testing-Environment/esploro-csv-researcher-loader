@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
+import { LoggerService } from './logger.service';
 import { AssetFileLink } from '../models/asset';
 import {
   AssetFileAndLinkType,
@@ -32,7 +33,8 @@ const ASSET_FILES_AND_LINK_TYPES_TABLE = 'AssetFileAndLinkTypes';
 export class AssetService {
 
   constructor(
-    private restService: CloudAppRestService
+    private restService: CloudAppRestService,
+    private logger: LoggerService
   ) { }
 
   addFilesToAsset(assetId: string, files: AssetFileLink[]): Observable<AddFilesToAssetResponse> {
@@ -52,6 +54,8 @@ export class AssetService {
       ]
     };
 
+    this.logger.apiCall('POST /esploro/v1/assets/{id}', 'request', { assetId, filesCount: files.length, payload });
+
     return this.restService.call({
       url: `/esploro/v1/assets/${assetId}?op=patch&action=add`,
       headers: {
@@ -60,7 +64,13 @@ export class AssetService {
       },
       requestBody: payload,
       method: HttpMethod.POST
-    });
+    }).pipe(
+      tap(response => this.logger.apiCall('POST /esploro/v1/assets/{id}', 'response', { assetId, response })),
+      catchError(error => {
+        this.logger.error('Add files to asset failed', error);
+        return throwError(error);
+      })
+    );
   }
 
   /**
@@ -221,6 +231,8 @@ export class AssetService {
       }
     };
 
+    this.logger.apiCall('POST /conf/sets', 'request', { name, description });
+
     return this.restService.call({
       url: '/conf/sets',
       method: HttpMethod.POST,
@@ -230,8 +242,10 @@ export class AssetService {
       },
       requestBody: payload
     }).pipe(
+      tap(response => this.logger.apiCall('POST /conf/sets', 'response', { setId: (response as SetResponse).id })),
       map(response => response as SetResponse),
       catchError(error => {
+        this.logger.error('Create set failed', error);
         console.error('Error creating set:', error);
         const errorMessage = error?.message || error?.error?.errorList?.error?.[0]?.errorMessage || 'Failed to create set';
         return throwError(() => new Error(errorMessage));
@@ -261,6 +275,8 @@ export class AssetService {
       }
     };
 
+    this.logger.apiCall('POST /conf/sets/{id}?op=add_members', 'request', { setId, memberCount: memberIds.length });
+
     return this.restService.call({
       url: `/conf/sets/${setId}?op=add_members&fail_on_invalid_id=false`,
       method: HttpMethod.POST,
@@ -270,8 +286,13 @@ export class AssetService {
       },
       requestBody: payload
     }).pipe(
+      tap(response => this.logger.apiCall('POST /conf/sets/{id}?op=add_members', 'response', { 
+        setId, 
+        totalMembers: (response as AddSetMembersResponse).number_of_members?.value 
+      })),
       map(response => response as AddSetMembersResponse),
       catchError(error => {
+        this.logger.error('Update set members failed', error);
         console.error(`Error adding members to set ${setId}:`, error);
         const errorMessage = error?.message
           || error?.error?.errorList?.error?.[0]?.errorMessage
@@ -312,6 +333,8 @@ export class AssetService {
       ]
     };
 
+    this.logger.apiCall('POST /conf/jobs/{id}?op=run', 'request', { jobId, setId, jobName });
+
     return this.restService.call({
       url: `/conf/jobs/${jobId}?op=run`,
       method: HttpMethod.POST,
@@ -321,8 +344,13 @@ export class AssetService {
       },
       requestBody: payload
     }).pipe(
+      tap(response => this.logger.apiCall('POST /conf/jobs/{id}?op=run', 'response', { 
+        jobId, 
+        instanceId: (response as JobExecutionResponse).additional_info?.instance?.value 
+      })),
       map(response => response as JobExecutionResponse),
       catchError(error => {
+        this.logger.error('Run job failed', error);
         console.error(`Error running job ${jobId} for set ${setId}:`, error);
         const errorMessage = error?.message
           || error?.error?.errorList?.error?.[0]?.errorMessage
@@ -339,10 +367,18 @@ export class AssetService {
    * @returns Observable of job instance status with progress and counters
    */
   getJobInstance(jobId: string, instanceId: string): Observable<JobInstanceStatus> {
+    this.logger.apiCall('GET /conf/jobs/{id}/instances/{instanceId}', 'request', { jobId, instanceId });
+
     return this.restService.call({
       url: `/conf/jobs/${jobId}/instances/${instanceId}`,
       method: HttpMethod.GET
     }).pipe(
+      tap(response => this.logger.apiCall('GET /conf/jobs/{id}/instances/{instanceId}', 'response', { 
+        jobId, 
+        instanceId,
+        status: (response as JobInstanceStatus).status?.value,
+        progress: (response as JobInstanceStatus).progress 
+      })),
       map(response => response as JobInstanceStatus),
       catchError(error => {
         console.error(`Error fetching job instance ${instanceId}:`, error);

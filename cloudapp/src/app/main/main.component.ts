@@ -4,6 +4,7 @@ import { forkJoin, from, throwError, interval, Subscription, of } from 'rxjs';
 import { catchError, concatMap, map, toArray, switchMap, takeWhile } from 'rxjs/operators';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AssetService } from '../services/asset.service';
+import { LoggerService } from '../services/logger.service';
 import { AssetFileLink } from '../models/asset';
 import { ProcessedAsset, FileType, AssetFileAndLinkType, AssetMetadata, AssetVerificationResult, BatchVerificationSummary, CachedAssetState } from '../models/types';
 import { firstValueFrom, lastValueFrom } from '../utilities/rxjs-helpers';
@@ -68,7 +69,8 @@ export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private assetService: AssetService,
-    private alert: AlertService
+    private alert: AlertService,
+    private logger: LoggerService
   ) {
     this.form = this.fb.group({
       entries: this.fb.array([this.createEntryGroup()])
@@ -76,10 +78,23 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.logger.lifecycle('MainComponent initialized', {
+      stage: this.stage,
+      toggles: {
+        fileTypes: this.fileTypesToggle,
+        fileName: this.showFileName,
+        description: this.showFileDescription,
+        supplemental: this.showIsSupplemental
+      }
+    });
     this.loadAssetFilesAndLinkTypes();
   }
 
   ngOnDestroy() {
+    this.logger.lifecycle('MainComponent destroyed', {
+      stage: this.stage,
+      hasPollingSubscription: !!this.pollingSubscription
+    });
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
@@ -100,18 +115,61 @@ export class MainComponent implements OnInit, OnDestroy {
     this.entries.removeAt(index);
   }
 
+  // Toggle handlers with logging
+  toggleFileTypes(): void {
+    this.fileTypesToggle = !this.fileTypesToggle;
+    this.logger.userAction('File Types toggle changed', { 
+      field: 'fileTypes', 
+      newValue: this.fileTypesToggle,
+      stage: this.stage
+    });
+  }
+
+  toggleFileName(): void {
+    this.showFileName = !this.showFileName;
+    this.logger.userAction('File Name toggle changed', { 
+      field: 'fileName', 
+      newValue: this.showFileName,
+      stage: this.stage
+    });
+  }
+
+  toggleFileDescription(): void {
+    this.showFileDescription = !this.showFileDescription;
+    this.logger.userAction('File Description toggle changed', { 
+      field: 'description', 
+      newValue: this.showFileDescription,
+      stage: this.stage
+    });
+  }
+
+  toggleSupplemental(): void {
+    this.showIsSupplemental = !this.showIsSupplemental;
+    this.logger.userAction('Supplemental toggle changed', { 
+      field: 'supplemental', 
+      newValue: this.showIsSupplemental,
+      stage: this.stage
+    });
+  }
+
   async specifyTypesForEachFile(): Promise<void> {
+    this.logger.navigation('Stage transition initiated', { from: 'stage1', to: 'stage2' });
+    
     if (this.assetValidationInProgress || this.submitting) {
+      this.logger.validation('Stage transition blocked', false, { reason: 'validation in progress or submitting' });
       return;
     }
 
     const isValid = await this.validateStageOneEntries();
     if (!isValid) {
+      this.logger.validation('Stage 1 validation failed', false);
       return;
     }
 
+    this.logger.validation('Stage 1 validation passed', true);
     this.stageTwoSkipped = false;
     this.stage = 'stage2';
+    this.logger.navigation('Stage transition completed', { from: 'stage1', to: 'stage2' });
     this.applyTypeValidators(true);
 
     this.entries.controls.forEach((group: FormGroup) => {
@@ -128,22 +186,33 @@ export class MainComponent implements OnInit, OnDestroy {
    * Used when File Types toggle is OFF (skip Stage 2 entirely)
    */
   async proceedToValidationAndReview(): Promise<void> {
+    this.logger.navigation('Proceeding to validation and review', { 
+      from: this.stage, 
+      to: 'stage3',
+      fileTypesToggle: this.fileTypesToggle 
+    });
+    
     if (this.assetValidationInProgress || this.submitting) {
+      this.logger.validation('Navigation blocked', false, { reason: 'validation in progress or submitting' });
       return;
     }
 
     const isValid = await this.validateStageOneEntries();
     if (!isValid) {
+      this.logger.validation('Stage 1 validation failed', false);
       return;
     }
 
+    this.logger.validation('Stage 1 validation passed', true);
     const skippedStageTwo = !this.fileTypesToggle;
 
     // Only validate file types if the toggle is ON
     if (this.fileTypesToggle) {
+      this.logger.validation('File type validation starting', true, { skippedStageTwo });
       if (skippedStageTwo) {
         const allAssigned = this.entries.controls.every((group: FormGroup) => this.assignDefaultType(group));
         if (!allAssigned) {
+          this.logger.validation('Default file type assignment failed', false);
           this.alert.error('Unable to determine a default file type for one or more entries. Please specify file types manually.');
           return;
         }
@@ -157,15 +226,20 @@ export class MainComponent implements OnInit, OnDestroy {
         });
 
         if (hasTypeErrors) {
+          this.logger.validation('File type validation failed', false, { reason: 'incomplete type selection' });
           this.alert.error('Please choose a file type for each entry before continuing.');
           return;
         }
       }
+      this.logger.validation('File type validation passed', true);
+    } else {
+      this.logger.validation('File type validation skipped', true, { reason: 'toggle OFF' });
     }
 
     // Build payload to confirm counts
     const payload = this.buildSubmissionPayload();
     if (!payload.size) {
+      this.logger.validation('Payload validation failed', false, { reason: 'no entries' });
       this.alert.error('There are no entries to submit. Please add at least one file.');
       return;
     }
@@ -187,6 +261,13 @@ export class MainComponent implements OnInit, OnDestroy {
     this.reviewUniqueUrlsCount = uniqueUrls.size;
     this.stageTwoSkipped = skippedStageTwo;
     this.stage = 'stage3';
+    
+    this.logger.navigation('Transitioned to review stage', { 
+      stage: 'stage3',
+      assetsCount: this.reviewAssetsCount,
+      filesCount: this.reviewFilesCount,
+      uniqueUrlsCount: this.reviewUniqueUrlsCount
+    });
   }
 
   async proceedWithoutSelectingTypes(): Promise<void> {
@@ -367,6 +448,17 @@ export class MainComponent implements OnInit, OnDestroy {
       payload.supplemental = entry.supplemental || false;
     }
 
+    this.logger.dataFlow('File payload built', {
+      mmsId: entry.assetId,
+      includedFields: Object.keys(payload),
+      toggles: {
+        fileName: this.showFileName,
+        fileType: this.fileTypesToggle,
+        description: this.showFileDescription,
+        supplemental: this.showIsSupplemental
+      }
+    });
+
     return payload;
   }
 
@@ -450,40 +542,50 @@ export class MainComponent implements OnInit, OnDestroy {
    */
   private async createSetForSuccessfulAssets(assetIds: string[]): Promise<void> {
     if (assetIds.length === 0) {
+      this.logger.jobProcessing('Set creation skipped', { reason: 'no successful assets' });
       console.log('No successful assets to add to set');
       return;
     }
+
+    this.logger.jobProcessing('Starting job automation', { assetCount: assetIds.length });
 
     try {
       const setName = this.assetService.generateSetName();
       const setDescription = 'Automated set created by Cloud App Files Loader';
 
       // Phase 3.1: Create the set
+      this.logger.jobProcessing('Creating set', { name: setName, description: setDescription });
       const setResponse = await firstValueFrom(
         this.assetService.createSet(setName, setDescription)
       );
 
       this.createdSetId = setResponse.id;
+      this.logger.jobProcessing('Set created', { setId: setResponse.id });
       console.log(`Set created successfully: ${setResponse.id}`);
 
       // Phase 3.2: Add members to the set
+      this.logger.jobProcessing('Adding members to set', { setId: setResponse.id, memberCount: assetIds.length });
       const addMembersResponse = await firstValueFrom(
         this.assetService.updateSetMembers(setResponse.id, assetIds)
       );
 
       const memberCount = addMembersResponse.number_of_members?.value ?? assetIds.length;
+      this.logger.jobProcessing('Members added to set', { setId: setResponse.id, memberCount });
       console.log(`Added ${memberCount} member(s) to set ${setResponse.id}`);
 
       // Phase 3.3: Run the import job
+      this.logger.jobProcessing('Submitting import job', { setId: setResponse.id });
       const jobResponse = await firstValueFrom(
         this.assetService.runJob(setResponse.id)
       );
 
       const jobInstanceId = jobResponse.additional_info?.instance?.value || '';
       this.jobInstanceId = jobInstanceId;
+      this.logger.jobProcessing('Job submitted', { jobId: jobResponse.id, instanceId: jobInstanceId });
       console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
 
       // Phase 3.4: Start polling job status
+      this.logger.jobProcessing('Starting job polling', { jobId: jobResponse.id, instanceId: jobInstanceId });
       this.startJobPolling(jobResponse.id, jobInstanceId);
 
       this.alert.success(
@@ -491,6 +593,7 @@ export class MainComponent implements OnInit, OnDestroy {
       );
 
     } catch (error: any) {
+      this.logger.error('Job automation failed', error);
       console.error('Error in job automation:', error);
       const errorMessage = error?.message || 'Failed to automate job submission';
       this.alert.error(`Job automation failed: ${errorMessage}. You may need to manually run the import job.`);
