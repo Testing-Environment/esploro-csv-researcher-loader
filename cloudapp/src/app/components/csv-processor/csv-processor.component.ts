@@ -181,7 +181,7 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
       Papa.parse<string[]>(file, {
         skipEmptyLines: 'greedy',
         encoding: 'utf-8',
-        worker: true,
+        worker: false, // Disabled to avoid CSP violations with blob URLs
         transform: value => (typeof value === 'string' ? value.trim() : value),
         complete: (result) => {
           if (result.errors && result.errors.length > 0) {
