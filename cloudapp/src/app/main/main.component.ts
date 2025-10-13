@@ -11,13 +11,14 @@ import { firstValueFrom, lastValueFrom } from '../utilities/rxjs-helpers';
 
 type ManualEntryStage = 'stage1' | 'stage2' | 'stage3';
 
+// amir-manual-fix 12 Oct 2025 made title, description, type, supplemental optional by suffixing with ?
 interface ManualEntryFormValue {
   assetId: string;
-  title: string;
+  title?: string;
   url: string;
-  description: string;
-  type: string;
-  supplemental: boolean;
+  description?: string;
+  type?: string;
+  supplemental?: boolean;
 }
 
 @Component({
@@ -28,7 +29,7 @@ interface ManualEntryFormValue {
 export class MainComponent implements OnInit, OnDestroy {
   form: FormGroup;
   stage: ManualEntryStage = 'stage1';
-  stageTwoSkipped = false;
+  stageTwoSkipped = true;
   assetValidationInProgress = false;
   // Controls whether Stage 2 (File Type selection) is presented
   fileTypesToggle = false; // default OFF per requirements
@@ -64,11 +65,6 @@ export class MainComponent implements OnInit, OnDestroy {
   processedAssetsCache: ProcessedAsset[] = [];
   assetCacheMap: Map<string, CachedAssetState> = new Map();
 
-  // Layout detection
-  private isExpandedView = false;
-  private layoutSubscription: Subscription | null = null;
-  private hasShownExpandedModeNotification = false;
-
   private readonly urlPattern = /^https?:\/\//i;
 
   constructor(
@@ -94,22 +90,6 @@ export class MainComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Subscribe to layout changes
-    this.layoutSubscription = this.eventsService.getPageMetadata().subscribe(pageInfo => {
-      const previousLayout = this.isExpandedView;
-      // Check if the app is in expanded view (full width)
-      // Note: PageInfo may not have a layout property, so we'll use a workaround
-      // For now, default to expanded view = true (we can adjust based on actual API)
-      this.isExpandedView = true; // TODO: Detect actual layout when API is available
-      
-      if (previousLayout !== this.isExpandedView) {
-        this.logger.userAction('Layout changed', {
-          from: previousLayout ? 'expanded' : 'collapsed',
-          to: this.isExpandedView ? 'expanded' : 'collapsed'
-        });
-      }
-    });
-
     this.loadAssetFilesAndLinkTypes();
   }
 
@@ -121,9 +101,6 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
-    if (this.layoutSubscription) {
-      this.layoutSubscription.unsubscribe();
-    }
   }
 
   get entries(): FormArray {
@@ -132,17 +109,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   addEntry(): void {
     this.entries.push(this.createEntryGroup());
-    
-    // Show expanded mode notification on first click
-    if (!this.hasShownExpandedModeNotification) {
-      this.hasShownExpandedModeNotification = true;
-      this.alert.info(
-        'For a better experience with multiple files, consider using the expanded view mode. ' +
-        'Click the expand icon in the top-right corner of the app.',
-        { autoClose: false }
-      );
-      this.logger.userAction('Expanded mode notification shown', { trigger: 'addEntry' });
-    }
   }
 
   removeEntry(index: number): void {
@@ -189,39 +155,6 @@ export class MainComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Calculate number of visible form fields based on toggle states
-   */
-  get visibleFieldCount(): number {
-    let count = 2; // Asset ID and File URL are always visible
-    
-    if (this.showFileName) count++;     // File Title field
-    if (this.fileTypesToggle) count++;  // File Type field (in stage 1, shown when toggle ON)
-    if (this.showFileDescription) count++;
-    if (this.showIsSupplemental) count++;
-    
-    return count;
-  }
-
-  /**
-   * Determine if form should stack horizontally
-   * - Expanded view: always horizontal
-   * - Collapsed view: horizontal only if 3 or fewer visible fields
-   */
-  get shouldStackHorizontally(): boolean {
-    return this.isExpandedView || this.visibleFieldCount <= 3;
-  }
-
-  /**
-   * Get CSS class for current layout mode
-   */
-  getFormLayoutClass(): string {
-    if (this.shouldStackHorizontally) {
-      return this.isExpandedView ? 'form-layout-expanded' : 'form-layout-collapsed';
-    }
-    return 'form-layout-vertical';
-  }
-
   async specifyTypesForEachFile(): Promise<void> {
     this.logger.navigation('Stage transition initiated', { from: 'stage1', to: 'stage2' });
     
@@ -242,7 +175,8 @@ export class MainComponent implements OnInit, OnDestroy {
     this.logger.navigation('Stage transition completed', { from: 'stage1', to: 'stage2' });
     this.applyTypeValidators(true);
 
-    this.entries.controls.forEach((group: FormGroup) => {
+    this.entries.controls.forEach((control) => {
+      const group = control as FormGroup;
       const typeControl = group.get('type');
       if (!typeControl?.value) {
         this.assignDefaultType(group);
@@ -280,7 +214,10 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.fileTypesToggle) {
       this.logger.validation('File type validation starting', true, { skippedStageTwo });
       if (skippedStageTwo) {
-        const allAssigned = this.entries.controls.every((group: FormGroup) => this.assignDefaultType(group));
+        const allAssigned = this.entries.controls.every((control) => {
+          const group = control as FormGroup;
+          return this.assignDefaultType(group);
+        });
         if (!allAssigned) {
           this.logger.validation('Default file type assignment failed', false);
           this.alert.error('Unable to determine a default file type for one or more entries. Please specify file types manually.');
@@ -350,7 +287,10 @@ export class MainComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const allAssigned = this.entries.controls.every((group: FormGroup) => this.assignDefaultType(group));
+    const allAssigned = this.entries.controls.every((control) => {
+      const group = control as FormGroup;
+      return this.assignDefaultType(group);
+    });
 
     if (!allAssigned) {
       this.alert.error('Unable to determine a default file type for one or more entries. Please specify file types manually.');
@@ -486,17 +426,6 @@ export class MainComponent implements OnInit, OnDestroy {
   onBatchProcessed(assets: ProcessedAsset[]) {
     this.processedAssets = assets;
     this.showResults = true;
-    
-    // Show expanded mode notification for better viewing experience
-    if (!this.hasShownExpandedModeNotification) {
-      this.hasShownExpandedModeNotification = true;
-      this.alert.info(
-        'For a better experience viewing results, consider using the expanded view mode. ' +
-        'Click the expand icon in the top-right corner of the app.',
-        { autoClose: false }
-      );
-      this.logger.userAction('Expanded mode notification shown', { trigger: 'csvUpload' });
-    }
   }
 
   onDownloadReady(downloadUrl: string) {
@@ -604,8 +533,8 @@ export class MainComponent implements OnInit, OnDestroy {
       await this.createSetForSuccessfulAssets(assetIds);
 
       const message = skippedStageTwo
-        ? `Successfully queued ${totalFiles} file${totalFiles === 1 ? '' : 's'} across ${uniqueAssets} asset${uniqueAssets === 1 ? '' : 's'} using default file type selections.`
-        : `Successfully queued ${totalFiles} file${totalFiles === 1 ? '' : 's'} across ${uniqueAssets} asset${uniqueAssets === 1 ? '' : 's'}.`;
+        ? `Successfully queued ${totalFiles} file${totalFiles === 1 ? '' : 's'} across ${uniqueAssets} asset${uniqueAssets === 1 ? '' : 's'} using default file type selections. Please review the job's progress in Admin > Monitor Jobs. Job ID is ${this.jobInstanceId || 'N/A'}.`
+        : `Successfully queued ${totalFiles} file${totalFiles === 1 ? '' : 's'} across ${uniqueAssets} asset${uniqueAssets === 1 ? '' : 's'}. Please review the job's progress in Admin > Monitor Jobs. Job ID is ${this.jobInstanceId || 'N/A'}`;
 
       this.alert.success(message);
       this.submissionResult = { type: 'success', message };
@@ -715,7 +644,8 @@ export class MainComponent implements OnInit, OnDestroy {
   private buildSubmissionPayload(): Map<string, AssetFileLink[]> {
     const payload = new Map<string, AssetFileLink[]>();
 
-    this.entries.controls.forEach((group: FormGroup) => {
+    this.entries.controls.forEach((control) => {
+      const group = control as FormGroup;
       const value = group.value as ManualEntryFormValue;
       const assetId = (value.assetId || '').trim();
       const url = (value.url || '').trim();
@@ -725,7 +655,7 @@ export class MainComponent implements OnInit, OnDestroy {
       }
 
       const entry: AssetFileLink = {
-        title: value.title || undefined,
+        title: value.title || '',
         url,
         description: value.description || undefined,
         type: value.type,
@@ -780,7 +710,8 @@ export class MainComponent implements OnInit, OnDestroy {
 
       const invalidIndices: number[] = [];
 
-      this.entries.controls.forEach((group: FormGroup, index: number) => {
+      this.entries.controls.forEach((control, index: number) => {
+        const group = control as FormGroup;
         const assetId = (group.get('assetId')?.value || '').trim();
         if (!assetId || !this.assetMetadataMap.has(assetId)) {
           invalidIndices.push(index);
@@ -808,7 +739,8 @@ export class MainComponent implements OnInit, OnDestroy {
   private ensureRequiredFields(): boolean {
     let hasErrors = false;
 
-    this.entries.controls.forEach((group: FormGroup) => {
+    this.entries.controls.forEach((control) => {
+      const group = control as FormGroup;
       const assetIdControl = group.get('assetId');
       const urlControl = group.get('url');
 
@@ -865,16 +797,17 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   private clearAssetValidationMarkers(): void {
-    this.entries.controls.forEach((group: FormGroup) => {
-      const control = group.get('assetId');
-      const errors = control?.errors;
+    this.entries.controls.forEach((control) => {
+      const group = control as FormGroup;
+      const assetControl = group.get('assetId');
+      const errors = assetControl?.errors;
 
       if (!errors?.['invalidAsset']) {
         return;
       }
 
       const { invalidAsset, ...remaining } = errors;
-      control?.setErrors(Object.keys(remaining).length ? remaining : null);
+      assetControl?.setErrors(Object.keys(remaining).length ? remaining : null);
     });
   }
 
@@ -897,7 +830,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   private applyTypeValidators(isRequired: boolean): void {
-    this.entries.controls.forEach((group: FormGroup) => {
+    this.entries.controls.forEach((control) => {
+      const group = control as FormGroup;
       const typeControl = group.get('type');
       typeControl?.clearValidators();
       if (isRequired) {
@@ -1004,6 +938,9 @@ export class MainComponent implements OnInit, OnDestroy {
       // Create array of verification observables
       const verificationObservables = this.processedAssetsCache.map(asset => {
         const cachedState = this.assetCacheMap.get(asset.mmsId);
+        if (!cachedState) {
+          return of(null);
+        }
         return this.assetService.verifyAssetFiles(
           asset.mmsId,
           cachedState,
@@ -1013,10 +950,12 @@ export class MainComponent implements OnInit, OnDestroy {
 
       // Execute all verifications in parallel
       const results = await firstValueFrom(forkJoin(verificationObservables));
-      this.verificationResults = results;
+      
+      // Filter out null results (assets without cached state)
+      this.verificationResults = results.filter((r): r is AssetVerificationResult => r !== null);
 
       // Generate batch summary
-      this.batchVerificationSummary = this.generateBatchSummary(results);
+      this.batchVerificationSummary = this.generateBatchSummary(this.verificationResults);
 
       // Display summary to user
       this.displayVerificationSummary(this.batchVerificationSummary);

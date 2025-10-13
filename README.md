@@ -10,6 +10,7 @@ This Cloud App streamlines the process of attaching external files to existing E
 - Inline validation and success/error feedback through the Cloud App alert system
 
 ## Prerequisites
+
 - Esploro July 2024 release (or later)
 - Cloud Apps framework enabled for your institution
 - User roles that permit viewing the target asset and running the "Load files" job
@@ -65,6 +66,7 @@ For broader Esploro documentation, visit the [Esploro Online Help](https://knowl
 ## Development
 
 ### Getting Started
+
 ```bash
 # Install dependencies
 npm install
@@ -76,13 +78,15 @@ npm start
 The app will be available at `http://localhost:4200` and can be loaded into Esploro via Cloud Apps developer mode.
 
 ### Documentation for Developers
+
 - **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Setup, API reference, common tasks
 - **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Architecture diagrams and data flow
 - **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future enhancement proposals
 - **[Cleanup Summary](documentation/CLEANUP_SUMMARY.md)** - History of code cleanup and legacy features
 
 ### Project Structure
-```
+
+```text
 cloudapp/src/app/
 ├── main/              # File upload component
 ├── models/            # TypeScript interfaces
@@ -91,6 +95,7 @@ cloudapp/src/app/
 ```
 
 ### Key Technologies
+
 - **Angular 11** - Frontend framework
 - **Angular Material** - UI components
 - **RxJS** - Reactive programming
@@ -105,6 +110,9 @@ This is a specialized tool for Esploro environments. For contributions or issues
 This project includes comprehensive documentation for developers, administrators, and end users (see also `documentation/INDEX.md`):
 
 ### For Developers
+
+- **[Codebase Analysis Changelog](ANALYSIS_CHANGELOG.md)** - Comprehensive system analysis from user experience to component level (October 2025)
+- **[TypeScript Strict Mode Changes](TYPESCRIPT_STRICT_CHANGES.md)** - Log of all TypeScript strict mode compliance fixes and type safety improvements
 - **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
 - **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
 - **[Comprehensive Technical Documentation](explanation.md)** - Deep-dive analysis of the entire codebase
@@ -112,16 +120,19 @@ This project includes comprehensive documentation for developers, administrators
 - **[CSV Parsing Enhancement](documentation/CSV_PARSING.md)** - PapaParse integration for robust CSV handling
 
 ### For Product Owners & Project Managers
+
 - **[Final Status Report](FINAL_STATUS_REPORT.md)** - Overview of all work, documentation index, and project status
 - **[Phase 2 Enhancement Complete](documentation/PHASE_2_ENHANCEMENT_COMPLETE.md)** - Summary of Phase 2 enhancements
 - **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future automation features roadmap
 
 ### For System Administrators
+
 - **[Cleanup Summary](CLEANUP_SUMMARY.md)** - Log of recent code cleanup and improvements
 - **[API Usage Report](Esploro_Asset_API_Usage_Report.md)** - Detailed API integration analysis
 - **[Database Schema](documentation/Expanded_Esploro_Schema.md)** - Complete Esploro database schema reference
 
 ### Quick Links
+
 - **[API Documentation](esploroAssets.md)** - Esploro Assets API reference
 - **[File Addition API](documentation/API%20to%20Add%20new%20file%20to%20Asset.md)** - Specific endpoint documentation
 - **[Cloud Apps Framework](exlCloudApps.md)** - Ex Libris Cloud Apps development guide
@@ -129,4 +140,3 @@ This project includes comprehensive documentation for developers, administrators
 ## License
 
 This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICENSE) file for details.
-

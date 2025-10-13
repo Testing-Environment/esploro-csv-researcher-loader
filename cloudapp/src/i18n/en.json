@@ -204,7 +204,9 @@
 		},
 		"Preview": {
 			"Title": "Data Preview",
-			"Records": "Found {count} {count, plural, =1 {record} other {records}}"
+			"Records": "Found {count} {count, plural, =1 {record} other {records}}",
+			"RecommendExpanded": "For best results, please expand the preview to review all columns.",
+			"ExpandGuide": "Click the expand icon in the top-right corner of the app."
 		},
 		"Actions": {
 			"ProcessData": "Process Data",

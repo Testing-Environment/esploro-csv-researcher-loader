@@ -24,7 +24,7 @@ import { firstValueFrom, lastValueFrom } from '../../utilities/rxjs-helpers';
 @Component({
   selector: 'app-csv-processor',
   templateUrl: './csv-processor.component.html',
-  styleUrls: ['./csv-processor.component.scss']
+  styleUrls: ['./csv-processor.component.scss', './csv-processor.component.css']
 })
 export class CsvProcessorComponent implements OnInit, OnDestroy {
   @Input() fileTypes: FileType[] = [];

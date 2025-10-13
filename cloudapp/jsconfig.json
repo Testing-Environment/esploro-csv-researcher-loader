@@ -1,6 +1,15 @@
 {
+  // If you need jsconfig.json for JavaScript tooling, keep only non-TypeScript options here.
   "compilerOptions": {
+    // Enable experimentalDecorators for Angular projects to support @Component, @Injectable, etc.
     "experimentalDecorators": true,
-    "target": "es5"
+    "moduleResolution": "node",
+    "ignoreDeprecations": "6.0"
+  },
+  "exclude": [
+    "dist"
+  ],
+  "angularCompilerOptions": {
+    "strictTemplates": true
   }
 }

@@ -155,6 +155,61 @@
   }
 }
 
+/* ===== File Entry Row Styles ===== */
+
+.file-entry-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: white;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.24);
+  }
+}
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  .entry-number {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  .remove-entry-button {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover:not([disabled]) {
+      opacity: 1;
+    }
+
+    &[disabled] {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.entry-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
 .add-file-row {
   display: flex;
   justify-content: flex-start;
@@ -199,176 +254,142 @@
 
 /* ===== Responsive Form Layout Styles ===== */
 
-.file-entry-row {
-  margin-bottom: 16px;
-  padding: 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background-color: #fafafa;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: #f5f5f5;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* --- Vertical Layout (Default for >3 fields in collapsed view) --- */
-.form-layout-vertical {
+// Collapsed view - horizontal layout (≤3 visible fields)
+.form-layout-collapsed-horizontal {
   display: flex;
-  flex-direction: column;
-
-  .entry-header {
-    margin-bottom: 12px;
-    font-weight: 500;
-    color: #1976d2;
-    font-size: 1rem;
-  }
-
-  .entry-fields {
+  flex-direction: row;
+  gap: 8px;
+  align-items: stretch;
+  min-height: 48px;
+  
+  .entry-field,
+  .full-width {
+    flex: 1;
+    min-width: 0;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 12px;
-
-    .entry-field {
+    align-items: stretch;
+    overflow: hidden;
+    word-wrap: break-word;
+    padding: 5px;
+    padding-left: 0 !important;
+    
+    ::ng-deep mat-form-field {
       width: 100%;
-    }
-  }
+      font-size: inherit;
+      font-weight: 400;
+      line-height: 1.125;
+      
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+      
+      .mat-form-field-infix {
+        width: 100%;
+        border-top: 0;
+      }
+      
+      .mat-form-field-underline {
+        bottom: 0;
+      }
+      
+      input.mat-input-element {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.3em;
+      }
+      
+      .mat-select-trigger {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.3em;
+      }
 
-  .entry-actions {
+        .entry-actions {
     display: flex;
     justify-content: flex-end;
   }
-}
-
-/* --- Collapsed View Horizontal Layout (≤3 fields) --- */
-.form-layout-collapsed {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-
-  .entry-header {
-    flex-shrink: 0;
-    min-width: 60px;
-    font-weight: 500;
-    color: #1976d2;
-    font-size: 0.9rem;
-
-    .entry-number {
-      white-space: nowrap;
     }
-  }
-
-  .entry-fields {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    gap: 12px;
-    align-items: center;
-
-    .entry-field {
-      flex: 1 1 0; // Equal width for all fields
-      min-width: 0; // Allow shrinking below content width
-
-      // Override Angular Material default width
-      &::ng-deep .mat-form-field {
-        width: 100%;
-      }
-    }
-
-    .supplemental-field {
-      display: flex;
-      align-items: center;
-      flex: 0 0 auto; // Don't grow, natural width for checkbox
-      min-width: 140px;
-    }
-  }
-
-  .entry-actions {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
   }
 }
 
-/* --- Expanded View Horizontal Layout (Always horizontal) --- */
+
+// Expanded view - horizontal layout with equal widths
+
 .form-layout-expanded {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 16px;
-
-  .entry-header {
-    flex-shrink: 0;
-    min-width: 70px;
-    font-weight: 500;
-    color: #1976d2;
-    font-size: 1rem;
-
-    .entry-number {
-      white-space: nowrap;
-    }
-  }
-
-  .entry-fields {
+  gap: 12px;
+  align-items: stretch;
+  flex-wrap: wrap;
+  min-height: 48px;
+  
+  .entry-field,
+  .full-width {
+    flex: 1 1 0;
+    min-width: 150px;
     display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    gap: 16px;
     align-items: center;
-
-    .entry-field {
-      flex: 1 1 0; // Equal width distribution
-      min-width: 120px; // Minimum readable width
-
-      &::ng-deep .mat-form-field {
-        width: 100%;
+    overflow: hidden;
+    word-wrap: break-word;
+    padding: 5px;
+    padding-left: 0 !important;
+    
+    ::ng-deep mat-form-field {
+      width: 100%;
+      font-size: inherit;
+      font-weight: 400;
+      line-height: 1.125;
+      
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
       }
-    }
+      
+      .mat-form-field-infix {
+        width: 100%;
+        border-top: 0;
+      }
+      
+      .mat-form-field-underline {
+        bottom: 0;
+      }
+      
+      input.mat-input-element {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.3em;
+      }
+      
+      .mat-select-trigger {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.3em;
+      }
 
-    .supplemental-field {
-      flex: 0 0 auto;
-      min-width: 140px; // Fixed width for checkbox label
-    }
-  }
-
-  .entry-actions {
-    flex-shrink: 0;
+              .entry-actions {
     display: flex;
-    align-items: center;
+    justify-content: flex-end;
+  }
+    }
   }
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-  // Force vertical layout on small screens
-  .form-layout-collapsed,
+// Responsive adjustments
+@media (max-width: 450px) {
+  .form-layout-collapsed-horizontal,
   .form-layout-expanded {
     flex-direction: column;
-    align-items: stretch;
-
-    .entry-header {
-      margin-bottom: 12px;
-    }
-
-    .entry-fields {
-      flex-direction: column;
-
-      .entry-field {
-        width: 100%;
-      }
-    }
-
-    .entry-actions {
-      justify-content: flex-end;
+    
+    .entry-field,
+    .full-width {
+      width: 100%;
+      flex: 1 1 auto;
     }
   }
 }
 
 /* --- Angular Material Overrides --- */
-.entry-field {
+.entry-field,
+.full-width {
   ::ng-deep {
     .mat-form-field-wrapper {
       padding-bottom: 0.5em; // Reduce bottom padding in horizontal layouts

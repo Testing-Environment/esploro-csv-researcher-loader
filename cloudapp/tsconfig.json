@@ -1,0 +1,52 @@
+{
+    "compilerOptions": {
+        "module": "es2015",
+        "target": "es5",
+        "lib": [
+            "es2015",
+            "dom"
+        ],
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "skipLibCheck": true,
+        "outDir": "./dist/out-tsc",
+        "baseUrl": "./",
+        "paths": {
+            "@app/*": [
+                "src/app/*"
+            ],
+            "@env/*": [
+                "src/environments/*"
+            ],
+            "@Angular/*": [
+                "node_modules/@angular/*"
+            ],
+            "@rxjs/*": [
+                "node_modules/rxjs/*"
+            ], 
+            "@ngx/*": [
+                "node_modules/@ngx/*"
+            ], 
+            "@angular-material/*": [
+                "node_modules/@angular/material/*"
+            ],
+            "rxjs": [
+                "node_modules/rxjs"
+            ],
+            "./*": [
+                "src/*"
+            ]
+        },
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true
+    },
+    "exclude": [
+        "dist"
+    ],
+    "angularCompilerOptions": {
+        "strictTemplates": true
+    }
+}

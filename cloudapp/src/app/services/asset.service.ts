@@ -355,12 +355,12 @@ export class AssetService {
    * @param jobId - The job ID (default: 'M50762')
    * @returns Observable of the job execution response with instance ID
    */
-  runJob(setId: string, jobId: string = 'M50762'): Observable<JobExecutionResponse> {
+  runJob(setId: string, jobId: string = 'M50173'): Observable<JobExecutionResponse> {
     if (!setId) {
       return throwError(() => new Error('Set ID is required'));
     }
 
-    const jobName = 'Import Research Assets Files - via API - CloudApp';
+    const jobName = 'Import Research Assets Files - via API - ' + this.generateSetName();
 
     const payload: RunJobPayload = {
       parameter: [
@@ -402,11 +402,11 @@ export class AssetService {
 
   /**
    * Get job instance status for monitoring
-   * @param jobId Job ID (e.g., 'M50762')
+   * @param jobId Job ID (e.g., 'M50173')
    * @param instanceId Job instance ID from runJob response
    * @returns Observable of job instance status with progress and counters
    */
-  getJobInstance(jobId: string, instanceId: string): Observable<JobInstanceStatus> {
+  getJobInstance(jobId: string = 'M50173', instanceId: string): Observable<JobInstanceStatus> {
     this.logger.apiCall('GET /conf/jobs/{id}/instances/{instanceId}', 'request', { jobId, instanceId });
 
     return this.restService.call({
@@ -442,6 +442,21 @@ export class AssetService {
   ): Observable<AssetVerificationResult> {
     return this.getAssetMetadata(mmsId).pipe(
       map(metadata => {
+        // Handle null metadata (API error or asset not found)
+        if (!metadata) {
+          return {
+            mmsId,
+            status: 'error' as const,
+            filesBeforeCount: cachedState.filesBefore.length,
+            filesAfterCount: 0,
+            filesAdded: 0,
+            filesExpected: expectedUrl ? 1 : 0,
+            fileVerifications: [],
+            verificationSummary: 'Failed to retrieve asset metadata',
+            warnings: ['Unable to verify asset: metadata not available']
+          };
+        }
+
         const filesAfter = metadata.files || [];
         const filesBefore = cachedState.filesBefore;
 
