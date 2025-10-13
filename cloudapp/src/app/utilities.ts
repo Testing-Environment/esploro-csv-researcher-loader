@@ -1,16 +1,16 @@
 /** Maps object based on passed in function and returns object */
-const mapObject = (object: Object, mapFn: Function) => Object.keys(object).reduce(function(result, key) {
+const mapObject = (object: any, mapFn: (value: any) => any): any => Object.keys(object).reduce(function(result: any, key: string) {
     result[key] = mapFn(object[key])
     return result
-  }, {});
+  }, {} as any);
 
 /** Chunks array and returns array of arrays of specified size */
 const chunk = <T>(inputArray: Array<T>, size:number): Array<Array<T>> => {
-  return inputArray.reduce((all,one,i) => {
+  return inputArray.reduce((all: Array<Array<T>>, one: T, i: number) => {
     const ch = Math.floor(i/size); 
-    all[ch] = [].concat((all[ch]||[]),one); 
+    all[ch] = (all[ch] || []).concat([one]) as Array<T>; 
     return all;
-  }, []);
+  }, [] as Array<Array<T>>);
 };
 
 /** Asynchronously executes the function for each element in the array */
@@ -35,7 +35,7 @@ const isEmptyString = (value: string | null | undefined): boolean => {
 };
 
 /** Handles either resolved or rejected Promise */
-const reflect = p => p.then(v => ({v, status: "fulfilled" }), e => ({e, status: "rejected" }));
+const reflect = (p: Promise<any>) => p.then((v: any) => ({v, status: "fulfilled" }), (e: any) => ({e, status: "rejected" }));
 
 /** Downloads file */
 const download = (filename: string, filetype: string, contents: string) => {

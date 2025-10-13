@@ -3,7 +3,7 @@ import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, of, Observable, interval, Subscription } from 'rxjs';
-import { catchError, switchMap, takeWhile } from 'rxjs/operators';
+import { catchError, switchMap, takeWhile, map, finalize } from 'rxjs/operators';
 import * as Papa from 'papaparse';
 import { 
   ColumnMapping, 
@@ -31,6 +31,7 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
   @Input() assetFileAndLinkTypes: AssetFileAndLinkType[] = [];
   @Output() batchProcessed = new EventEmitter<ProcessedAsset[]>();
   @Output() downloadReady = new EventEmitter<string>();
+  @Output() uploadInitiated = new EventEmitter<void>();
 
   // Component state
   csvData: CSVData | null = null;
@@ -70,6 +71,8 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
 
   // Asset state caching for before/after comparison
   assetCacheMap: Map<string, CachedAssetState> = new Map();
+  // NEW: Asset batch tracking with file counts
+  assetBatchMap: Map<string, { files: any[], rows: ProcessedAsset[], fileCountBefore: number, fileCountAfter?: number }> = new Map();
   private pendingFieldMapping: { [key: string]: string } | null = null;
 
   // Job automation state (Phase 3)
@@ -149,6 +152,8 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
     }
 
     try {
+      this.uploadInitiated.emit();
+
       const csvResult = await this.parseCSVFile(file);
 
       if (!csvResult.data || csvResult.data.length === 0) {
@@ -656,20 +661,27 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
       return asset;
     });
 
-    // Cache asset states before processing
-    await this.cacheAssetStates(transformedData);
-
-    // Process assets
+    // Process assets (groups by asset ID and batch-submits files)
     try {
+      console.log(`Starting batch processing of ${transformedData.length} CSV rows...`);
+      
       const processedAssets = await this.processAssets(transformedData);
       
-      // Store processed assets for verification after job completion
+      // Store processed assets for later reference
       this.processedAssetsCache = processedAssets;
 
-      // Compare asset states after processing
-      await this.compareAssetStates(processedAssets);
+      // Get unique asset IDs that were successfully processed
+      const successfulAssetIds = Array.from(
+        new Set(
+          processedAssets
+            .filter(a => a.status === 'success')
+            .map(a => a.mmsId)
+        )
+      );
 
-      // Phase 3: Create set with successful assets
+      console.log(`Successfully processed ${successfulAssetIds.length} unique assets`);
+
+      // Create set with successful assets and run import job
       await this.createSetForSuccessfulAssets(processedAssets);
 
       // Generate MMS ID download file
@@ -679,10 +691,12 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
       this.batchProcessed.emit(processedAssets);
       this.downloadReady.emit(downloadUrl);
 
+      const successCount = processedAssets.filter(a => a.status === 'success').length;
+      const errorCount = processedAssets.filter(a => a.status === 'error').length;
+      
       this.alertService.success(
-        this.translate.instant('Success.BatchProcessed', {
-          count: processedAssets.length
-        })
+        `Batch processing complete: ${successCount} successful, ${errorCount} failed. ` +
+        `Job has been submitted - check Admin > Monitor Jobs for progress.`
       );
 
     } catch (error: any) {
@@ -696,43 +710,180 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Process individual assets using Ex Libris REST APIs
+   * Process assets in 3 phases: GET counts, UPDATE via job, GET counts again
+   * This matches the correct workflow: measure before, update, measure after
    */
   private async processAssets(assets: ProcessedAsset[]): Promise<ProcessedAsset[]> {
-    const processedAssets: ProcessedAsset[] = [];
-
-    for (let i = 0; i < assets.length; i++) {
-      const asset = assets[i];
-      this.currentProcessingItem = asset.mmsId;
-
-      try {
-        // Validate MMS ID exists in Esploro
-        await this.validateAsset(asset.mmsId);
-
-        // Process file attachment if URL provided
-        if (asset.remoteUrl) {
-          await this.processAssetFile(asset);
-        }
-
-        asset.status = 'success';
-
-      } catch (error: any) {
-        asset.status = 'error';
-        asset.errorMessage = error.message;
-        console.error(`Failed to process asset ${asset.mmsId}:`, error);
+    // ============================================================================
+    // PHASE 1: GET Current File Counts (BEFORE Updates)
+    // ============================================================================
+    console.log('\n📊 PHASE 1: Getting current file counts for all assets...');
+    
+    // Step 1.1: Group CSV rows by Asset ID
+    this.assetBatchMap.clear(); // Clear previous data
+    
+    assets.forEach(asset => {
+      if (!asset.mmsId) {
+        console.warn('⚠️  Skipping row with missing MMS ID');
+        return;
       }
 
-      processedAssets.push(asset);
-      this.processedCount = i + 1;
-      this.processingProgress = (this.processedCount / this.totalCount) * 100;
-
-      // Small delay to prevent API throttling
-      if (i < assets.length - 1) {
-        await this.delay(100);
+      if (!this.assetBatchMap.has(asset.mmsId)) {
+        this.assetBatchMap.set(asset.mmsId, { files: [], rows: [], fileCountBefore: 0 });
       }
+
+      const batch = this.assetBatchMap.get(asset.mmsId)!;
+      
+      // Collect all files for this asset
+      if (asset.remoteUrl) {
+        batch.files.push({
+          url: asset.remoteUrl,
+          title: asset.fileTitle || '',
+          description: asset.fileDescription || undefined,
+          type: asset.fileType || undefined,
+          supplemental: false
+        });
+      }
+      
+      batch.rows.push(asset);
+    });
+
+    console.log(`📦 Grouped ${assets.length} CSV rows into ${this.assetBatchMap.size} unique assets`);
+
+    this.startPhaseOneProgress(this.assetBatchMap.size);
+
+    // Step 1.2: GET file counts for all assets (validate + count files)
+    const uniqueAssetIds = Array.from(this.assetBatchMap.keys());
+    const fileCountRequests = uniqueAssetIds.map(mmsId =>
+      this.restService.call(`/esploro/v1/assets/${mmsId}`).pipe(
+        map((response: any) => {
+          const files = response?.records?.[0]?.files || [];
+          const fileCount = Array.isArray(files) ? files.length : 0;
+          console.log(`  ✓ Asset ${mmsId}: ${fileCount} file(s) currently`);
+          return { mmsId, fileCount, valid: true };
+        }),
+        catchError((error: any) => {
+          if (error?.status === 404) {
+            console.error(`  ✗ Asset ${mmsId}: NOT FOUND`);
+            return of({ mmsId, fileCount: 0, valid: false, error: 'Asset not found' });
+          }
+          console.error(`  ✗ Asset ${mmsId}: ERROR - ${error.message}`);
+          return of({ mmsId, fileCount: 0, valid: false, error: error.message });
+        }),
+        finalize(() => this.advancePhaseOneProgress(mmsId))
+      )
+    );
+
+    let fileCountResults: Array<{ mmsId: string; fileCount: number; valid: boolean; error?: string }>;
+    try {
+      fileCountResults = await lastValueFrom(forkJoin(fileCountRequests)) as Array<{ mmsId: string; fileCount: number; valid: boolean; error?: string }>;
+    } catch (error: any) {
+      console.error('❌ Failed to get file counts:', error);
+      throw new Error('Failed to validate assets and get file counts');
     }
 
+    this.currentProcessingItem = '';
+
+    // Step 1.3: Store counts and mark invalid assets as errors
+    const processedAssets: ProcessedAsset[] = [];
+    const invalidAssets: string[] = [];
+
+    fileCountResults.forEach(result => {
+      const batch = this.assetBatchMap.get(result.mmsId)!;
+      
+      if (!result.valid) {
+        // Mark all rows for this invalid asset as error
+        invalidAssets.push(result.mmsId);
+        batch.rows.forEach((row: ProcessedAsset) => {
+          row.status = 'error';
+          row.errorMessage = result.error || 'Asset validation failed';
+          processedAssets.push(row);
+        });
+      } else {
+        // Store the "before" count
+        batch.fileCountBefore = result.fileCount;
+      }
+    });
+
+    const validAssetIds = uniqueAssetIds.filter(id => !invalidAssets.includes(id));
+    
+    if (validAssetIds.length === 0) {
+      console.error('❌ No valid assets to process');
+      return processedAssets;
+    }
+
+    console.log(`✅ Phase 1 complete: ${validAssetIds.length} valid assets, ${invalidAssets.length} invalid\n`);
+
+    // ============================================================================
+    // PHASE 2: Update Assets + Run Job (Copy from Manual Entry)
+    // ============================================================================
+    console.log('🔄 PHASE 2: Updating assets and running import job...');
+    
+    // Step 2.1: Call addFilesToAsset for each valid asset
+    for (const mmsId of validAssetIds) {
+      const batch = this.assetBatchMap.get(mmsId)!;
+      const fileCount = batch.files.length;
+
+      if (fileCount === 0) {
+        console.log(`  ⏭️  Skipping asset ${mmsId} - no files to add`);
+        batch.rows.forEach((row: ProcessedAsset) => {
+          row.status = 'error';
+          row.errorMessage = 'No file URL provided';
+          processedAssets.push(row);
+        });
+        continue;
+      }
+
+      try {
+        console.log(`  🔄 Queuing ${fileCount} file(s) for asset ${mmsId}...`);
+        
+        await firstValueFrom(
+          this.assetService.addFilesToAsset(mmsId, batch.files)
+        );
+
+        console.log(`  ✅ Successfully queued ${fileCount} file(s) for asset ${mmsId}`);
+
+        // Mark rows as success (pending job verification)
+        batch.rows.forEach((row: ProcessedAsset) => {
+          row.status = 'success';
+          processedAssets.push(row);
+        });
+
+      } catch (error: any) {
+        console.error(`  ❌ Failed to queue files for asset ${mmsId}:`, error);
+        
+        batch.rows.forEach((row: ProcessedAsset) => {
+          row.status = 'error';
+          row.errorMessage = error.message || 'Failed to queue files';
+          processedAssets.push(row);
+        });
+      }
+
+      await this.delay(300); // Small delay between assets
+    }
+
+    console.log(`✅ Phase 2 complete: Assets updated, job will be submitted\n`);
+
     return processedAssets;
+  }
+
+  private startPhaseOneProgress(totalAssets: number): void {
+    this.totalCount = totalAssets;
+    this.processedCount = 0;
+    this.processingProgress = totalAssets === 0 ? 100 : 0;
+  this.currentProcessingItem = totalAssets > 0 ? 'Queuing submitted assets...' : '';
+  }
+
+  private advancePhaseOneProgress(mmsId: string): void {
+    if (this.totalCount === 0) {
+      this.processingProgress = 100;
+      this.currentProcessingItem = '';
+      return;
+    }
+
+    this.processedCount = Math.min(this.processedCount + 1, this.totalCount);
+    this.processingProgress = Math.round((this.processedCount / this.totalCount) * 100);
+    this.currentProcessingItem = `Validating asset ${mmsId}`;
   }
 
   /**
@@ -803,14 +954,21 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
    * Creates an Esploro set, adds members, and runs the import job
    */
   private async createSetForSuccessfulAssets(processedAssets: ProcessedAsset[]): Promise<void> {
-    const successfulMmsIds = processedAssets
-      .filter(a => a.status === 'success')
-      .map(a => a.mmsId);
+    // Get unique asset IDs (multiple CSV rows may map to same asset)
+    const successfulMmsIds = Array.from(
+      new Set(
+        processedAssets
+          .filter(a => a.status === 'success')
+          .map(a => a.mmsId)
+      )
+    );
 
     if (successfulMmsIds.length === 0) {
       console.log('No successful assets to add to set');
       return;
     }
+
+    console.log(`Creating set with ${successfulMmsIds.length} unique asset(s)...`);
 
     try {
       const setName = this.assetService.generateSetName();
@@ -837,16 +995,33 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
         this.assetService.runJob(setResponse.id)
       );
 
-      const jobInstanceId = jobResponse.additional_info?.instance?.value || '';
-      this.jobInstanceId = jobInstanceId;
-      console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
+      const jobInstanceId = this.assetService.getJobInstanceId(jobResponse);
+      const jobInstanceLink = this.assetService.getJobInstanceLink(jobResponse);
 
-      // Phase 3.4: Start polling job status
-      this.startJobPolling(jobResponse.id, jobInstanceId);
+      this.jobInstanceId = jobInstanceId ?? null;
 
-      this.alertService.success(
-        `Job automation started! Set: ${setResponse.id}, Job Instance: ${jobInstanceId}. Monitoring job progress...`
-      );
+      if (!jobInstanceId) {
+        console.warn('Job response did not include an instance ID.', {
+          jobResponse,
+          additionalInfo: jobResponse.additional_info,
+          jobLink: jobResponse.link
+        });
+        this.alertService.warn(
+          'Job automation started, but Esploro did not return a job instance ID. Please monitor the job manually in Esploro.'
+        );
+        if (jobInstanceLink) {
+          console.info('Job instance link provided by API:', jobInstanceLink);
+        }
+      } else {
+        console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
+
+        // Phase 3.4: Start polling job status
+        this.startJobPolling(jobResponse.id, jobInstanceId);
+
+        this.alertService.success(
+          `Job automation started! Set: ${setResponse.id}, Job Instance: ${jobInstanceId}. Monitoring job progress...`
+        );
+      }
 
     } catch (error: any) {
       console.error('Error in job automation:', error);
@@ -872,22 +1047,19 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Process asset file attachment
+   * Process asset file attachment using the correct API endpoint
    */
   private async processAssetFile(asset: ProcessedAsset): Promise<void> {
-    const fileData = {
-      url: asset.remoteUrl,
-      title: asset.fileTitle,
+    const fileLink = {
+      url: asset.remoteUrl || '',
+      title: asset.fileTitle || '',
       description: asset.fileDescription,
-      type: asset.fileType
+      type: asset.fileType,
+      supplemental: false
     };
 
     try {
-      await firstValueFrom(this.restService.call({
-        url: `/esploro/v1/assets/${asset.mmsId}/files`,
-        method: 'POST',
-        requestBody: fileData
-      } as any));
+      await firstValueFrom(this.assetService.addFilesToAsset(asset.mmsId, [fileLink]));
 
     } catch (error: any) {
       throw new Error(`Failed to process file for ${asset.mmsId}: ${error.message}`);
@@ -999,7 +1171,108 @@ export class CsvProcessorComponent implements OnInit, OnDestroy {
   /**
    * Perform comprehensive asset verification after job completion (Phase 3.5)
    */
+  /**
+   * PHASE 3: GET file counts AFTER job completes and compare with BEFORE counts
+   */
   private async verifyAssetResults(processedAssets: ProcessedAsset[]): Promise<void> {
+    console.log('\n📊 PHASE 3: Getting updated file counts after job completion...');
+    
+    if (this.assetBatchMap.size === 0) {
+      console.warn('⚠️  No asset batch data available for verification');
+      return;
+    }
+
+    const successfulAssets = processedAssets.filter(a => a.status === 'success');
+    if (successfulAssets.length === 0) {
+      console.log('No successful assets to verify');
+      return;
+    }
+
+    const uniqueAssetIds = Array.from(new Set(successfulAssets.map(a => a.mmsId)));
+    console.log(`Verifying ${uniqueAssetIds.length} unique assets...`);
+
+    // Step 3.1: GET file counts again (AFTER job)
+    const fileCountRequests = uniqueAssetIds.map(mmsId =>
+      this.restService.call(`/esploro/v1/assets/${mmsId}`).pipe(
+        map((response: any) => {
+          const files = response?.records?.[0]?.files || [];
+          const fileCountAfter = Array.isArray(files) ? files.length : 0;
+          const batch = this.assetBatchMap.get(mmsId);
+          const fileCountBefore = batch?.fileCountBefore || 0;
+          
+          console.log(`  📄 Asset ${mmsId}: ${fileCountBefore} → ${fileCountAfter} files (${fileCountAfter > fileCountBefore ? '+' + (fileCountAfter - fileCountBefore) : 'unchanged'})`);
+          
+          return { 
+            mmsId, 
+            fileCountBefore,
+            fileCountAfter, 
+            filesAdded: fileCountAfter - fileCountBefore,
+            changed: fileCountAfter > fileCountBefore
+          };
+        }),
+        catchError((error: any) => {
+          console.error(`  ✗ Asset ${mmsId}: Failed to get updated count - ${error.message}`);
+          return of({ mmsId, fileCountBefore: 0, fileCountAfter: 0, filesAdded: 0, changed: false, error: error.message });
+        })
+      )
+    );
+
+    try {
+      const verificationResults = await lastValueFrom(forkJoin(fileCountRequests)) as Array<{
+        mmsId: string;
+        fileCountBefore: number;
+        fileCountAfter: number;
+        filesAdded: number;
+        changed: boolean;
+        error?: string;
+      }>;
+
+      // Step 3.2: Store updated counts and mark unchanged assets
+      verificationResults.forEach(result => {
+        const batch = this.assetBatchMap.get(result.mmsId);
+        if (batch) {
+          batch.fileCountAfter = result.fileCountAfter;
+        }
+
+        // Update all rows for this asset based on verification
+        const assetRows = processedAssets.filter(a => a.mmsId === result.mmsId);
+        assetRows.forEach((row: ProcessedAsset) => {
+          if (!result.changed && !result.error) {
+            // Asset was not modified
+            row.status = 'unchanged';
+            row.wasUnchanged = true;
+            console.log(`  ⚠️  Asset ${result.mmsId} was NOT modified by job`);
+          } else if (result.error) {
+            row.errorMessage = `Verification failed: ${result.error}`;
+          }
+        });
+      });
+
+      // Step 3.3: Generate summary
+      const totalAssets = uniqueAssetIds.length;
+      const changedAssets = verificationResults.filter(r => r.changed).length;
+      const unchangedAssets = verificationResults.filter(r => !r.changed && !r.error).length;
+      const totalFilesAdded = verificationResults.reduce((sum, r) => sum + r.filesAdded, 0);
+
+      console.log(`\n✅ Phase 3 complete:`);
+      console.log(`   • ${changedAssets} assets modified`);
+      console.log(`   • ${unchangedAssets} assets unchanged`);
+      console.log(`   • ${totalFilesAdded} total files added\n`);
+
+      this.alertService.success(
+        `Verification complete! ${changedAssets} assets modified, ${unchangedAssets} unchanged, ${totalFilesAdded} files added.`
+      );
+
+    } catch (error) {
+      console.error('❌ Phase 3 verification error:', error);
+      this.alertService.warn('Could not verify all file attachments. Check individual asset results.');
+    }
+  }
+
+  /**
+   * OLD VERIFICATION METHOD - KEEP FOR REFERENCE BUT NOT USED
+   */
+  private async OLD_verifyAssetResults(processedAssets: ProcessedAsset[]): Promise<void> {
     if (this.assetCacheMap.size === 0) {
       console.warn('No cached asset states available for verification');
       return;

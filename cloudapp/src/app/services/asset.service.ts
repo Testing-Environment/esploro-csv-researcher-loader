@@ -19,6 +19,8 @@ import {
   AssetVerificationResult,
   CachedAssetState
 } from '../models/types';
+import { extractCategoryFromResourceType } from '../constants/asset-categories';
+import { parseRestError } from '../utilities/rest-error';
 
 export interface AddFilesToAssetResponse {
   records?: any[];
@@ -36,49 +38,6 @@ export class AssetService {
     private restService: CloudAppRestService,
     private logger: LoggerService
   ) { }
-
-  /**
-   * Extract detailed error information from RestError object
-   * Parses status, statusText, message, errorCode, and trackingId
-   */
-  private parseRestError(error: any, taskName: string): string {
-    let message = `${taskName} failed. Please try again.`;
-
-    try {
-      // Check if it's a RestError with status information
-      if (error?.status && error?.statusText) {
-        const status = error.status;
-        const statusText = error.statusText;
-        const errorMessage = error.message || 'No additional details available.';
-
-        // Extract nested error details if present
-        let additionalDetails = '';
-        if (error?.error?.errorList?.error?.[0]) {
-          const apiError = error.error.errorList.error[0];
-          if (apiError.errorCode) {
-            additionalDetails = ` Error Code: ${apiError.errorCode}.`;
-          }
-          if (apiError.errorMessage && apiError.errorMessage.trim()) {
-            additionalDetails += ` ${apiError.errorMessage}.`;
-          }
-          if (apiError.trackingId && apiError.trackingId !== 'unknown') {
-            additionalDetails += ` Tracking ID: ${apiError.trackingId}.`;
-          }
-        }
-
-        // Build formatted message
-        message = `Job ${taskName} failed - ${statusText}. Status: ${status} - ${errorMessage}.${additionalDetails} You may need to manually run or perform ${taskName}.`;
-      } else if (error?.message) {
-        // Fallback to simple error message
-        message = `${taskName} failed: ${error.message}. You may need to manually run or perform ${taskName}.`;
-      }
-    } catch (parseError) {
-      // If parsing fails, use default message
-      this.logger.error('Error parsing RestError', parseError);
-    }
-
-    return message;
-  }
 
   addFilesToAsset(assetId: string, files: AssetFileLink[]): Observable<AddFilesToAssetResponse> {
     const payload = {
@@ -110,7 +69,7 @@ export class AssetService {
     }).pipe(
       tap(response => this.logger.apiCall('POST /esploro/v1/assets/{id}', 'response', { assetId, response })),
       catchError(error => {
-        const errorMessage = this.parseRestError(error, 'Add Files to Asset');
+        const errorMessage = parseRestError(error, 'Add Files to Asset', this.logger);
         this.logger.error('Add files to asset failed', error);
         return throwError(() => new Error(errorMessage));
       })
@@ -120,6 +79,11 @@ export class AssetService {
   /**
    * Get AssetFileAndLinkTypes mapping table values from Generals API
    * Returns list of valid file type categories with IDs and target codes
+   * 
+   * The API returns data in column format:
+   * - column0: ID/target code (e.g., "pdf", "video", "accepted")
+   * - column1: Applicability ("file", "link", or "both")
+   * - column2: Asset types (comma-separated, e.g., "etd,teaching")
    */
   getAssetFilesAndLinkTypes(): Observable<AssetFileAndLinkType[]> {
     return this.restService.call({
@@ -127,26 +91,32 @@ export class AssetService {
       method: HttpMethod.GET
     }).pipe(
       map((response: any) => {
-        // Parse response - the API may return different structures
-        const rows = response?.mapping_table?.rows?.row
-          ?? response?.rows?.row
-          ?? response?.row
-          ?? [];
-
+        // Parse response - API returns row array with column0, column1, column2 format
+        const rows = response?.row ?? [];
         const normalized = Array.isArray(rows) ? rows : [rows];
 
         return normalized
           .filter(Boolean)
+          .filter((row: any) => row.enabled !== false) // Only include enabled rows
           .map((row: any) => ({
-            id: row?.id ?? row?.ID ?? '',
-            targetCode: row?.target_code ?? row?.TARGET_CODE ?? '',
-            sourceCode1: row?.source_code_1 ?? row?.SOURCE_CODE_1 ?? '',
-            sourceCode2: row?.source_code_2 ?? row?.SOURCE_CODE_2 ?? '',
-            sourceCode3: row?.source_code_3 ?? row?.SOURCE_CODE_3 ?? '',
-            sourceCode4: row?.source_code_4 ?? row?.SOURCE_CODE_4 ?? '',
-            sourceCode5: row?.source_code_5 ?? row?.SOURCE_CODE_5 ?? ''
+            // column0 = ID/target code (the actual file type category name)
+            id: row?.column0 ?? '',
+            targetCode: row?.column0 ?? '', // Same as ID for this table
+            // column1 = Applicability (file, link, or both)
+            sourceCode1: row?.column1 ?? '',
+            // column2 = Asset types (comma-separated list)
+            sourceCode2: row?.column2 ?? '',
+            // Additional columns (if they exist in the future)
+            sourceCode3: row?.column3 ?? '',
+            sourceCode4: row?.column4 ?? '',
+            sourceCode5: row?.column5 ?? ''
           }))
           .filter((entry: AssetFileAndLinkType) => !!entry.id && !!entry.targetCode);
+      }),
+      catchError(error => {
+        console.error('Failed to load AssetFileAndLinkTypes mapping table:', error);
+        this.logger.error('Get AssetFileAndLinkTypes failed', error);
+        return throwError(() => error);
       })
     );
   }
@@ -164,12 +134,19 @@ export class AssetService {
         const record = response?.records?.[0] ?? response;
         
         // Extract asset type from various possible locations
-        const assetType = record?.asset_type?.value 
+        // The API returns the full resource type (e.g., "publication.journalArticle")
+        // We need to extract the category code (e.g., "publication") for file type filtering
+        const resourceType = record?.['resourcetype.esploro']
+          ?? record?.resourcetype?.esploro
+          ?? record?.asset_type?.value 
           ?? record?.assetType?.value
           ?? record?.asset_type
           ?? record?.assetType
           ?? record?.type
           ?? '';
+
+        // Extract category from full resource type (e.g., "publication.journalArticle" -> "publication")
+        const assetType = extractCategoryFromResourceType(resourceType);
 
         // Extract title
         const title = record?.title?.value
@@ -289,7 +266,7 @@ export class AssetService {
       tap(response => this.logger.apiCall('POST /conf/sets', 'response', { setId: (response as SetResponse).id })),
       map(response => response as SetResponse),
       catchError(error => {
-        const errorMessage = this.parseRestError(error, 'Set Creation');
+  const errorMessage = parseRestError(error, 'Set Creation', this.logger);
         this.logger.error('Create set failed', error);
         console.error('Error creating set:', error);
         return throwError(() => new Error(errorMessage));
@@ -336,7 +313,7 @@ export class AssetService {
       })),
       map(response => response as AddSetMembersResponse),
       catchError(error => {
-        const errorMessage = this.parseRestError(error, 'Add Members to Set');
+  const errorMessage = parseRestError(error, 'Add Members to Set', this.logger);
         this.logger.error('Update set members failed', error);
         console.error(`Error adding members to set ${setId}:`, error);
         return throwError(() => new Error(errorMessage));
@@ -375,7 +352,7 @@ export class AssetService {
       ]
     };
 
-    this.logger.apiCall('POST /conf/jobs/{id}?op=run', 'request', { jobId, setId, jobName });
+  this.logger.apiCall('POST /conf/jobs/{id}?op=run', 'request', { jobId, setId, jobName });
 
     return this.restService.call({
       url: `/conf/jobs/${jobId}?op=run`,
@@ -386,13 +363,19 @@ export class AssetService {
       },
       requestBody: payload
     }).pipe(
-      tap(response => this.logger.apiCall('POST /conf/jobs/{id}?op=run', 'response', { 
-        jobId, 
-        instanceId: (response as JobExecutionResponse).additional_info?.instance?.value 
-      })),
+      tap(response => {
+        const jobResponse = response as JobExecutionResponse;
+        const instanceId = this.getJobInstanceId(jobResponse);
+
+        this.logger.apiCall('POST /conf/jobs/{id}?op=run', 'response', { 
+          jobId,
+          instanceId,
+          link: this.getJobInstanceLink(jobResponse)
+        });
+      }),
       map(response => response as JobExecutionResponse),
       catchError(error => {
-        const errorMessage = this.parseRestError(error, 'Job Execution');
+  const errorMessage = parseRestError(error, 'Job Execution', this.logger);
         this.logger.error('Run job failed', error);
         console.error(`Error running job ${jobId} for set ${setId}:`, error);
         return throwError(() => new Error(errorMessage));
@@ -425,6 +408,64 @@ export class AssetService {
         return throwError(() => new Error('Failed to fetch job status'));
       })
     );
+  }
+
+  /**
+   * Extract job instance ID from job execution response
+   */
+  getJobInstanceId(jobResponse: JobExecutionResponse | null | undefined): string | null {
+    if (!jobResponse || !jobResponse.additional_info) {
+      return null;
+    }
+
+    const infos = Array.isArray(jobResponse.additional_info)
+      ? jobResponse.additional_info
+      : [jobResponse.additional_info];
+
+    for (const info of infos) {
+      if (!info) continue;
+
+      if (info.instance?.value) {
+        return info.instance.value;
+      }
+
+      if (info.link) {
+        const match = info.link.match(/instances\/(\w+)/);
+        if (match?.[1]) {
+          return match[1];
+        }
+      }
+
+      if (info.value) {
+        const match = info.value.match(/instance\s*(?:id)?\s*[:#]?\s*(\w+)/i);
+        if (match?.[1]) {
+          return match[1];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Extract a direct link to the job instance when available
+   */
+  getJobInstanceLink(jobResponse: JobExecutionResponse | null | undefined): string | null {
+    if (!jobResponse || !jobResponse.additional_info) {
+      return jobResponse?.link ?? null;
+    }
+
+    const infos = Array.isArray(jobResponse.additional_info)
+      ? jobResponse.additional_info
+      : [jobResponse.additional_info];
+
+    for (const info of infos) {
+      if (info?.link) {
+        return info.link;
+      }
+    }
+
+    return jobResponse.link ?? null;
   }
 
   /**

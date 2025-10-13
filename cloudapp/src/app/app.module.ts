@@ -37,15 +37,15 @@ export function getTranslateModuleWithICU() {
     ProcessingResultsComponent
   ],
   imports: [
-    MaterialModule,
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    AlertModule,
-    BrowserAnimationsModule,
+    MaterialModule,
     EnhancedMaterialModule,
+    AlertModule,
     getTranslateModuleWithICU(),
   ],
   providers: [

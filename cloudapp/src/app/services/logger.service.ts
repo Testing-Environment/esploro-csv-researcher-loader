@@ -16,12 +16,13 @@ export type LogCategory =
  */
 export const LoggerConfig = {
   enableDebugLogging: true,  // Master toggle - set to true to enable logging
+  showInstructionsEnabled: false, // Controls visibility of instructional UI elements
   logCategories: {
     lifecycle: false,      // Component init/destroy
     navigation: false,     // Stage transitions, route changes
     dataFlow: true,       // Form values, state changes
     apiCalls: true,       // HTTP requests/responses
-    userActions: false,    // Button clicks, toggle changes
+    userActions: true,    // Button clicks, toggle changes
     validation: true,     // Form validation, error states
     jobProcessing: true   // Job automation, polling, verification
   }
@@ -51,6 +52,17 @@ export class LoggerService {
 
   private isCategoryEnabled(category: LogCategory): boolean {
     return this.isEnabled && LoggerConfig.logCategories[category];
+  }
+
+  /**
+   * Toggle helper for instructional UI elements
+   */
+  get showInstructionsEnabled(): boolean {
+    return LoggerConfig.showInstructionsEnabled;
+  }
+
+  set showInstructionsEnabled(value: boolean) {
+    LoggerConfig.showInstructionsEnabled = value;
   }
 
   /**

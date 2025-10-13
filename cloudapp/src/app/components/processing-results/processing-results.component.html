@@ -25,118 +25,6 @@
     </mat-card-content>
   </mat-card>
 
-  <!-- Workflow Instructions -->
-  <mat-card *ngIf="showInstructions" class="instructions-card">
-    <mat-card-header>
-      <mat-card-title>{{ 'Instructions.Title' | translate }}</mat-card-title>
-      <mat-card-subtitle>{{ 'Instructions.Subtitle' | translate }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-stepper linear="false">
-
-        <!-- Step 1: Download MMS ID File -->
-        <mat-step>
-          <ng-template matStepLabel>{{ 'Instructions.Step1.Title' | translate }}</ng-template>
-          <div class="step-content">
-            <p>{{ 'Instructions.Step1.Description' | translate }}</p>
-            <div class="download-section">
-              <a [href]="downloadUrl"
-                 download="esploro_asset_mms_ids.csv"
-                 mat-raised-button
-                 color="primary"
-                 [class.disabled]="!downloadUrl">
-                <mat-icon>download</mat-icon>
-                {{ 'Instructions.Step1.DownloadButton' | translate }}
-              </a>
-              <p class="download-info">
-                {{ 'Instructions.Step1.FileInfo' | translate : {count: getSuccessCount()} }}
-              </p>
-            </div>
-          </div>
-        </mat-step>
-
-        <!-- Step 2: Create Asset Set -->
-        <mat-step>
-          <ng-template matStepLabel>{{ 'Instructions.Step2.Title' | translate }}</ng-template>
-          <div class="step-content">
-            <p>{{ 'Instructions.Step2.Description' | translate }}</p>
-            <ol class="instruction-list">
-              <li>{{ 'Instructions.Step2.Item1' | translate }}</li>
-              <li>{{ 'Instructions.Step2.Item2' | translate }}</li>
-              <li>{{ 'Instructions.Step2.Item3' | translate }}</li>
-              <li>{{ 'Instructions.Step2.Item4' | translate }}</li>
-              <li>{{ 'Instructions.Step2.Item5' | translate }}</li>
-            </ol>
-            <div class="helpful-links">
-              <button mat-stroked-button (click)="openEsploroAdvancedSearch()">
-                <mat-icon>open_in_new</mat-icon>
-                {{ 'Instructions.Step2.OpenAdvancedSearch' | translate }}
-              </button>
-            </div>
-          </div>
-        </mat-step>
-
-        <!-- Step 3: Run Import Job -->
-        <mat-step>
-          <ng-template matStepLabel>{{ 'Instructions.Step3.Title' | translate }}</ng-template>
-          <div class="step-content">
-            <p>{{ 'Instructions.Step3.Description' | translate }}</p>
-            <ol class="instruction-list">
-              <li>{{ 'Instructions.Step3.Item1' | translate }}</li>
-              <li>{{ 'Instructions.Step3.Item2' | translate }}</li>
-              <li>{{ 'Instructions.Step3.Item3' | translate }}</li>
-              <li>{{ 'Instructions.Step3.Item4' | translate }}</li>
-              <li>{{ 'Instructions.Step3.Item5' | translate }}</li>
-            </ol>
-            <div class="helpful-links">
-              <button mat-stroked-button (click)="openRepositoryJobs()">
-                <mat-icon>open_in_new</mat-icon>
-                {{ 'Instructions.Step3.OpenJobs' | translate }}
-              </button>
-            </div>
-          </div>
-        </mat-step>
-
-        <!-- Step 4: Access Files -->
-        <mat-step>
-          <ng-template matStepLabel>{{ 'Instructions.Step4.Title' | translate }}</ng-template>
-          <div class="step-content">
-            <p>{{ 'Instructions.Step4.Description' | translate }}</p>
-
-            <div class="file-urls" *ngIf="getSuccessfulAssets().length > 0">
-              <h4>{{ 'Instructions.Step4.ViewerUrls' | translate }}</h4>
-              <div class="url-list">
-                <div *ngFor="let asset of getSuccessfulAssets(); trackBy: trackByMmsId; let i = index"
-                     class="url-item">
-                  <div class="asset-info">
-                    <strong>{{ asset.mmsId }}</strong>
-                    <span class="file-title" *ngIf="asset.fileTitle">
-                      - {{ asset.fileTitle }}
-                    </span>
-                  </div>
-                  <div class="url-link">
-                    <a [href]="getEsploroViewerUrl(asset.mmsId)"
-                       target="_blank"
-                       class="viewer-link"
-                       mat-button>
-                      <mat-icon>open_in_new</mat-icon>
-                      {{ 'Instructions.Step4.ViewFiles' | translate }}
-                    </a>
-                    <button mat-icon-button
-                            [cdkCopyToClipboard]="getEsploroViewerUrl(asset.mmsId)"
-                            [matTooltip]="'Instructions.Step4.CopyUrl' | translate">
-                      <mat-icon>content_copy</mat-icon>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </mat-step>
-      </mat-stepper>
-    </mat-card-content>
-  </mat-card>
-
   <!-- Potential Unchanged Assets Section -->
   <mat-card *ngIf="getUnchangedCount() > 0" class="unchanged-assets-card">
     <mat-card-header>
@@ -157,12 +45,9 @@
         <ng-container matColumnDef="mmsId">
           <th mat-header-cell *matHeaderCellDef>{{ 'Results.UnchangedAssets.Table.AssetId' | translate }}</th>
           <td mat-cell *matCellDef="let element">
-            <a [href]="getEsploroViewerUrl(element.mmsId)"
-               target="_blank"
-               class="asset-link">
+            <span class="asset-link">
               {{ element.mmsId }}
-              <mat-icon class="external-link">open_in_new</mat-icon>
-            </a>
+            </span>
           </td>
         </ng-container>
 
@@ -254,6 +139,91 @@
         <tr mat-header-row *matHeaderRowDef="resultColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: resultColumns;"></tr>
       </table>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Workflow Instructions -->
+  <mat-card *ngIf="showInstructions" class="instructions-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'Instructions.Title' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'Instructions.Subtitle' | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group class="instruction-tabs">
+
+        <!-- Step 1: Download MMS ID File -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">download</mat-icon>
+            {{ 'Instructions.Step1.Title' | translate }}
+          </ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step1.Description' | translate }}</p>
+            <div class="download-section">
+              <a [href]="downloadUrl"
+                 download="esploro_asset_mms_ids.csv"
+                 mat-raised-button
+                 color="primary"
+                 [class.disabled]="!downloadUrl">
+                <mat-icon>download</mat-icon>
+                {{ 'Instructions.Step1.DownloadButton' | translate }}
+              </a>
+              <p class="download-info">
+                {{ 'Instructions.Step1.FileInfo' | translate : {count: getSuccessCount()} }}
+              </p>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Step 2: Create Asset Set -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">playlist_add</mat-icon>
+            {{ 'Instructions.Step2.Title' | translate }}
+          </ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step2.Description' | translate }}</p>
+            <ol class="instruction-list">
+              <li>{{ 'Instructions.Step2.Item1' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item2' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item3' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item4' | translate }}</li>
+              <li>{{ 'Instructions.Step2.Item5' | translate }}</li>
+            </ol>
+            <div class="helpful-links">
+              <button mat-stroked-button (click)="openEsploroAdvancedSearch()">
+                <mat-icon>open_in_new</mat-icon>
+                {{ 'Instructions.Step2.OpenAdvancedSearch' | translate }}
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Step 3: Run Import Job -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">sync</mat-icon>
+            {{ 'Instructions.Step3.Title' | translate }}
+          </ng-template>
+          <div class="step-content">
+            <p>{{ 'Instructions.Step3.Description' | translate }}</p>
+            <ol class="instruction-list">
+              <li>{{ 'Instructions.Step3.Item1' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item2' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item3' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item4' | translate }}</li>
+              <li>{{ 'Instructions.Step3.Item5' | translate }}</li>
+            </ol>
+            <div class="helpful-links">
+              <button mat-stroked-button (click)="openRepositoryJobs()">
+                <mat-icon>open_in_new</mat-icon>
+                {{ 'Instructions.Step3.OpenJobs' | translate }}
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
     </mat-card-content>
   </mat-card>
 </div>

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProcessedAsset } from '../../models/types';
+import { parseRestError } from '../../utilities/rest-error';
 
 interface PageInfo {
   baseUrl?: string;
@@ -23,25 +24,42 @@ export class ProcessingResultsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private pageInfo: PageInfo | null = null;
+  private metadataLoadFailed = false;
 
   resultColumns = ['status', 'mmsId', 'fileTitle', 'errorMessage'];
 
+  serverUrl: string = '';
+  institutionCode: string = '';
+
   constructor(
     private eventsService: CloudAppEventsService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
-    this.eventsService.onPageLoad(this.onPageLoad);
+    // Subscribe to page load events to get institution/server info
+    this.eventsService.getPageMetadata()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (pageInfo) => {
+          this.pageInfo = pageInfo;
+          console.log('📄 Page metadata loaded:', pageInfo);
+          this.applyServerDefaults(pageInfo);
+        },
+        error: (err) => {
+          console.error('Failed to load page metadata:', err);
+          this.metadataLoadFailed = true;
+          const errorMessage = parseRestError(err, 'Load Page Metadata');
+          this.alertService.error(errorMessage);
+          this.applyServerDefaults();
+        }
+      });
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private onPageLoad = (pageInfo: PageInfo) => {
-    this.pageInfo = pageInfo;
   }
 
   getSuccessCount(): number {
@@ -64,47 +82,43 @@ export class ProcessingResultsComponent implements OnInit, OnDestroy {
     return this.processedData.filter(asset => asset.wasUnchanged === true);
   }
 
-  /**
-   * Generate Esploro Viewer URL following Ex Libris URL patterns
-   */
-  getEsploroViewerUrl(mmsId: string): string {
-    if (!this.pageInfo) {
-      return '';
-    }
-
-    // Extract server and institution from current page info
-    const currentUrl = this.pageInfo.baseUrl || window.location.href;
-    const serverMatch = currentUrl.match(/https:\/\/([^\/]+)/);
-    const institutionMatch = currentUrl.match(/institution\/([^\/]+)/);
-
-    const serverName = serverMatch ? serverMatch[1] : '';
-    const institutionCode = institutionMatch ? institutionMatch[1] : '';
-
-    if (!serverName || !institutionCode) {
-      console.warn('Could not extract server or institution information');
-      return '';
-    }
-
-    return `https://${serverName}/esploro/outputs/${mmsId}/filesAndLinks?institution=${institutionCode}`;
-  }
-
   openEsploroAdvancedSearch() {
-    if (!this.pageInfo) return;
+    const baseUrl = this.getBaseUrl();
+    const vid = this.pageInfo?.vid ? this.pageInfo.vid : '';
 
-    const baseUrl = this.pageInfo.baseUrl;
-    const advancedSearchUrl = `${baseUrl}/discovery/search?vid=${this.pageInfo.vid}&advanced=true`;
+    const advancedSearchUrl = `${baseUrl}/discovery/search?vid=${vid}&advanced=true`;
     window.open(advancedSearchUrl, '_blank');
   }
 
   openRepositoryJobs() {
-    if (!this.pageInfo) return;
-
-    const baseUrl = this.pageInfo.baseUrl;
-    const jobsUrl = `${baseUrl}/mng/action/home.do?vid=${this.pageInfo.vid}#jobs`;
+    const baseUrl = this.getBaseUrl();
+    const vid = this.pageInfo?.vid ? this.pageInfo.vid : '';
+    const jobsUrl = `${baseUrl}/mng/action/home.do?vid=${vid}#jobs`;
     window.open(jobsUrl, '_blank');
   }
 
   trackByMmsId(index: number, asset: ProcessedAsset): string {
     return asset.mmsId;
+  }
+
+  private applyServerDefaults(pageInfo?: PageInfo): void {
+    const currentUrl = pageInfo?.baseUrl || window.location.href;
+
+    const serverMatch = currentUrl.match(/https:\/\/([^\/]+)/);
+    this.serverUrl = serverMatch ? serverMatch[1] : this.serverUrl;
+
+    const metadataInstitution = pageInfo?.institutionCode || pageInfo?.instCode;
+    if (metadataInstitution) {
+      this.institutionCode = metadataInstitution;
+    }
+  }
+
+  private getBaseUrl(): string {
+    if (this.pageInfo?.baseUrl) {
+      return this.pageInfo.baseUrl;
+    }
+
+    const protocol = this.serverUrl ? 'https://' : '';
+    return `${protocol}${this.serverUrl}` || window.location.origin;
   }
 }

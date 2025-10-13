@@ -117,18 +117,50 @@
 
 .mapping-table {
   width: 100%;
+  table-layout: fixed;
+
+  // Column width specifications
+  .mat-column-csvHeader {
+    width: 15%;
+  }
+
+  .mat-column-sampleValue {
+    width: 45%;
+  }
+
+  .mat-column-mappedField {
+    width: 30%;
+  }
+
+  td {
+    // Ensure table cells don't force full-width content
+    overflow: visible;
+  }
+
+  th {
+    // Ensure headers also respect column widths
+    overflow: visible;
+  }
 
   .csv-header {
     font-weight: 600;
     color: #3f51b5;
+    display: inline-block;
+    width: calc(100% - 2rem);
   }
 
   .sample-value {
     display: inline-block;
-    max-width: 200px;
+    width: calc(100% - 2rem);
+    padding-left: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  mat-select {
+    width: calc(100% - 2rem);
+    padding-right: 2rem;
   }
 
   .confidence-indicator {
@@ -335,8 +367,9 @@
 }
 
 mat-select {
-  width: 100%;
-  max-width: 30%;
+  width: auto;
+  max-width: calc(100% - 2rem);
+  padding-right: 2rem;
 }
 
 .ignore-option {

@@ -118,6 +118,22 @@ export interface AssetVerificationResult {
 }
 
 /**
+ * Grouped asset files for batch processing
+ * Used when CSV contains multiple files for the same asset
+ */
+export interface AssetFileBatch {
+  mmsId: string;
+  files: Array<{
+    title?: string;
+    url: string;
+    description?: string;
+    type?: string;
+    supplemental?: boolean;
+  }>;
+  assetTitle?: string;  // Optional title from first file in batch
+}
+
+/**
  * Batch verification summary for Phase 3.5
  */
 export interface BatchVerificationSummary {
@@ -242,6 +258,16 @@ export interface RunJobPayload {
 /**
  * Job execution response from POST /conf/jobs/{jobId}?op=run
  */
+export interface JobAdditionalInfo {
+  value?: string;
+  desc?: string;
+  link?: string;
+  instance?: {
+    value: string;
+    desc?: string;
+  };
+}
+
 export interface JobExecutionResponse {
   id: string;
   name: string;
@@ -250,14 +276,7 @@ export interface JobExecutionResponse {
   category?: { value: string; desc?: string };
   content?: { value: string; desc?: string };
   parameter?: JobParameter[];
-  additional_info?: {
-    value: string;  // e.g., "Job no. 9563654220000561 triggered on ..."
-    link?: string;  // Link to job instance
-    instance?: {
-      value: string;  // Instance ID
-      desc: string;
-    };
-  };
+  additional_info?: JobAdditionalInfo | JobAdditionalInfo[];
   link?: string;
 }
 

@@ -20,6 +20,8 @@ This directory contains comprehensive documentation for the Esploro Asset File L
 - **[JOB_SUBMISSION_ENHANCEMENT.md](JOB_SUBMISSION_ENHANCEMENT.md)** - Future enhancement proposals
 
 ### 📚 **Reference Documentation**
+- **[Esploro_Categories_Asset-Types_Type-Codes.md](Esploro_Categories_Asset-Types_Type-Codes.md)** - All Esploro asset categories and type codes
+- **[ASSET_CATEGORY_QUICK_REFERENCE.md](ASSET_CATEGORY_QUICK_REFERENCE.md)** - Asset category mapping quick reference
 - **[Expanded_Esploro_Schema.md](Expanded_Esploro_Schema.md)** - Esploro database schema reference
 - **[API to Add new file to Asset.md](API%20to%20Add%20new%20file%20to%20Asset.md)** - Esploro API documentation
 - **Example Files** - See `example-csv/`, `example-json/`, `example-xml/` directories

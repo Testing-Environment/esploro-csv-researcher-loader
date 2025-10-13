@@ -172,8 +172,24 @@
   }
 }
 
-mat-stepper {
+.instruction-tabs {
   background-color: transparent;
+
+  .tab-icon {
+    margin-right: 8px;
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+  }
+
+  ::ng-deep .mat-tab-label {
+    min-width: 120px;
+    padding: 0 16px;
+  }
+
+  ::ng-deep .mat-tab-body-content {
+    padding: 24px 16px;
+  }
 }
 
 .unchanged-explanation {

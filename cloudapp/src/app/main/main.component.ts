@@ -33,6 +33,7 @@ export class MainComponent implements OnInit, OnDestroy {
   assetValidationInProgress = false;
   // Controls whether Stage 2 (File Type selection) is presented
   fileTypesToggle = false; // default OFF per requirements
+  fileTypeHintExpanded = false; // Controls file type hint section collapse/expand
   showFileName = false;        // Controls File URL field visibility
   showFileDescription = false; // Controls File Description field visibility
   showIsSupplemental = false;  // Controls Is Supplemental checkbox visibility
@@ -64,6 +65,9 @@ export class MainComponent implements OnInit, OnDestroy {
   batchVerificationSummary: BatchVerificationSummary | null = null;
   processedAssetsCache: ProcessedAsset[] = [];
   assetCacheMap: Map<string, CachedAssetState> = new Map();
+
+  // Expanded view notification tracking
+  private hasShownExpandedModeNotification = false;
 
   private readonly urlPattern = /^https?:\/\//i;
 
@@ -107,8 +111,39 @@ export class MainComponent implements OnInit, OnDestroy {
     return this.form.get('entries') as FormArray;
   }
 
+  /**
+   * Check if the app is currently in collapsed view mode
+   * Based on simple width check: width < 400px = collapsed
+   */
+  private isViewCollapsed(): boolean {
+    const appContainer = document.querySelector('app-main') as HTMLElement;
+    if (!appContainer) {
+      return false; // If we can't determine, assume not collapsed
+    }
+    return appContainer.offsetWidth < 400;
+  }
+
+  private tryShowExpandedViewNotification(trigger: string, message: string): void {
+    if (this.hasShownExpandedModeNotification || !this.isViewCollapsed()) {
+      return;
+    }
+
+    this.hasShownExpandedModeNotification = true;
+    this.alert.info(message, { autoClose: false });
+    this.logger.userAction('Expanded mode notification shown', {
+      trigger,
+      viewCollapsed: true
+    });
+  }
+
   addEntry(): void {
     this.entries.push(this.createEntryGroup());
+
+    this.tryShowExpandedViewNotification(
+      'addEntry',
+      'For a better experience with multiple files, consider using the expanded view mode. ' +
+      'Click the expand icon in the top-right corner of the app.'
+    );
   }
 
   removeEntry(index: number): void {
@@ -428,6 +463,14 @@ export class MainComponent implements OnInit, OnDestroy {
     this.showResults = true;
   }
 
+  onCsvUploadInitiated(): void {
+    this.tryShowExpandedViewNotification(
+      'csvUploadInitiated',
+      'For a better experience uploading CSV files, consider using the expanded view mode. ' +
+      'Click the expand icon in the top-right corner of the app.'
+    );
+  }
+
   onDownloadReady(downloadUrl: string) {
     this.mmsIdDownloadUrl = downloadUrl;
     this.showWorkflowInstructions = true;
@@ -609,19 +652,36 @@ export class MainComponent implements OnInit, OnDestroy {
         this.assetService.runJob(setResponse.id)
       );
 
-      const jobInstanceId = jobResponse.additional_info?.instance?.value || '';
-      this.jobInstanceId = jobInstanceId;
+      const jobInstanceId = this.assetService.getJobInstanceId(jobResponse);
+      const jobInstanceLink = this.assetService.getJobInstanceLink(jobResponse);
+
+      this.jobInstanceId = jobInstanceId ?? null;
       this.logger.jobProcessing('Job submitted', { jobId: jobResponse.id, instanceId: jobInstanceId });
-      console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
 
-      // Notification: Job initiated successfully
-      this.alert.success(
-        `Job is successfully initiated with instance ID: ${this.jobInstanceId}. Processing assets and fetching files...`
-      );
+      if (!jobInstanceId) {
+        console.warn('Job response did not include an instance ID.', {
+          jobResponse,
+          additionalInfo: jobResponse.additional_info,
+          jobLink: jobResponse.link
+        });
 
-      // Phase 3.4: Start polling job status
-      this.logger.jobProcessing('Starting job polling', { jobId: jobResponse.id, instanceId: jobInstanceId });
-      this.startJobPolling(jobResponse.id, jobInstanceId);
+        this.alert.warn('Job is initiated, but Esploro did not return an instance ID. Please monitor the job manually.');
+
+        if (jobInstanceLink) {
+          console.info('Job instance link provided by API:', jobInstanceLink);
+        }
+      } else {
+        console.log(`Job submitted successfully. Job ID: ${jobResponse.id}, Instance: ${jobInstanceId}`);
+
+        // Notification: Job initiated successfully
+        this.alert.success(
+          `Job is successfully initiated with instance ID: ${jobInstanceId}. Processing assets and fetching files...`
+        );
+
+        // Phase 3.4: Start polling job status
+        this.logger.jobProcessing('Starting job polling', { jobId: jobResponse.id, instanceId: jobInstanceId });
+        this.startJobPolling(jobResponse.id, jobInstanceId);
+      }
 
     } catch (error: any) {
       // Enhanced error handling with detailed information

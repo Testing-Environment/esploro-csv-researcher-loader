@@ -92,23 +92,6 @@
                 </div>
               </div>
 
-              <section class="file-type-hint" *ngIf="fileTypes.length">
-                <h2>{{ "ManualEntry.FileTypesTitle" | translate }}</h2>
-                <p class="hint-text">
-                  {{ "ManualEntry.FileTypesHint" | translate }}
-                </p>
-                <div class="file-type-list">
-                  <div class="file-type-item" *ngFor="let type of fileTypes">
-                    <span class="code">{{ type.code }}</span>
-                    <span
-                      class="description"
-                      *ngIf="type.description && type.description !== type.code"
-                      >{{ type.description }}</span
-                    >
-                  </div>
-                </div>
-              </section>
-
               <section formArrayName="entries" class="files-section">
                 <div
                   class="file-entry-row"
@@ -287,18 +270,29 @@
               </div>
 
               <section class="file-type-hint" *ngIf="fileTypes.length">
-                <h2>{{ "ManualEntry.FileTypesTitle" | translate }}</h2>
-                <p class="hint-text">
-                  {{ "ManualEntry.FileTypesHint" | translate }}
-                </p>
-                <div class="file-type-list">
-                  <div class="file-type-item" *ngFor="let type of fileTypes">
-                    <span class="code">{{ type.code }}</span>
-                    <span
-                      class="description"
-                      *ngIf="type.description && type.description !== type.code"
-                      >{{ type.description }}</span
-                    >
+                <div class="file-type-hint-header" (click)="fileTypeHintExpanded = !fileTypeHintExpanded">
+                  <h2>{{ "ManualEntry.FileTypesTitle" | translate }}</h2>
+                  <button 
+                    mat-icon-button 
+                    type="button"
+                    [attr.aria-label]="(fileTypeHintExpanded ? 'Collapse' : 'Expand') + ' file type hints'"
+                    [attr.aria-expanded]="fileTypeHintExpanded">
+                    <mat-icon>{{ fileTypeHintExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                  </button>
+                </div>
+                <div class="file-type-hint-content" *ngIf="fileTypeHintExpanded">
+                  <p class="hint-text">
+                    {{ "ManualEntry.FileTypesHint" | translate }}
+                  </p>
+                  <div class="file-type-list">
+                    <div class="file-type-item" *ngFor="let type of fileTypes">
+                      <span class="code">{{ type.code }}</span>
+                      <span
+                        class="description"
+                        *ngIf="type.description && type.description !== type.code"
+                        >{{ type.description }}</span
+                      >
+                    </div>
                   </div>
                 </div>
               </section>
@@ -511,6 +505,7 @@
           [assetFileAndLinkTypes]="assetFileAndLinkTypes"
           (batchProcessed)="onBatchProcessed($event)"
           (downloadReady)="onDownloadReady($event)"
+          (uploadInitiated)="onCsvUploadInitiated()"
         >
         </app-csv-processor>
       </div>
