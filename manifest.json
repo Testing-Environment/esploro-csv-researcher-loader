@@ -1,8 +1,8 @@
 {
-   "id": "esploro-csv-asset-loader",
-   "title": "Enhanced Asset File Processor",
+   "id": "esploro-upload-by-url-asset-file-loader",
+   "title": "Upload Files to Assets using URL",
    "subtitle": "Bulk process asset files via CSV upload or manual entry",
-   "author": "Exlibris",
+   "author": "Esploro Support 2025",
    "description": "Process individual asset files or bulk upload via CSV with intelligent column mapping. This cloud app can be used to create and update research assets in Esploro with data provided by uploading a CSV file.",
    "pages": {
       "main": "/#/main",
