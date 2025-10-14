@@ -4,138 +4,116 @@ This Cloud App streamlines the process of attaching external files to existing E
 
 ## Features
 
-- Guided, two-stage form that validates asset IDs and lets you optionally choose file types before submission
-- File metadata captured in line with the Esploro API requirements (`link.title`, `link.url`, `link.description`, `link.type`, `link.supplemental`)
-- Default file types applied when Stage 2 is skipped, with selections sourced from the AssetFileAndLinkTypes mapping table
-- Inline validation and success/error feedback through the Cloud App alert system
+### Manual Entry Workflow
+- **Two-stage interface** for adding files to one or multiple assets
+- **Multi-row entry** - add files for different assets in a single session
+- **Stage 1**: Enter asset details (Asset ID, Title, URL, Description, Supplemental)
+- **Stage 2**: Select file types based on validated asset types
+- **Automatic validation** - assets are verified before processing
+- **Dynamic file type selection** - available file types are filtered based on asset type
+
+### CSV Upload Workflow
+- **Template download** - get a pre-formatted CSV template
+- **Bulk upload** - process multiple files across multiple assets
+- **Automated processing** - same validation and job execution as manual entry
+
+### Automated Job Orchestration
+The app automatically handles the complete workflow:
+1. **Validates assets** - fetches asset details and current file lists
+2. **Creates itemized set** - automatically generates a set with the target assets
+3. **Adds files via API** - queues files using the Esploro Asset API
+4. **Runs import job** - automatically executes the "Import Research Assets Files" job
+5. **Monitors progress** - polls job status until completion
+6. **Verifies results** - compares before/after file lists to confirm success
+7. **Displays report** - shows comprehensive results with per-asset verification
 
 ## Prerequisites
 
 - Esploro July 2024 release (or later)
 - Cloud Apps framework enabled for your institution
-- User roles that permit viewing the target asset and running the "Load files" job
+- User roles that permit:
+  - Viewing and updating assets
+  - Creating and managing sets
+  - Running the "Import Research Assets Files" job
 
 ## Using the App
 
-1. Open the Cloud Apps panel in Esploro and launch **Esploro Asset File Loader**.
-2. **Stage 1 – Provide asset and file details:**
-   - **Asset ID** (required)
-   - **File URL** (required)
-   - Optional file name, description, and supplemental toggle
-   - Use **Add another file** to queue additional files. Each row can target a different asset ID.
-3. **Choose how to continue:**
-   - **Specify Types of Each File** – validates the asset IDs, surfaces any invalid IDs, and advances to Stage 2 so you can pick explicit file types.
-   - **Proceed Without Selecting File Types** – validates asset IDs, applies the default file type for each row, and skips Stage 2 entirely.
-4. **Stage 2 (when selected)** – review the validated rows, pick a file type for each entry, and submit.
-5. Submitting queues the grouped payloads via `POST /esploro/v1/assets/{assetId}?op=patch&action=add` using the required `temporary.linksToExtract` structure.
-6. Create an itemized asset set with the records just updated.
-7. Run the "Load files" job in Esploro for the created set to complete the ingestion of the queued files.
+### Manual Entry Method
 
-## CSV Upload Workflow
+1. Open the Cloud Apps panel in Esploro and launch **Upload Files to Assets using URL**.
+2. Navigate to the **Manual Entry** tab.
+3. **Stage 1 - Enter File Details**:
+   - For each file, enter:
+     - **Asset ID** - the ID of the asset to add the file to //mandatory
+     - **Title** - display name for the file
+     - **URL** - HTTP(S) accessible file location //mandatory
+     - **Description** - optional description
+     - **Supplemental** - select True or False
+   - Click **Add another row** to add more files
+   - Click the **Delete** button on any row to remove it
+   - Click **Validate & Proceed** when ready
+4. The app validates all assets and fetches their types
+5. **Stage 2 - Select File Types**: //if 'File Types' is selected in Stage 1
+   - For each entry, select the appropriate file type
+   - Available types are filtered based on the asset's type
+   - Click **Back** to return to Stage 1 if needed
+   - Click **Submit & Process** to start the automated workflow
+6. The app automatically:
+   - Queues files via `POST /esploro/v1/assets/{assetId}?op=patch&action=add`
+   - Creates an itemized set with all target assets
+   - Runs the "Import Research Assets Files" job for the set
+   - Monitors job progress and displays real-time status
+   - Verifies file additions by comparing before/after file lists
+7. Review the comprehensive results showing:
+   - Set ID and Job ID for reference
+   - Job status and completion details
+   - Per-asset verification (files added, success/failure)
+   - Any errors encountered during the process
 
-The CSV tab lets you process many assets at once. The workflow enforces a minimal contract so you can keep your templates lightweight:
+### CSV Upload Method
 
-1. **Required columns:** every CSV must include `mmsId` (asset identifier) and `remoteUrl` (file URL). The mapper will block progression if either column is missing or mapped but empty.
-2. **Optional columns:** file title, file description, and file type can be omitted entirely or mapped where available. Missing optional values default to safe fallbacks so rows without extra metadata still process.
-3. **Column mapping UI:** after upload, review the suggested mappings. Only the two required fields must be assigned; all other columns can be set to *Ignore*.
-4. **Required value validation:** before any API calls are made, the app scans every row to make sure MMS IDs and URLs are populated. Rows with missing data are reported (with row numbers) so you can fix the CSV quickly.
-5. **File type matching:** when a file type column is present, the component first converts exact ID matches, then applies fuzzy matching on target codes. Any values that still lack an ID are listed for manual resolution before processing can continue.
-6. **Asset verification:** just like the manual flow, each distinct MMS ID is validated against Esploro prior to posting files, and the before/after comparison flags assets whose file lists remain unchanged.
-
-## What’s New in the CSV Workflow (Oct 2025)
-
-- Only two fields are mandatory: `mmsId` (asset ID) and `remoteUrl` (file URL). All other fields are optional.
-- The mapper blocks progression if required columns are missing or mapped but empty; missing values are reported with row numbers.
-- If a file-type column is included, names are auto-converted to the required IDs via fuzzy matching; unresolved values must be manually mapped before proceeding.
-- After processing, the app compares the asset’s file list before/after to flag rows that likely resulted in no change (e.g., duplicate URLs).
+1. Open the Cloud Apps panel and navigate to the **CSV Upload** tab.
+2. Click **Download Template CSV** to get a pre-formatted template.
+3. Fill in the CSV with your data:
+   - `assetId` - Asset ID //mandatory
+   - `title` - File title
+   - `url` - File URL //mandatory
+   - `description` - Optional description
+   - `supplemental` - true or false
+4. Click **Load CSV File** and select your filled template.
+5. The app processes the CSV using the same automated workflow as manual entry.
 
 ## API Reference
 
-- **POST** `/esploro/v1/assets/{assetId}?op=patch&action=add`
-  - Body schema documented in *API to Add new file to Asset*
-  - Only JSON payloads are supported for this workflow
+The app uses the following Esploro APIs:
+
+### Asset Management
+- **GET** `/esploro/v1/assets/{assetId}` - Fetch asset details and current files
+- **POST** `/esploro/v1/assets/{assetId}?op=patch&action=add` - Queue files for ingestion
+
+### Set Management
+- **POST** `/conf/sets` - Create itemized set
+- **POST** `/conf/sets/{setId}?op=add_members` - Add assets to set
+- **GET** `/conf/sets/{setId}` - Verify set membership
+
+### Job Management
+- **GET** `/conf/jobs/{jobId}` - Get job details
+- **GET** `/conf/jobs?offset={offset}&limit={limit}` - List all jobs (with pagination)
+- **POST** `/conf/jobs/{jobId}/instances` - Run a job
+- **GET** `/conf/jobs/{jobId}/instances/{instanceId}` - Monitor job status
+
+### Configuration
+- **GET** `/conf/code-tables/AssetFileType` - Get file types
+- **GET** `/conf/mapping-tables/AssetFileAndLinkTypes` - Get asset type to file type mappings
 
 ## Troubleshooting
 
-- If the list of file types fails to load, confirm the AssetFileAndLinkTypes mapping table is accessible (`/conf/mapping-tables/AssetFileAndLinkTypes`) and that your API key has configuration permissions.
-- You can configure the types of files and/or links that can be associated with research assets on the Asset File and Link Types List page (Configuration Menu > Repository > Asset Details > File and Link Types). For example, you can enable or disable labeling an upload or a link as a ReadMe file.
-- Error responses surfaced by the Esploro API are displayed via the Cloud App alert banner. Review the message for details such as missing permissions or malformed payload fields.
-
-For broader Esploro documentation, visit the [Esploro Online Help](https://knowledge.exlibrisgroup.com/Esploro/Product_Documentation/Esploro_Online_Help_(English)).
-
-## Development
-
-### Getting Started
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-```
-
-The app will be available at `http://localhost:4200` and can be loaded into Esploro via Cloud Apps developer mode.
-
-### Documentation for Developers
-
-- **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Setup, API reference, common tasks
-- **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Architecture diagrams and data flow
-- **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future enhancement proposals
-- **[Cleanup Summary](documentation/CLEANUP_SUMMARY.md)** - History of code cleanup and legacy features
-
-### Project Structure
-
-```text
-cloudapp/src/app/
-├── main/              # File upload component
-├── models/            # TypeScript interfaces
-├── services/          # AssetService (API integration)
-└── settings/          # Settings component (currently minimal)
-```
-
-### Key Technologies
-
-- **Angular 11** - Frontend framework
-- **Angular Material** - UI components
-- **RxJS** - Reactive programming
-- **Ex Libris Cloud Apps SDK** - Esploro integration
-
-## Contributing
-
-This is a specialized tool for Esploro environments. For contributions or issues, please refer to the documentation or contact the maintainers.
-
-## Documentation
-
-This project includes comprehensive documentation for developers, administrators, and end users (see also `documentation/INDEX.md`):
-
-### For Developers
-
-- **[Codebase Analysis Changelog](ANALYSIS_CHANGELOG.md)** - Comprehensive system analysis from user experience to component level (October 2025)
-- **[TypeScript Strict Mode Changes](TYPESCRIPT_STRICT_CHANGES.md)** - Log of all TypeScript strict mode compliance fixes and type safety improvements
-- **[Developer Quick Reference](documentation/DEVELOPER_QUICK_REFERENCE.md)** - Daily development guide, common tasks, and code patterns
-- **[Visual Diagrams](documentation/VISUAL_DIAGRAMS.md)** - Visual architecture reference with detailed diagrams
-- **[Comprehensive Technical Documentation](explanation.md)** - Deep-dive analysis of the entire codebase
-- **[RxJS Migration Guide](documentation/RXJS_MIGRATION.md)** - Migration from toPromise() to firstValueFrom/lastValueFrom
-- **[CSV Parsing Enhancement](documentation/CSV_PARSING.md)** - PapaParse integration for robust CSV handling
-
-### For Product Owners & Project Managers
-
-- **[Final Status Report](FINAL_STATUS_REPORT.md)** - Overview of all work, documentation index, and project status
-- **[Phase 2 Enhancement Complete](documentation/PHASE_2_ENHANCEMENT_COMPLETE.md)** - Summary of Phase 2 enhancements
-- **[Job Submission Enhancement](documentation/JOB_SUBMISSION_ENHANCEMENT.md)** - Future automation features roadmap
-
-### For System Administrators
-
-- **[Cleanup Summary](CLEANUP_SUMMARY.md)** - Log of recent code cleanup and improvements
-- **[API Usage Report](Esploro_Asset_API_Usage_Report.md)** - Detailed API integration analysis
-- **[Database Schema](documentation/Expanded_Esploro_Schema.md)** - Complete Esploro database schema reference
-
-### Quick Links
-
-- **[API Documentation](esploroAssets.md)** - Esploro Assets API reference
-- **[File Addition API](documentation/API%20to%20Add%20new%20file%20to%20Asset.md)** - Specific endpoint documentation
-- **[Cloud Apps Framework](exlCloudApps.md)** - Ex Libris Cloud Apps development guide
+- **Asset validation fails**: Ensure the asset IDs exist and you have permission to view them
+- **File types not loading**: The app falls back to default types (`accepted`, `submitted`, `supplementary`, `administrative`)
+- **Job not found**: The app tries job ID `M50762` first, then searches for jobs named "Import Research Assets Files"
+- **Set creation fails**: Verify you have permission to create sets
+- **Job execution fails**: Check you have permission to run the import job
+- **Files not added**: Review the verification results in the final report - the app compares file counts before and after
 
 ## License
 
